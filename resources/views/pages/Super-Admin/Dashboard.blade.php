@@ -1,16 +1,14 @@
-@extends('layouts.admin-tu')
+@extends('layouts.super-admin')
 
 @section('title', 'Dashboard')
 
 @section('content')
 <div class="mb-4">
-    <h4 class="fw-bold text-dark mb-1">Dashboard PMBM</h4>
-    <p class="text-muted small mb-0">Monitoring data penerimaan mahasiswa baru mandiri secara real-time.</p>
+    <h4 class="fw-bold text-dark mb-1">Dashboard PMBM (Super Admin)</h4>
+    <p class="text-muted small mb-0">Monitoring data penerimaan mahasiswa baru mandiri secara real-time dengan hak akses penuh.</p>
 </div>
 
-<!-- 4 GRID MINI STATISTIK CARD SESUAI GAMBAR -->
 <div class="row g-4 mb-4">
-    <!-- Card 1: Total Peserta -->
     <div class="col-12 col-sm-6 col-xl-3">
         <div class="card card-custom p-3 bg-white">
             <div class="d-flex justify-content-between align-items-start mb-3">
@@ -22,7 +20,6 @@
         </div>
     </div>
 
-    <!-- Card 2: Total Keterima -->
     <div class="col-12 col-sm-6 col-xl-3">
         <div class="card card-custom p-3 bg-white">
             <div class="d-flex justify-content-between align-items-start mb-3">
@@ -34,7 +31,6 @@
         </div>
     </div>
 
-    <!-- Card 3: Total Tidak Keterima -->
     <div class="col-12 col-sm-6 col-xl-3">
         <div class="card card-custom p-3 bg-white">
             <div class="d-flex justify-content-between align-items-start mb-3">
@@ -46,7 +42,6 @@
         </div>
     </div>
 
-    <!-- Card 4: Tingkat Kelulusan -->
     <div class="col-12 col-sm-6 col-xl-3">
         <div class="card card-custom p-3 bg-white">
             <div class="d-flex justify-content-between align-items-start mb-3">
@@ -59,7 +54,6 @@
     </div>
 </div>
 
-<!-- ROW DIAGRAM GRAFIK CHART.JS -->
 <div class="row g-4 mb-4">
     <div class="col-12 col-md-6">
         <div class="card card-custom p-4 bg-white h-100">
@@ -80,7 +74,6 @@
     </div>
 </div>
 
-<!-- TABEL RECENT REGISTRATIONS SESUAI DI GAMBAR -->
 <div class="card card-custom bg-white p-4">
     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
         <h6 class="fw-bold text-dark mb-0">Recent Registrations</h6>
@@ -103,122 +96,68 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Row 1 -->
+                @forelse($pendaftar as $p)
                 <tr>
                     <td class="px-3 py-3">
                         <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-success-subtle text-success rounded-circle p-2 d-inline-block" style="width: 32px; height:32px; text-align:center;">BA</span>
-                            <span class="fw-semibold text-dark">Budi Antoro</span>
+                            <span class="badge bg-success-subtle text-success rounded-circle p-2 d-inline-block" style="width: 32px; height:32px; text-align:center;">{{ $p['inisial'] }}</span>
+                            <span class="fw-semibold text-dark">{{ $p['nama'] }}</span>
                         </div>
                     </td>
-                    <td class="text-muted">Informatika</td>
-                    <td>2025</td>
-                    <td><span class="badge-status bg-success-subtle text-success">Diterima</span></td>
-                    <td class="text-muted">12 Mei 2024</td>
-                    <td class="text-center"><button class="btn btn-link btn-sm text-muted p-0">⋮</button></td>
+                    <td class="text-muted">{{ $p['prodi'] }}</td>
+                    <td>{{ $p['tahun'] }}</td>
+                    <td><span class="badge-status {{ $p['badge_class'] }}">{{ $p['status'] }}</span></td>
+                    <td class="text-muted">{{ $p['tanggal'] }}</td>
+                    <td class="text-center">
+                        <button class="btn btn-link btn-sm text-muted p-0">⋮</button>
+                    </td>
                 </tr>
-                <!-- Row 2 -->
+                @empty
                 <tr>
-                    <td class="px-3 py-3">
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-danger-subtle text-danger rounded-circle p-2 d-inline-block" style="width: 32px; height:32px; text-align:center;">SL</span>
-                            <span class="fw-semibold text-dark">Siti Lestari</span>
-                        </div>
-                    </td>
-                    <td class="text-muted">Manajemen Bisnis</td>
-                    <td>2025</td>
-                    <td><span class="badge-status bg-warning-subtle text-warning-emphasis">Pending</span></td>
-                    <td class="text-muted">14 Mei 2024</td>
-                    <td class="text-center"><button class="btn btn-link btn-sm text-muted p-0">⋮</button></td>
+                    <td colspan="6" class="text-center py-4 text-muted">Belum ada pendaftar terbaru.</td>
                 </tr>
-                <!-- Row 3 -->
-                <tr>
-                    <td class="px-3 py-3">
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-dark-subtle text-dark rounded-circle p-2 d-inline-block" style="width: 32px; height:32px; text-align:center;">RK</span>
-                            <span class="fw-semibold text-dark">Rudi Kurniawan</span>
-                        </div>
-                    </td>
-                    <td class="text-muted">Hukum</td>
-                    <td>2025</td>
-                    <td><span class="badge-status bg-danger-subtle text-danger">Ditolak</span></td>
-                    <td class="text-muted">15 Mei 2024</td>
-                    <td class="text-center"><button class="btn btn-link btn-sm text-muted p-0">⋮</button></td>
-                </tr>
-                <!-- Row 4 -->
-                <tr>
-                    <td class="px-3 py-3">
-                        <div class="d-flex align-items-center gap-2">
-                            <span class="badge bg-success-subtle text-success rounded-circle p-2 d-inline-block" style="width: 32px; height:32px; text-align:center;">AH</span>
-                            <span class="fw-semibold text-dark">Agus Hidayat</span>
-                        </div>
-                    </td>
-                    <td class="text-muted">Teknik Sipil</td>
-                    <td>2025</td>
-                    <td><span class="badge-status bg-success-subtle text-success">Diterima</span></td>
-                    <td class="text-muted">16 Mei 2024</td>
-                    <td class="text-center"><button class="btn btn-link btn-sm text-muted p-0">⋮</button></td>
-                </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
 </div>
 
-<!-- Chart.js Engine -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     Chart.defaults.font.family = "'Inter', sans-serif";
     Chart.defaults.font.size = 11;
 
-// 1. REVISI: Chart Jumlah Daftar Pertahun diubah menjadi Line Chart Modern
+    // 1. Chart 1: Line Linear Polos Pilihan Lu
     const ctxDaftar = document.getElementById('chartJumlahDaftar').getContext('2d');
-    
-    // Membuat efek gradient transparan di bawah garis chart
-    const gradient = ctxDaftar.createLinearGradient(0, 0, 0, 240);
-    gradient.addColorStop(0, 'rgba(0, 135, 68, 0.25)'); // Hijau transparan di atas
-    gradient.addColorStop(1, 'rgba(0, 135, 68, 0.00)'); // Memudar total di bawah
-
     new Chart(ctxDaftar, {
-        type: 'line', // Mengubah tipe dari 'bar' menjadi 'line'
+        type: 'line', 
         data: {
             labels: ['2022', '2023', '2024', '2025'],
             datasets: [{
                 data: [110, 135, 142, 154],
-                borderColor: '#008744',         // Warna utama garis (Hijau andalan lu)
-                borderWidth: 3,                 // Ketebalan garis
-                backgroundColor: gradient,       // Mengisi area bawah dengan warna gradasi
-                fill: true,                     // Aktifkan background fill area bawah
-                tension: 0.4,                   // Efek kelengkungan garis biar smooth (tidak kaku patah-patah)
-                pointBackgroundColor: '#008744',   // Warna titik data
-                pointBorderColor: '#ffffff',    // Border putih tipis di sekeliling titik
+                borderColor: '#008744',
+                borderWidth: 3,
+                backgroundColor: '#008744',
+                fill: false,
+                tension: 0,
+                pointBackgroundColor: '#008744',
+                pointBorderColor: '#ffffff',
                 pointBorderWidth: 2,
-                pointRadius: 4,                 // Ukuran titik data
-                pointHoverRadius: 6             // Ukuran titik saat kursor berada di atasnya
+                pointRadius: 5
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: { 
-                legend: { display: false }       // Menyembunyikan kotak label legend di atas
-            },
+            plugins: { legend: { display: false } },
             scales: { 
-                y: { 
-                    beginAtZero: true,
-                    grid: {
-                        color: 'rgba(0, 0, 0, 0.05)' // Garis panduan horizontal dibuat super tipis & soft
-                    }
-                },
-                x: {
-                    grid: {
-                        display: false           // Sembunyikan garis panduan vertikal agar lebih clean
-                    }
-                }
+                y: { beginAtZero: true, grid: { color: 'rgba(0, 0, 0, 0.05)' } },
+                x: { grid: { display: false } }
             }
         }
     });
 
-    // 2. Chart Total Keterima Pertahun (Bar)
+    // 2. Chart 2: Bar Chart
     const ctxKeterima = document.getElementById('chartTotalKeterima').getContext('2d');
     new Chart(ctxKeterima, {
         type: 'bar',

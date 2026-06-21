@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - CMS PMBM</title>
-    <!-- Bootstrap 5.3.3 CDN via cdnjs (Stabil & Aman) -->
+    <!-- Bootstrap 5.3.3 CDN via cdnjs -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
     <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -51,7 +51,6 @@
             <div class="col-12 col-sm-10 col-md-8 col-lg-5">
                 
                 <!-- Logo / Judul Atas Card -->
-                
                 <div class="text-center mb-4">
                     <div class="d-inline-flex align-items-center justify-content-center mb-2" style="width: 100px; height: 100px;">
                         <img src="{{ asset('images/logo.png') }}" alt="Logo PMBM" class="img-fluid object-fit-contain" style="max-height: 100%;">
@@ -62,16 +61,16 @@
 
                 <!-- Card Login -->
                 <div class="card login-card bg-white p-4 p-sm-5">
-                    <!-- PAKAI DIV BIAR AMAN DARI ERROR 405 METHOD NOT ALLOWED -->
                     <div id="pmbmLoginForm">
                         
-                        <!-- Pilihan Role -->
+                        <!-- Pilihan Role (UPDATE: Tambah Super Admin) -->
                         <div class="mb-4">
                             <label for="role" class="form-label small fw-semibold text-secondary">Masuk Sebagai</label>
                             <select class="form-select form-select-lg py-2.5 fs-6" id="role" name="role" required>
-                                <option value="" disabled selected>-- Pilih Hak Akses --</option>
+                                <option value="" disabled selected> Pilih Hak Akses </option>
+                                <option value="super_admin">Super Admin</option>
                                 <option value="admin_tu">Admin TU</option>
-                                <option value="panitia"> Panitia Penguji / Wawancara</option>
+                                <option value="panitia">Panitia Penguji / Wawancara</option>
                             </select>
                         </div>
 
@@ -87,7 +86,7 @@
                             <input type="password" class="form-control form-control-lg py-2.5 fs-6" id="password" placeholder="••••••••" required>
                         </div>
 
-                        <!-- Tombol Login (Murni type="button") -->
+                        <!-- Tombol Login -->
                         <button type="button" id="btnSubmitLogin" class="btn btn-pmbm btn-lg w-100 py-2.5 fw-bold fs-6 rounded-3">
                             Masuk Ke Sistem
                         </button>
@@ -103,7 +102,7 @@
         </div>
     </div>
 
-    <!-- Script JavaScript dengan Event Click -->
+    <!-- Script JavaScript dengan Logika Super Admin Baru -->
     <script>
         document.getElementById('btnSubmitLogin').addEventListener('click', function() {
             const roleSelected = document.getElementById('role').value;
@@ -113,7 +112,9 @@
                 return;
             }
             
-            if (roleSelected === 'admin_tu') {
+            if (roleSelected === 'super_admin') {
+                window.location.href = "{{ route('super.dashboard') }}";
+            } else if (roleSelected === 'admin_tu') {
                 window.location.href = "{{ route('tu.dashboard') }}";
             } else if (roleSelected === 'panitia') {
                 window.location.href = "{{ route('panitia.antrean') }}";
