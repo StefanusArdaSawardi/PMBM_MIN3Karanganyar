@@ -53,7 +53,7 @@ Route::prefix('admin-tu')->group(function () {
 });
 
 
-// 3. KELOMPOK ROUTE: Panitia Penguji
+// 3. KELOMPOK ROUTE: Panitia Penguji & Penimbangan
 Route::prefix('panitia')->group(function () {
     Route::get('/antrean', function () {
         return view('pages.panitia.daftar-wawancara');
@@ -66,6 +66,11 @@ Route::prefix('panitia')->group(function () {
     Route::get('/hasil-nilai', function () {
         return view('pages.panitia.hasil-nilai');
     })->name('panitia.hasil');
+
+    // BARU: Ditambahkan langsung di dalam kelompok rute panitia agar sinkron
+    Route::get('/penimbangan-balita', function () {
+        return view('pages.panitia.penimbangan-balita');
+    })->name('panitia.timbang');
 });
 
 // 4. KELOMPOK ROUTE: Super Admin (FIX JALUR VIEW FOLDER)

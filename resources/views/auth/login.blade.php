@@ -70,7 +70,7 @@
                                 <option value="" disabled selected> Pilih Hak Akses </option>
                                 <option value="super_admin">Super Admin</option>
                                 <option value="admin_tu">Admin TU</option>
-                                <option value="panitia">Panitia Penguji / Wawancara</option>
+                                <option value="panitia">Panitia Penguji</option>
                             </select>
                         </div>
 
