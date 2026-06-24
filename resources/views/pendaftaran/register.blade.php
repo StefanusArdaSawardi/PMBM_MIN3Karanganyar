@@ -1,0 +1,678 @@
+@extends('layouts.landing')
+
+@section('title', 'Pendaftaran Calon Siswa Baru - PMBM MIN 3 Karanganyar')
+
+@section('styles')
+  <link rel="stylesheet" href="{{ asset('assets/landing/home/vars.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/landing/home/style.css') }}">
+  <style>
+    .register-container {
+      max-width: 800px;
+      margin: 0 auto;
+      position: absolute;
+      left: calc(50% - 400px);
+      top: 150px;
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      padding: 40px;
+      z-index: 20;
+    }
+
+    .form-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .form-header h1 {
+      color: #064e3b;
+      font-size: 28px;
+      font-family: 'PlusJakartaSans-ExtraBold', sans-serif;
+      margin-bottom: 10px;
+    }
+
+    .form-header p {
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    /* Stepper */
+    .stepper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+      position: relative;
+    }
+
+    .stepper::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: #e5e7eb;
+      z-index: 1;
+    }
+
+    .stepper-progress {
+      position: absolute;
+      top: 20px;
+      left: 0;
+      height: 4px;
+      background: #298752;
+      z-index: 1;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+
+    .step {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+
+    .step-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #e5e7eb;
+      color: #6b7280;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      border: 4px solid #ffffff;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
+    }
+
+    .step.active .step-circle {
+      background: #298752;
+      color: #ffffff;
+      transform: scale(1.1);
+    }
+
+    .step.completed .step-circle {
+      background: #064e3b;
+      color: #ffffff;
+    }
+
+    .step-label {
+      margin-top: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #9ca3af;
+    }
+
+    .step.active .step-label {
+      color: #298752;
+    }
+
+    .step.completed .step-label {
+      color: #064e3b;
+    }
+
+    /* Form Fields */
+    .form-step {
+      display: none;
+    }
+
+    .form-step.active {
+      display: block;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #064e3b;
+      border-bottom: 2px solid #f3f4f6;
+      padding-bottom: 10px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title span {
+      background: rgba(41, 135, 82, 0.1);
+      color: #298752;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-cols: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .full-width {
+      grid-column: span 2;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .form-group label {
+      font-size: 12px;
+      font-weight: bold;
+      color: #4b5563;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 12px 16px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #f9fafb;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color: #298752;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(41, 135, 82, 0.1);
+    }
+
+    /* Buttons */
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 40px;
+      border-top: 1px solid #f3f4f6;
+      padding-top: 20px;
+    }
+
+    .btn {
+      padding: 14px 28px;
+      font-size: 14px;
+      font-weight: bold;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-prev {
+      background: #ffffff;
+      border: 1px solid #d1d5db;
+      color: #4b5563;
+    }
+
+    .btn-prev:hover {
+      background: #f9fafb;
+    }
+
+    .btn-next {
+      background: #298752;
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(41, 135, 82, 0.2);
+    }
+
+    .btn-next:hover {
+      background: #064e3b;
+    }
+
+    .btn-submit {
+      background: #064e3b;
+      color: #ffffff;
+      box-shadow: 0 4px 10px rgba(6, 78, 59, 0.2);
+    }
+
+    /* Document upload cards */
+    .upload-card {
+      background: #f9fafb;
+      border: 1px dashed #d1d5db;
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .upload-card label {
+      font-weight: bold;
+      font-size: 13px;
+      color: #374151;
+    }
+
+    .upload-card input[type="file"] {
+      font-size: 12px;
+    }
+
+    /* Alert */
+    .error-alert {
+      background: #fee2e2;
+      border: 1px solid #fca5a5;
+      color: #b91c1c;
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      margin-bottom: 24px;
+    }
+
+    /* Summary Card */
+    .summary-card {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-cols: 1fr 1fr;
+      gap: 16px;
+      font-size: 13px;
+    }
+
+    .summary-item label {
+      color: #9ca3af;
+      font-weight: 500;
+    }
+
+    .summary-item p {
+      color: #1f2937;
+      font-weight: bold;
+      margin-top: 4px;
+    }
+  </style>
+@endsection
+
+@section('content')
+  <div class="dashboard-pmbm-min-3-kra">
+    <!-- Landing Navbar Included -->
+    @include('components.navbar', ['activeFolder' => 'home'])
+
+    <div class="register-container">
+    <div class="form-header">
+      <h1>Pendaftaran Calon Siswa Baru</h1>
+      <p>Lengkapi formulir pendaftaran di bawah ini untuk memulai proses seleksi PMBM.</p>
+    </div>
+
+    @if(session('success'))
+      <div style="background: #ecfdf5; border: 1px solid #10b981; color: #065f46; padding: 20px; border-radius: 12px; margin-bottom: 24px; text-align: center; font-family: sans-serif;">
+        <h3 style="font-weight: bold; margin-bottom: 8px; font-size: 18px; color: #047857;">Pendaftaran Berhasil!</h3>
+        <p style="font-size: 14px; margin-bottom: 12px; color: #065f46;">Pendaftaran calon murid telah tersimpan dalam sistem.</p>
+        <div style="background: #ffffff; border: 1px dashed #10b981; padding: 12px; border-radius: 8px; display: inline-block; font-weight: bold; font-size: 16px; color: #047857;">
+          Nomor Pendaftaran Anda: {{ session('success') }}
+        </div>
+        <p style="font-size: 12px; margin-top: 12px; color: #065f46;">Harap simpan nomor pendaftaran ini untuk melakukan cek status kelulusan nanti.</p>
+      </div>
+    @endif
+
+    @if($errors->any())
+      <div class="error-alert">
+        <p style="font-weight: bold; margin-bottom: 8px;">Terjadi kesalahan pengisian form:</p>
+        <ul style="list-style: disc; padding-left: 20px;">
+          @foreach($errors->all() as $error)
+            <li>{{ $error }}</li>
+          @endforeach
+        </ul>
+      </div>
+    @endif
+
+    <!-- Stepper Header -->
+    <div class="stepper">
+      <div class="stepper-progress" id="progressBar"></div>
+      
+      <div class="step active" id="step-tab-1">
+        <div class="step-circle">1</div>
+        <div class="step-label">Data Calon Murid</div>
+      </div>
+      <div class="step" id="step-tab-2">
+        <div class="step-circle">2</div>
+        <div class="step-label">Data Orang Tua</div>
+      </div>
+      <div class="step" id="step-tab-3">
+        <div class="step-circle">3</div>
+        <div class="step-label">Berkas Dokumen</div>
+      </div>
+      <div class="step" id="step-tab-4">
+        <div class="step-circle">4</div>
+        <div class="step-label">Konfirmasi</div>
+      </div>
+    </div>
+
+    <!-- Registration Form -->
+    <form action="{{ route('student.store') }}" method="POST" enctype="multipart/form-data" id="registerForm">
+      @csrf
+
+      <!-- Step 1: Student Data -->
+      <div class="form-step active" id="step-pane-1">
+        <div class="section-title">
+          <span>1</span> Data Calon Murid
+        </div>
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label for="nama_murid">Nama Lengkap Murid <span style="color: red;">*</span></label>
+            <input type="text" name="nama_murid" id="nama_murid" required minlength="3" maxlength="255" pattern="[a-zA-Z\s\.,\']+" title="Hanya huruf, spasi, titik, dan koma" value="{{ old('nama_murid') }}" placeholder="Masukkan nama lengkap siswa">
+          </div>
+          <div class="form-group">
+            <label for="nisn">NISN <span style="color: red;">*</span></label>
+            <input type="text" name="nisn" id="nisn" required minlength="10" maxlength="10" pattern="[0-9]{10}" title="NISN harus tepat 10 digit angka" value="{{ old('nisn') }}" placeholder="Masukkan 10 digit NISN" inputmode="numeric">
+          </div>
+          <div class="form-group">
+            <label for="id_program">Pilihan Program Kelas <span style="color: red;">*</span></label>
+            <select name="id_program" id="id_program" required>
+              <option value="">-- Pilih Program --</option>
+              @foreach($programs as $program)
+                <option value="{{ $program->id_program }}" {{ old('id_program') == $program->id_program ? 'selected' : '' }}>
+                  {{ $program->nama_program }}
+                </option>
+              @endforeach
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="tempat_lahir">Tempat Lahir <span style="color: red;">*</span></label>
+            <input type="text" name="tempat_lahir" id="tempat_lahir" required minlength="3" maxlength="100" pattern="[a-zA-Z\s]+" title="Hanya huruf dan spasi" value="{{ old('tempat_lahir') }}" placeholder="Contoh: Karanganyar">
+          </div>
+          <div class="form-group">
+            <label for="tanggal_lahir">Tanggal Lahir <span style="color: red;">*</span></label>
+            <input type="date" name="tanggal_lahir" id="tanggal_lahir" required value="{{ old('tanggal_lahir') }}">
+          </div>
+          <div class="form-group full-width">
+            <label for="alamat">Alamat Lengkap Rumah <span style="color: red;">*</span></label>
+            <textarea name="alamat" id="alamat" rows="3" required minlength="10" placeholder="Dusun, RT/RW, Kelurahan, Kecamatan, Kabupaten">{{ old('alamat') }}</textarea>
+          </div>
+        </div>
+
+        <div class="button-group">
+          <div></div> <!-- Spacer -->
+          <button type="button" class="btn btn-next" onclick="goToStep(2)">Selanjutnya ➔</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Parents Data -->
+      <div class="form-step" id="step-pane-2">
+        <div class="section-title">
+          <span>2</span> Data Orang Tua / Wali
+        </div>
+        
+        <div class="form-grid">
+          <!-- Ayah -->
+          <div class="form-group full-width">
+            <h3 style="font-weight: bold; color: #374151; font-size: 14px; margin-bottom: 10px; border-left: 4px solid #298752; padding-left: 10px;">DATA AYAH KANDUNG</h3>
+          </div>
+          <div class="form-group">
+            <label for="nama_ayah">Nama Lengkap Ayah <span style="color: red;">*</span></label>
+            <input type="text" name="nama_ayah" id="nama_ayah" required minlength="3" maxlength="255" pattern="[a-zA-Z\s\.,\']+" title="Hanya huruf, spasi, titik, dan koma" value="{{ old('nama_ayah') }}" placeholder="Nama lengkap Ayah">
+          </div>
+          <div class="form-group">
+            <label for="pekerjaan_ayah">Pekerjaan Ayah</label>
+            <input type="text" name="pekerjaan_ayah" id="pekerjaan_ayah" minlength="3" maxlength="100" value="{{ old('pekerjaan_ayah') }}" placeholder="Contoh: Wiraswasta, PNS">
+          </div>
+          <div class="form-group">
+            <label for="nomor_telpon_ayah">No. Telpon/WhatsApp Ayah</label>
+            <input type="tel" name="nomor_telpon_ayah" id="nomor_telpon_ayah" pattern="(08|62)[0-9]{8,13}" title="Format Indonesia: 08xxx atau 62xxx, 10-15 digit" value="{{ old('nomor_telpon_ayah') }}" placeholder="08xxxxxxxxxx" inputmode="tel">
+          </div>
+          <div class="form-group">
+            <label for="email_ayah">Email Ayah</label>
+            <input type="email" name="email_ayah" id="email_ayah" value="{{ old('email_ayah') }}" placeholder="ayah@gmail.com">
+          </div>
+          
+          <!-- Ibu -->
+          <div class="form-group full-width" style="margin-top: 20px;">
+            <h3 style="font-weight: bold; color: #374151; font-size: 14px; margin-bottom: 10px; border-left: 4px solid #298752; padding-left: 10px;">DATA IBU KANDUNG</h3>
+          </div>
+          <div class="form-group">
+            <label for="nama_ibu">Nama Lengkap Ibu <span style="color: red;">*</span></label>
+            <input type="text" name="nama_ibu" id="nama_ibu" required minlength="3" maxlength="255" pattern="[a-zA-Z\s\.,\']+" title="Hanya huruf, spasi, titik, dan koma" value="{{ old('nama_ibu') }}" placeholder="Nama lengkap Ibu">
+          </div>
+          <div class="form-group">
+            <label for="pekerjaan_ibu">Pekerjaan Ibu</label>
+            <input type="text" name="pekerjaan_ibu" id="pekerjaan_ibu" minlength="3" maxlength="100" value="{{ old('pekerjaan_ibu') }}" placeholder="Contoh: Ibu Rumah Tangga">
+          </div>
+          <div class="form-group">
+            <label for="nomor_telpon_ibu">No. Telpon/WhatsApp Ibu</label>
+            <input type="tel" name="nomor_telpon_ibu" id="nomor_telpon_ibu" pattern="(08|62)[0-9]{8,13}" title="Format Indonesia: 08xxx atau 62xxx, 10-15 digit" value="{{ old('nomor_telpon_ibu') }}" placeholder="08xxxxxxxxxx" inputmode="tel">
+          </div>
+          <div class="form-group">
+            <label for="email_ibu">Email Kontak Wali <span style="color: red;">*</span></label>
+            <input type="email" name="email_ibu" id="email_ibu" required value="{{ old('email_ibu') }}" placeholder="kontak_wali@gmail.com">
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button type="button" class="btn btn-prev" onclick="goToStep(1)">Sebelumnya</button>
+          <button type="button" class="btn btn-next" onclick="goToStep(3)">Selanjutnya ➔</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Documents Upload -->
+      <div class="form-step" id="step-pane-3">
+        <div class="section-title">
+          <span>3</span> Unggah Berkas Pendaftaran
+        </div>
+        
+        <div class="form-grid">
+          <div class="upload-card">
+            <label for="pas_foto">Pas Foto Berwarna <span style="color: red;">*</span></label>
+            <input type="file" name="pas_foto" id="pas_foto" accept="image/*">
+            <p style="font-size: 10px; color: #9ca3af;">Format: JPG, JPEG, PNG (Maks. 5MB)</p>
+          </div>
+          
+          <div class="upload-card">
+            <label for="kartu_keluarga">Kartu Keluarga (KK)</label>
+            <input type="file" name="kartu_keluarga" id="kartu_keluarga" accept=".pdf,image/*">
+            <p style="font-size: 10px; color: #9ca3af;">Format: PDF, PNG, JPG (Maks. 5MB)</p>
+          </div>
+          
+          <div class="upload-card">
+            <label for="akta_kelahiran">Akta Kelahiran</label>
+            <input type="file" name="akta_kelahiran" id="akta_kelahiran" accept=".pdf,image/*">
+            <p style="font-size: 10px; color: #9ca3af;">Format: PDF, PNG, JPG (Maks. 5MB)</p>
+          </div>
+          
+          <div class="upload-card">
+            <label for="kartu_identitas_anak">Kartu Identitas Anak (KIA)</label>
+            <input type="file" name="kartu_identitas_anak" id="kartu_identitas_anak" accept=".pdf,image/*">
+            <p style="font-size: 10px; color: #9ca3af;">Format: PDF, PNG, JPG (Maks. 5MB)</p>
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button type="button" class="btn btn-prev" onclick="goToStep(2)">Sebelumnya</button>
+          <button type="button" class="btn btn-next" onclick="goToStep(4)">Selanjutnya ➔</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Summary & Confirm -->
+      <div class="form-step" id="step-pane-4">
+        <div class="section-title">
+          <span>4</span> Konfirmasi Akhir
+        </div>
+
+        <div class="summary-card">
+          <h4 style="font-weight: bold; color: #064e3b; font-size: 14px; margin-bottom: 16px;">Ringkasan Data Formulir</h4>
+          <div class="summary-grid">
+            <div class="summary-item">
+              <label>Nama Calon Murid</label>
+              <p id="sum-name">-</p>
+            </div>
+            <div class="summary-item">
+              <label>NISN</label>
+              <p id="sum-nisn">-</p>
+            </div>
+            <div class="summary-item">
+              <label>Tempat, Tanggal Lahir</label>
+              <p id="sum-ttl">-</p>
+            </div>
+            <div class="summary-item">
+              <label>Program Pilihan</label>
+              <p id="sum-program">-</p>
+            </div>
+            <div class="summary-item">
+              <label>Nama Ayah / Ibu</label>
+              <p id="sum-parents">-</p>
+            </div>
+            <div class="summary-item">
+              <label>Email Kontak Wali</label>
+              <p id="sum-email">-</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Checkbox agreement -->
+        <div style="margin-top: 30px; display: flex; gap: 10px; background: #ecfdf5; border: 1px solid #a7f3d0; padding: 16px; border-radius: 12px;">
+          <input type="checkbox" id="terms_agree" required style="width: 18px; height: 18px; margin-top: 2px; cursor: pointer;">
+          <label for="terms_agree" style="font-size: 13px; color: #065f46; line-height: 18px; cursor: pointer;">
+            Saya mengonfirmasi bahwa seluruh informasi dan berkas dokumen yang diunggah adalah sah, benar, dan sesuai dengan berkas aslinya.
+          </label>
+        </div>
+
+        <div class="button-group">
+          <button type="button" class="btn btn-prev" onclick="goToStep(3)">Sebelumnya</button>
+          <button type="submit" class="btn btn-submit">Kirim Pendaftaran</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <!-- Shared Footer Component -->
+  @include('components.footer', ['activeFolder' => 'home'])
+  </div>
+@endsection
+
+@section('scripts')
+  <script>
+    let currentStep = 1;
+    const totalSteps = 4;
+
+    function goToStep(stepNum) {
+      if (stepNum > currentStep) {
+        // Validate current inputs using HTML5 built-in validation
+        const currentPane = document.getElementById(`step-pane-${currentStep}`);
+        const allInputs = currentPane.querySelectorAll('input, select, textarea');
+        
+        for (let input of allInputs) {
+          if (!input.checkValidity()) {
+            input.reportValidity();
+            return;
+          }
+        }
+
+        // Extra custom validation per step
+        if (currentStep === 1) {
+          const nisn = document.getElementById('nisn').value;
+          if (!/^[0-9]{10}$/.test(nisn)) {
+            alert('NISN harus tepat 10 digit angka.\nContoh: 0012345678');
+            document.getElementById('nisn').focus();
+            return;
+          }
+          const nama = document.getElementById('nama_murid').value.trim();
+          if (nama.length < 3 || !/^[a-zA-Z\s\.,\']+$/.test(nama)) {
+            alert('Nama murid minimal 3 karakter dan hanya boleh berisi huruf.');
+            document.getElementById('nama_murid').focus();
+            return;
+          }
+          const tempat = document.getElementById('tempat_lahir').value.trim();
+          if (tempat.length < 3 || !/^[a-zA-Z\s]+$/.test(tempat)) {
+            alert('Tempat lahir minimal 3 karakter dan hanya boleh berisi huruf.\nContoh: Karanganyar');
+            document.getElementById('tempat_lahir').focus();
+            return;
+          }
+          const alamat = document.getElementById('alamat').value.trim();
+          if (alamat.length < 10) {
+            alert('Alamat terlalu pendek, minimal 10 karakter.\nContoh: Dusun Ngasem, RT 01/RW 02, Kel. Lalung, Kec. Karanganyar');
+            document.getElementById('alamat').focus();
+            return;
+          }
+        }
+
+        if (currentStep === 2) {
+          const namaAyah = document.getElementById('nama_ayah').value.trim();
+          if (namaAyah.length < 3 || !/^[a-zA-Z\s\.,\']+$/.test(namaAyah)) {
+            alert('Nama ayah minimal 3 karakter dan hanya boleh berisi huruf.');
+            document.getElementById('nama_ayah').focus();
+            return;
+          }
+          const namaIbu = document.getElementById('nama_ibu').value.trim();
+          if (namaIbu.length < 3 || !/^[a-zA-Z\s\.,\']+$/.test(namaIbu)) {
+            alert('Nama ibu minimal 3 karakter dan hanya boleh berisi huruf.');
+            document.getElementById('nama_ibu').focus();
+            return;
+          }
+          const telpAyah = document.getElementById('nomor_telpon_ayah').value.trim();
+          if (telpAyah && !/^(08|62)[0-9]{8,13}$/.test(telpAyah)) {
+            alert('No. telpon ayah harus format Indonesia.\nContoh: 081234567890');
+            document.getElementById('nomor_telpon_ayah').focus();
+            return;
+          }
+          const telpIbu = document.getElementById('nomor_telpon_ibu').value.trim();
+          if (telpIbu && !/^(08|62)[0-9]{8,13}$/.test(telpIbu)) {
+            alert('No. telpon ibu harus format Indonesia.\nContoh: 081234567890');
+            document.getElementById('nomor_telpon_ibu').focus();
+            return;
+          }
+        }
+      }
+
+      // Hide all panes
+      for (let i = 1; i <= totalSteps; i++) {
+        document.getElementById(`step-pane-${i}`).classList.remove('active');
+        document.getElementById(`step-tab-${i}`).classList.remove('active', 'completed');
+        
+        if (i < stepNum) {
+          document.getElementById(`step-tab-${i}`).classList.add('completed');
+        }
+      }
+
+      // Show target step pane
+      document.getElementById(`step-pane-${stepNum}`).classList.add('active');
+      document.getElementById(`step-tab-${stepNum}`).classList.add('active');
+
+      // Update progress bar width
+      const progressWidth = ((stepNum - 1) / (totalSteps - 1)) * 100;
+      document.getElementById('progressBar').style.width = `${progressWidth}%`;
+
+      if (stepNum === 4) {
+        updateSummary();
+      }
+
+      currentStep = stepNum;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function updateSummary() {
+      document.getElementById('sum-name').innerText = document.getElementById('nama_murid').value || '-';
+      document.getElementById('sum-nisn').innerText = document.getElementById('nisn').value || '-';
+      
+      const tl = document.getElementById('tempat_lahir').value || '';
+      const tgl = document.getElementById('tanggal_lahir').value || '';
+      document.getElementById('sum-ttl').innerText = tl && tgl ? `${tl}, ${tgl}` : '-';
+
+      const programSelect = document.getElementById('id_program');
+      document.getElementById('sum-program').innerText = programSelect.options[programSelect.selectedIndex]?.text || '-';
+
+      const ayah = document.getElementById('nama_ayah').value || '-';
+      const ibu = document.getElementById('nama_ibu').value || '-';
+      document.getElementById('sum-parents').innerText = `${ayah} / ${ibu}`;
+
+      document.getElementById('sum-email').innerText = document.getElementById('email_ibu').value || '-';
+    }
+
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+      if (!document.getElementById('terms_agree').checked) {
+        e.preventDefault();
+        alert('Anda harus mencentang konfirmasi data terlebih dahulu!');
+      }
+    });
+  </script>
+@endsection

@@ -1,0 +1,721 @@
+.kelulusan,
+.kelulusan * {
+  box-sizing: border-box;
+}
+.kelulusan {
+  background: #e5e2e1;
+  height: 1401px;
+  position: relative;
+  overflow: hidden;
+}
+.rectangle-22 {
+  background: rgba(15, 118, 67, 0.9);
+  border-radius: 20px;
+  width: 981px;
+  height: 40px;
+  position: absolute;
+  left: 230px;
+  top: 534px;
+}
+.rectangle-2 {
+  background: #d9d9d9;
+  width: 1440px;
+  height: 456px;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+}
+.pmbm-min-3-karanganyar {
+  color: #000000;
+  text-align: left;
+  font-family: "PlusJakartaSans-Bold", sans-serif;
+  font-size: 20px;
+  line-height: 24px;
+  letter-spacing: -0.4px;
+  font-weight: 700;
+  position: absolute;
+  left: 223px;
+  top: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.whats-app-image-2026-06-17-at-23-30-06-removebg-preview-1 {
+  width: 58px;
+  height: 58px;
+  position: absolute;
+  left: 160px;
+  top: 29px;
+  object-fit: cover;
+  aspect-ratio: 1;
+}
+.home {
+  color: #000000;
+  text-align: left;
+  font-family: "PlusJakartaSans-Bold", sans-serif;
+  font-size: 15px;
+  line-height: 24px;
+  letter-spacing: -0.4px;
+  font-weight: 700;
+  position: absolute;
+  left: 601px;
+  top: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.program {
+  color: #000000;
+  text-align: left;
+  font-family: "PlusJakartaSans-Bold", sans-serif;
+  font-size: 15px;
+  line-height: 24px;
+  letter-spacing: -0.4px;
+  font-weight: 700;
+  position: absolute;
+  left: 678px;
+  top: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.kelulusan2 {
+  color: #298752;
+  text-align: left;
+  font-family: "PlusJakartaSans-Bold", sans-serif;
+  font-size: 15px;
+  line-height: 24px;
+  letter-spacing: -0.4px;
+  font-weight: 700;
+  position: absolute;
+  left: 776px;
+  top: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.kontak {
+  color: #000000;
+  text-align: left;
+  font-family: "PlusJakartaSans-Bold", sans-serif;
+  font-size: 15px;
+  line-height: 24px;
+  letter-spacing: -0.4px;
+  font-weight: 700;
+  position: absolute;
+  left: 888px;
+  top: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.rectangle-3 {
+  background: rgba(15, 118, 67, 0);
+  border-style: solid;
+  border-color: #0f7643;
+  border-width: 1px;
+  width: 107px;
+  height: 36px;
+  position: absolute;
+  left: 1022px;
+  top: 40px;
+}
+.guide-pmbm {
+  color: rgba(15, 118, 67, 0.8);
+  text-align: left;
+  font-family: "PlusJakartaSans-Bold", sans-serif;
+  font-size: 15px;
+  line-height: 24px;
+  letter-spacing: -0.4px;
+  font-weight: 700;
+  position: absolute;
+  left: 1029px;
+  top: 46px;
+  width: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.rectangle-4 {
+  background: #064e3b;
+  border-style: solid;
+  border-color: #0f7643;
+  border-width: 1px;
+  width: 107px;
+  height: 36px;
+  position: absolute;
+  left: 1142px;
+  top: 40px;
+}
+.daftar {
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  font-family: "PlusJakartaSans-Bold", sans-serif;
+  font-size: 15px;
+  line-height: 24px;
+  letter-spacing: -0.4px;
+  font-weight: 700;
+  position: absolute;
+  left: 1172px;
+  top: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.cek-status-kelulusan {
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  font-family: "PlusJakartaSans-Bold", sans-serif;
+  font-size: 30px;
+  line-height: 24px;
+  letter-spacing: -0.4px;
+  font-weight: 700;
+  position: absolute;
+  left: 571px;
+  top: 212px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.04);
+}
+.halaman-resmi-pengumuman-hasil-seleksi-penerimaan-peserta-didik-baru-pmbm-min-3-karanganyar {
+  color: #ffffff;
+  text-align: center;
+  font-family: "Roboto-Regular", sans-serif;
+  font-size: 20px;
+  line-height: 24px;
+  letter-spacing: -0.4px;
+  font-weight: 400;
+  position: absolute;
+  left: 427px;
+  top: 260px;
+  width: 592px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.04);
+}
+.rectangle-16 {
+  background: #064e3b;
+  border-style: solid;
+  border-color: #000000;
+  border-width: 1px;
+  width: 1440px;
+  height: 364px;
+  position: absolute;
+  left: 0px;
+  top: 1037px;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  position: absolute;
+  right: 539px;
+  left: 742px;
+  top: 1111px;
+}
+.heading-5 {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.informasi {
+  color: #4ae176;
+  text-align: left;
+  font-family: "WorkSans-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.list {
+  opacity: 0.8;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.syarat-daftar {
+  color: #f8f9ff;
+  text-align: left;
+  font-family: "WorkSans-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.biaya-pendidikan {
+  color: #f8f9ff;
+  text-align: left;
+  font-family: "WorkSans-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.brosur-digital {
+  color: #f8f9ff;
+  text-align: left;
+  font-family: "WorkSans-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.panduan-siswa {
+  color: #f8f9ff;
+  text-align: left;
+  font-family: "WorkSans-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.sroyo-kec-jaten-kabupaten-karanganyar-jawa-tengah-57731 {
+  color: #f8f9ff;
+  text-align: left;
+  font-family: "WorkSans-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  position: absolute;
+  left: 1030px;
+  top: 1151px;
+  width: 266px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+._0812-2667-6554 {
+  color: #f8f9ff;
+  text-align: left;
+  font-family: "WorkSans-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  position: absolute;
+  left: 1030px;
+  top: 1201px;
+  width: 147px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.min-3-kra-gmail-com {
+  color: #f8f9ff;
+  text-align: left;
+  font-family: "WorkSans-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  position: absolute;
+  left: 1030px;
+  top: 1235px;
+  width: 171px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.hubungi-kami {
+  color: #4ae176;
+  text-align: left;
+  font-family: "WorkSans-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  position: absolute;
+  left: 991px;
+  top: 1111px;
+  width: 159px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.container2 {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  position: absolute;
+  right: 921px;
+  left: 169px;
+  top: 1111px;
+}
+.heading-4 {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.pmbm-school {
+  color: #7ed99c;
+  text-align: left;
+  font-family: "PlusJakartaSans-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.container3 {
+  opacity: 0.7;
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  align-self: stretch;
+  flex-shrink: 0;
+  position: relative;
+}
+.lembaga-pendidikan-unggulan-yang-berkomitmen-melahirkan-generasi-cerdas-berintegritas-tinggi-berakhlak-mulia-dan-siap-bersaing-di-kancah-global {
+  color: #f8f9ff;
+  text-align: left;
+  font-family: "WorkSans-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.container4 {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  position: absolute;
+  right: 730px;
+  left: 551px;
+  top: 1111px;
+}
+.jelajah {
+  color: #4ae176;
+  text-align: left;
+  font-family: "WorkSans-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.beranda {
+  color: #f8f9ff;
+  text-align: left;
+  font-family: "WorkSans-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.program-studi {
+  color: #f8f9ff;
+  text-align: left;
+  font-family: "WorkSans-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.alur-pmb {
+  color: #f8f9ff;
+  text-align: left;
+  font-family: "WorkSans-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.cek-kelulusan {
+  color: #f8f9ff;
+  text-align: left;
+  font-family: "WorkSans-Regular", sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  position: relative;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+._2026-pmbm-school-all-rights-reserved {
+  color: #f8f9ff;
+  text-align: center;
+  font-family: "WorkSans-Regular", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  opacity: 0.5;
+  position: absolute;
+  left: calc(50% - 551px);
+  top: 1316px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.container5 {
+  opacity: 0.6;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  align-items: center;
+  justify-content: flex-start;
+  position: absolute;
+  left: 1058px;
+  top: 1316px;
+}
+.text {
+  color: #f8f9ff;
+  text-align: center;
+  font-family: "WorkSans-Regular", sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.container6 {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  height: auto;
+  position: relative;
+  overflow: visible;
+}
+.pin-duotone-line {
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  left: 986px;
+  top: 1159px;
+  overflow: visible;
+}
+.phone-fill {
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  left: 986px;
+  top: 1206px;
+  overflow: visible;
+}
+.message {
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  left: 987px;
+  top: 1245px;
+  overflow: visible;
+}
+.rectangle-19 {
+  background: rgba(255, 255, 255, 0.8);
+  border-style: solid;
+  border-color: #d9d9d9;
+  border-width: 1px;
+  width: 980px;
+  height: 350px;
+  position: absolute;
+  left: 231px;
+  top: 560px;
+  box-shadow: 0px 4px 4px 0px rgba(255, 255, 255, 0.8);
+}
+.tania-talia {
+  color: #000000;
+  text-align: center;
+  font-family: "Roboto-Bold", sans-serif;
+  font-size: 25px;
+  line-height: 24px;
+  letter-spacing: -0.4px;
+  font-weight: 700;
+  position: absolute;
+  left: 649px;
+  top: 665px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app {
+  text-align: center;
+  font-family: "Roboto-Regular", sans-serif;
+  font-size: 20px;
+  line-height: 24px;
+  letter-spacing: -0.4px;
+  font-weight: 400;
+  position: absolute;
+  left: 481px;
+  top: 699px;
+  width: 484px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span {
+  color: rgba(0, 0, 0, 0.4);
+}
+.untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span2 {
+  color: #000000;
+}
+.selamat-anda-telah-keterima {
+  color: #000000;
+  text-align: center;
+  font-family: "Roboto-Regular", sans-serif;
+  font-size: 24px;
+  line-height: 24px;
+  letter-spacing: -0.4px;
+  font-weight: 400;
+  position: absolute;
+  left: 537px;
+  top: 613px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.rectangle-21 {
+  background: #47a26a;
+  border-style: solid;
+  border-color: rgba(0, 0, 0, 0.4);
+  border-width: 1px;
+  width: 248px;
+  height: 54px;
+  position: absolute;
+  left: 596px;
+  top: 799px;
+}
+.masuk-ke-grup-whats-app-terbaru {
+  color: #ffffff;
+  text-align: center;
+  font-family: "PlusJakartaSans-Bold", sans-serif;
+  font-size: 15px;
+  line-height: 24px;
+  letter-spacing: -0.4px;
+  font-weight: 700;
+  position: absolute;
+  left: 602px;
+  top: 814px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.button {
+  background: #005b31;
+  border-radius: 12px;
+  padding: 16px 32px 16px 32px;
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  position: absolute;
+  right: 57px;
+  left: 1130px;
+  top: calc(50% - 51.5px);
+}
+.button-shadow {
+  background: rgba(255, 255, 255, 0);
+  border-radius: 12px;
+  flex-shrink: 0;
+  position: absolute;
+  right: 0px;
+  left: 0px;
+  bottom: 0px;
+  top: 0px;
+  box-shadow: 0px 4px 6px -4px rgba(0, 0, 0, 0.1),
+    0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+.tanya-asisten-pmbm {
+  color: #ffffff;
+  text-align: center;
+  font-family: "WorkSans-Bold", sans-serif;
+  font-size: 15px;
+  line-height: 24px;
+  font-weight: 700;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.comment {
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  left: 1143px;
+  top: 657px;
+  overflow: visible;
+}
