@@ -58,6 +58,7 @@
                 </tr>
             </thead>
             <tbody>
+                <!-- Row 1: Muhamad Rizki -->
                 <tr>
                     <td class="px-3 py-3">
                         <div class="d-flex align-items-center gap-3">
@@ -72,11 +73,14 @@
                     <td><span class="badge bg-primary-subtle text-primary px-2.5 py-1 rounded-pill small fw-semibold">Admin TU</span></td>
                     <td><span class="badge bg-success-subtle text-success rounded-pill px-2.5 py-1 small fw-bold">Active</span></td>
                     <td class="text-center">
-                        <button class="btn btn-sm btn-outline-warning py-1 px-2.5 me-1" onclick="alert('Fitur Edit Akun')">Edit</button>
-                        <button class="btn btn-sm btn-outline-danger py-1 px-2.5" onclick="confirm('Nonaktifkan akun ini?')">Suspend</button>
+                        <button class="btn btn-sm btn-outline-warning py-1 px-2 me-1" style="border-radius: 6px;" onclick="alert('Fitur Edit Akun')">Edit</button>
+                        <button class="btn btn-sm btn-outline-danger py-1 px-2 me-1" style="border-radius: 6px;" onclick="confirm('Nonaktifkan akun ini?')">Suspend</button>
+                        <!-- BARU: Tombol Hapus Akun -->
+                        <button class="btn btn-sm btn-outline-danger py-1 px-2" style="border-radius: 6px; background-color: rgba(220, 53, 69, 0.05);" onclick="return confirm('Apakah Anda yakin ingin menghapus permanen akun Muhamad Rizki dari sistem?')">Hapus</button>
                     </td>
                 </tr>
 
+                <!-- Row 2: Hendra Pratama -->
                 <tr>
                     <td class="px-3 py-3">
                         <div class="d-flex align-items-center gap-3">
@@ -91,11 +95,14 @@
                     <td><span class="badge bg-info-subtle text-info-emphasis px-2.5 py-1 rounded-pill small fw-semibold">Panitia Penguji</span></td>
                     <td><span class="badge bg-success-subtle text-success rounded-pill px-2.5 py-1 small fw-bold">Active</span></td>
                     <td class="text-center">
-                        <button class="btn btn-sm btn-outline-warning py-1 px-2.5 me-1" onclick="alert('Fitur Edit Akun')">Edit</button>
-                        <button class="btn btn-sm btn-outline-danger py-1 px-2.5" onclick="confirm('Nonaktifkan akun ini?')">Suspend</button>
+                        <button class="btn btn-sm btn-outline-warning py-1 px-2 me-1" style="border-radius: 6px;" onclick="alert('Fitur Edit Akun')">Edit</button>
+                        <button class="btn btn-sm btn-outline-danger py-1 px-2 me-1" style="border-radius: 6px;" onclick="confirm('Nonaktifkan akun ini?')">Suspend</button>
+                        <!-- BARU: Tombol Hapus Akun -->
+                        <button class="btn btn-sm btn-outline-danger py-1 px-2" style="border-radius: 6px; background-color: rgba(220, 53, 69, 0.05);" onclick="return confirm('Apakah Anda yakin ingin menghapus permanen akun Hendra Pratama dari sistem?')">Hapus</button>
                     </td>
                 </tr>
 
+                <!-- Row 3: Eka Cipta -->
                 <tr>
                     <td class="px-3 py-3">
                         <div class="d-flex align-items-center gap-3">
@@ -110,8 +117,10 @@
                     <td><span class="badge bg-info-subtle text-info-emphasis px-2.5 py-1 rounded-pill small fw-semibold">Panitia Penguji</span></td>
                     <td><span class="badge bg-danger-subtle text-danger rounded-pill px-2.5 py-1 small fw-bold">Suspended</span></td>
                     <td class="text-center">
-                        <button class="btn btn-sm btn-outline-warning py-1 px-2.5 me-1" onclick="alert('Fitur Edit Akun')">Edit</button>
-                        <button class="btn btn-sm btn-outline-success py-1 px-2.5" onclick="alert('Akun diaktifkan kembali!')">Activate</button>
+                        <button class="btn btn-sm btn-outline-warning py-1 px-2 me-1" style="border-radius: 6px;" onclick="alert('Fitur Edit Akun')">Edit</button>
+                        <button class="btn btn-sm btn-outline-success py-1 px-2 me-1" style="border-radius: 6px;" onclick="alert('Akun diaktifkan kembali!')">Activate</button>
+                        <!-- BARU: Tombol Hapus Akun -->
+                        <button class="btn btn-sm btn-outline-danger py-1 px-2" style="border-radius: 6px; background-color: rgba(220, 53, 69, 0.05);" onclick="return confirm('Apakah Anda yakin ingin menghapus permanen akun Eka Cipta dari sistem?')">Hapus</button>
                     </td>
                 </tr>
             </tbody>

@@ -88,9 +88,9 @@
                 <a href="{{ route('panitia.antrean') }}" class="nav-link {{ Request::is('panitia/antrean*') || Request::is('panitia/penilaian*') ? 'active' : '' }}">
                     Penilaian
                 </a>
-                <a href="{{ route('panitia.timbang') }}" class="nav-link {{ Request::is('panitia/penimbangan-balita*') ? 'active' : '' }}">
+                <!-- <a href="{{ route('panitia.timbang') }}" class="nav-link {{ Request::is('panitia/penimbangan-balita*') ? 'active' : '' }}">
                     Cek Kesehatan
-                </a>
+                </a> -->
                 <a href="{{ route('panitia.hasil') }}" class="nav-link {{ Request::is('panitia/hasil-nilai*') ? 'active' : '' }}">
                     Hasil Nilai
                 </a>

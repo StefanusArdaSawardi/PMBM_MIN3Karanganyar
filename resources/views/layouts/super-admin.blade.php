@@ -97,9 +97,9 @@
                 <a href="{{ route('super.account') }}" class="nav-link {{ Request::is('super-admin/account-management*') ? 'active' : '' }}">
                     Account Management
                 </a>
-                <a href="{{ route('super.accepted') }}" class="nav-link {{ Request::is('super-admin/accepted-list*') ? 'active' : '' }}">
+                <!-- <a href="{{ route('super.accepted') }}" class="nav-link {{ Request::is('super-admin/accepted-list*') ? 'active' : '' }}">
                     Accepted List
-                </a>
+                </a> -->
             </div>
         </div>
 
@@ -135,5 +135,6 @@
         </div>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

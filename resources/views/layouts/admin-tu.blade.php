@@ -107,9 +107,9 @@
                 <!-- <a href="{{ route('tu.account') }}" class="nav-link {{ Request::is('admin-tu/account-management') ? 'active' : '' }}">
                     Account Management
                 </a> -->
-                <a href="{{ route('tu.accepted') }}" class="nav-link {{ Request::is('admin-tu/accepted-list') ? 'active' : '' }}">
+                <!-- <a href="{{ route('tu.accepted') }}" class="nav-link {{ Request::is('admin-tu/accepted-list') ? 'active' : '' }}">
                     Accepted List
-                </a>
+                </a> -->
             </div>
         </div>
 

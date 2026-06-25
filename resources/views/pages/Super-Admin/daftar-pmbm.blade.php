@@ -14,16 +14,16 @@
 <!-- BARIS FILTER DROPDOWN -->
 <div class="row g-3 mb-4">
     <div class="col-12 col-md-4">
-        <div class="card card-custom p-3 bg-white">
+        <div class="card card-custom p-3 bg-white border-0 shadow-sm">
             <label class="form-label text-secondary small fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Tahun Pendaftaran</label>
             <select class="form-select border-0 bg-light fw-medium text-dark small" style="border-radius: 8px;">
+                <option>2026 / 2027</option>
                 <option>2025 / 2026</option>
-                <option>2024 / 2025</option>
             </select>
         </div>
     </div>
     <div class="col-12 col-md-4">
-        <div class="card card-custom p-3 bg-white">
+        <div class="card card-custom p-3 bg-white border-0 shadow-sm">
             <label class="form-label text-secondary small fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Program Studi / Jalur</label>
             <select class="form-select border-0 bg-light fw-medium text-dark small" style="border-radius: 8px;">
                 <option>Semua Program Studi</option>
@@ -34,7 +34,7 @@
         </div>
     </div>
     <div class="col-12 col-md-4">
-        <div class="card card-custom p-3 bg-white">
+        <div class="card card-custom p-3 bg-white border-0 shadow-sm">
             <label class="form-label text-secondary small fw-bold text-uppercase mb-1" style="font-size: 0.75rem;">Status</label>
             <select class="form-select border-0 bg-light fw-medium text-dark small" style="border-radius: 8px;">
                 <option>Semua Status</option>
@@ -46,11 +46,10 @@
     </div>
 </div>
 
-<!-- TABEL UTAMA APPLICANT LIST (REVISI: TOMBOL EXPORT MASUK KE CARD SINI) -->
-<div class="card card-custom bg-white p-4 mb-4">
+<!-- TABEL UTAMA APPLICANT LIST -->
+<div class="card card-custom bg-white p-4 mb-4 border-0 shadow-sm">
     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4">
         <h6 class="fw-bold text-dark mb-0">Recent Applicants</h6>
-        <!-- Tombol Export nangkring rapi di dalam card kanan atas tabel -->
         <div class="d-flex gap-2 w-100 w-sm-auto justify-content-sm-end">
             <button class="btn btn-sm btn-light border bg-white text-dark fw-semibold small d-flex align-items-center gap-1.5 px-3 py-1.5" style="border-radius: 8px;" onclick="alert('Export PDF Berhasil!')">
                 📄 Import PDF
@@ -66,10 +65,12 @@
             <thead class="table-light">
                 <tr class="text-secondary small text-uppercase" style="font-size: 0.75rem;">
                     <th class="py-3 px-3">Nama Lengkap</th>
-                    <th class="py-3">NIK</th>
+                    <th class="py-3">NISN</th>
                     <th class="py-3">Email & HP</th>
                     <th class="py-3">Program Studi</th>
                     <th class="py-3">Tahun</th>
+                    <!-- BARU: Kolom Dokumen Berkas Pendaftar -->
+                    <th class="py-3">Dokumen Berkas</th>
                     <th class="py-3">Status</th>
                     <th class="py-3 text-center">Aksi</th>
                 </tr>
@@ -93,7 +94,15 @@
                     </td>
                     <td><span class="fw-semibold text-secondary">Program Khusus</span></td>
                     <td class="text-dark">2026</td>
-                    <td><span class="badge-status bg-success-subtle text-success">Verified</span></td>
+                    <!-- Dokumen Ahmad Dani: Lengkap -->
+                    <td>
+                        <div class="d-flex gap-1">
+                            <span class="badge bg-light text-success border border-success-subtle cursor-pointer" style="font-size: 0.7rem;" onclick="alert('Membuka PDF Kartu Keluarga - Ahmad Dani')">KK</span>
+                            <span class="badge bg-light text-success border border-success-subtle cursor-pointer" style="font-size: 0.7rem;" onclick="alert('Membuka PDF Akta Kelahiran - Ahmad Dani')">AKTA</span>
+                            <span class="badge bg-light text-success border border-success-subtle cursor-pointer" style="font-size: 0.7rem;" onclick="alert('Membuka PDF KIA - Ahmad Dani')">KIA</span>
+                        </div>
+                    </td>
+                    <td><span class="badge bg-success-subtle text-success border-0 px-2.5 py-1.5 font-weight-bold" style="border-radius: 6px; font-size: 0.8rem;">Verified</span></td>
                     <td class="text-center"><button class="btn btn-link btn-sm text-muted p-0 fs-5">⋮</button></td>
                 </tr>
                 
@@ -115,7 +124,15 @@
                     </td>
                     <td><span class="fw-semibold text-secondary">Program Unggulan</span></td>
                     <td class="text-dark">2026</td>
-                    <td><span class="badge-status bg-warning-subtle text-warning-emphasis">Pending</span></td>
+                    <!-- Dokumen Siti Pertiwi: Kurang KK -->
+                    <td>
+                        <div class="d-flex gap-1">
+                            <span class="badge bg-light text-danger border border-danger-subtle cursor-pointer" style="font-size: 0.7rem;" onclick="alert('Berkas KK Belum Diupload!')">KK -</span>
+                            <span class="badge bg-light text-success border border-success-subtle cursor-pointer" style="font-size: 0.7rem;" onclick="alert('Membuka PDF Akta Kelahiran - Siti Pertiwi')">AKTA</span>
+                            <span class="badge bg-light text-success border border-success-subtle cursor-pointer" style="font-size: 0.7rem;" onclick="alert('Membuka PDF KIA - Siti Pertiwi')">KIA</span>
+                        </div>
+                    </td>
+                    <td><span class="badge bg-warning-subtle text-warning-emphasis border-0 px-2.5 py-1.5 font-weight-bold" style="border-radius: 6px; font-size: 0.8rem;">Pending</span></td>
                     <td class="text-center"><button class="btn btn-link btn-sm text-muted p-0 fs-5">⋮</button></td>
                 </tr>
 
@@ -137,11 +154,17 @@
                     </td>
                     <td><span class="fw-semibold text-secondary">Program Fullday</span></td>
                     <td class="text-dark">2026</td>
-                    <td><span class="badge-status bg-danger-subtle text-danger">Rejected</span></td>
+                    <!-- Dokumen Budi Nugraha: Kosong / Rusak -->
+                    <td>
+                        <div class="d-flex gap-1">
+                            <span class="badge bg-light text-muted border border-secondary-subtle" style="font-size: 0.7rem;">Belum Ada Berkas</span>
+                        </div>
+                    </td>
+                    <td><span class="badge bg-danger-subtle text-danger border-0 px-2.5 py-1.5 font-weight-bold" style="border-radius: 6px; font-size: 0.8rem;">Rejected</span></td>
                     <td class="text-center"><button class="btn btn-link btn-sm text-muted p-0 fs-5">⋮</button></td>
                 </tr>
 
-                <!-- REVISI DATA BARU 4: Agus Hidayat -->
+                <!-- Row 4: Agus Hidayat -->
                 <tr>
                     <td class="px-3 py-3">
                         <div class="d-flex align-items-center gap-3">
@@ -159,11 +182,19 @@
                     </td>
                     <td><span class="fw-semibold text-secondary">Program Khusus</span></td>
                     <td class="text-dark">2026</td>
-                    <td><span class="badge-status bg-success-subtle text-success">Verified</span></td>
+                    <!-- Dokumen Agus Hidayat: Lengkap -->
+                    <td>
+                        <div class="d-flex gap-1">
+                            <span class="badge bg-light text-success border border-success-subtle cursor-pointer" style="font-size: 0.7rem;" onclick="alert('Membuka PDF Kartu Keluarga - Agus Hidayat')">KK</span>
+                            <span class="badge bg-light text-success border border-success-subtle cursor-pointer" style="font-size: 0.7rem;" onclick="alert('Membuka PDF Akta Kelahiran - Agus Hidayat')">AKTA</span>
+                            <span class="badge bg-light text-success border border-success-subtle cursor-pointer" style="font-size: 0.7rem;" onclick="alert('Membuka PDF KIA - Agus Hidayat')">KIA</span>
+                        </div>
+                    </td>
+                    <td><span class="badge bg-success-subtle text-success border-0 px-2.5 py-1.5 font-weight-bold" style="border-radius: 6px; font-size: 0.8rem;">Verified</span></td>
                     <td class="text-center"><button class="btn btn-link btn-sm text-muted p-0 fs-5">⋮</button></td>
                 </tr>
 
-                <!-- REVISI DATA BARU 5: Dina Amalia -->
+                <!-- Row 5: Dina Amalia -->
                 <tr>
                     <td class="px-3 py-3">
                         <div class="d-flex align-items-center gap-3">
@@ -181,7 +212,15 @@
                     </td>
                     <td><span class="fw-semibold text-secondary">Program Fullday</span></td>
                     <td class="text-dark">2026</td>
-                    <td><span class="badge-status bg-warning-subtle text-warning-emphasis">Pending</span></td>
+                    <!-- Dokumen Dina Amalia: Kurang KIA -->
+                    <td>
+                        <div class="d-flex gap-1">
+                            <span class="badge bg-light text-success border border-success-subtle cursor-pointer" style="font-size: 0.7rem;" onclick="alert('Membuka PDF Kartu Keluarga - Dina Amalia')">KK</span>
+                            <span class="badge bg-light text-success border border-success-subtle cursor-pointer" style="font-size: 0.7rem;" onclick="alert('Membuka PDF Akta Kelahiran - Dina Amalia')">AKTA</span>
+                            <span class="badge bg-light text-danger border border-danger-subtle cursor-pointer" style="font-size: 0.7rem;" onclick="alert('Berkas KIA Belum Diupload!')">KIA -</span>
+                        </div>
+                    </td>
+                    <td><span class="badge bg-warning-subtle text-warning-emphasis border-0 px-2.5 py-1.5 font-weight-bold" style="border-radius: 6px; font-size: 0.8rem;">Pending</span></td>
                     <td class="text-center"><button class="btn btn-link btn-sm text-muted p-0 fs-5">⋮</button></td>
                 </tr>
             </tbody>
@@ -204,29 +243,15 @@
         </nav>
     </div>
 </div>
-
-<!-- RINGKASAN MINI STATISTIK BAWAH -->
-<div class="row g-4">
-    <div class="col-12 col-md-4">
-        <div class="card card-custom p-4 bg-white">
-            <p class="text-success small fw-bold text-uppercase mb-1" style="font-size: 0.75rem; tracking-spacing: 0.5px;">Total Registrations</p>
-            <h3 class="fw-bold text-dark mb-1">1,248 <span class="fs-6 fw-semibold text-success ms-1">↗ 12%</span></h3>
-            <small class="text-muted">New applications this month</small>
-        </div>
-    </div>
-    <div class="col-12 col-md-4">
-        <div class="card card-custom p-4 bg-white">
-            <p class="text-success small fw-bold text-uppercase mb-1" style="font-size: 0.75rem; tracking-spacing: 0.5px;">Verification Rate</p>
-            <h3 class="fw-bold text-dark mb-1">85.4% <span class="fs-6 fw-semibold text-success ms-1">↗ 3%</span></h3>
-            <small class="text-muted">Avg. processing time: 2 days</small>
-        </div>
-    </div>
-    <div class="col-12 col-md-4">
-        <div class="card card-custom p-4 bg-white">
-            <p class="text-success small fw-bold text-uppercase mb-1" style="font-size: 0.75rem; tracking-spacing: 0.5px;">Capacity Status</p>
-            <h3 class="fw-bold text-dark mb-1">64% <span class="fs-6 fw-normal text-muted">Filled</span></h3>
-            <small class="text-muted">800 of 1,250 seats allocated</small>
-        </div>
-    </div>
-</div>
 @endsection
+
+<style>
+    .cursor-pointer { cursor: pointer; }
+    /* Memastikan badge status memiliki tampilan rounded serasi */
+    .badge-status {
+        border-radius: 6px !important;
+        padding: 5px 10px !important;
+        font-weight: 700 !important;
+        font-size: 0.8rem !important;
+    }
+</style>

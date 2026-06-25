@@ -17,6 +17,7 @@
 
 <div class="card card-custom bg-white p-4 mb-4 border-0 shadow-sm">
     
+    <!-- BARIS FILTER & PENCARIAN -->
     <div class="row g-2 mb-4 align-items-center">
         <div class="col-12 col-md-4">
             <div class="input-group input-group-sm">
@@ -27,7 +28,7 @@
         <div class="col-12 col-md-4">
             <select class="form-select form-select-sm bg-light border-0 fw-medium text-dark" style="font-size: 0.85rem;">
                 <option>Semua Program Pilihan</option>
-                <option>Program Khusus</option>
+                <option>Program Khusus (Tahfidz)</option>
                 <option>Program Unggulan</option>
                 <option>Program Fullday</option>
             </select>
@@ -35,13 +36,14 @@
         <div class="col-12 col-md-4">
             <select class="form-select form-select-sm bg-light border-0 fw-medium text-dark" style="font-size: 0.85rem;">
                 <option>Semua Status Kelayakan</option>
-                <option>Direkomendasikan</option>
-                <option>Dipertimbangkan</option>
-                <option>Tidak Direkomendasikan</option>
+                <option>Direkomendasikan Mutqin</option>
+                <option>Layak Dipertimbangkan</option>
+                <option>Perlu Pendampingan Karakter</option>
             </select>
         </div>
     </div>
 
+    <!-- TABEL DATA SINKRON -->
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0" style="font-size: 0.9rem;">
             <thead class="table-light">
@@ -49,12 +51,13 @@
                     <th class="py-3 px-3">No. Daftar</th>
                     <th class="py-3">Nama Lengkap</th>
                     <th class="py-3 text-center">Rata-Rata Nilai</th>
-                    <th class="py-3">Program Pilihan</th>
+                    <th class="py-3">Program Rekomendasi</th>
                     <th class="py-3">Status Kelayakan</th>
                     <th class="py-3 text-center">Aksi</th>
                 </tr>
             </thead>
             <tbody>
+                <!-- Row 1: Rizky Ramadhan (Skor >= 85) -->
                 <tr>
                     <td class="px-3 font-monospace fw-bold text-secondary">PMB-2026-044</td>
                     <td>
@@ -62,19 +65,20 @@
                         <small class="text-muted" style="font-size: 0.75rem;">NISN: 0012948110</small>
                     </td>
                     <td class="text-center">
-                        <span class="badge bg-success-subtle text-success fs-6 px-2.5 py-1 fw-bold">92.5</span>
+                        <span class="badge bg-success-subtle text-success fs-6 px-2.5 py-1 fw-bold">93</span>
                     </td>
-                    <td><span class="fw-medium text-secondary">Program Khusus</span></td>
+                    <td><span class="fw-medium text-secondary">Program Khusus (Tahfidz)</span></td>
                     <td>
-                        <span class="badge-status bg-success-subtle text-success d-inline-flex align-items-center gap-1 fw-bold text-uppercase" style="font-size: 0.65rem;">
-                            🟢 Direkomendasikan
+                        <span class="badge bg-success-subtle text-success border-0 px-2.5 py-1.5 fw-bold text-uppercase" style="font-size: 0.7rem; border-radius: 6px;">
+                            🟢 Direkomendasikan Mutqin
                         </span>
                     </td>
                     <td class="text-center">
-                        <button class="btn btn-sm btn-outline-secondary py-1 px-2.5" onclick="alert('Buka detail lembar instrumen penilaian')">Detail</button>
+                        <button class="btn btn-sm btn-outline-secondary py-1 px-2.5" style="border-radius: 6px;" onclick="alert('Buka detail lembar instrumen penilaian skala 10-100: Rizky Ramadhan')">Detail</button>
                     </td>
                 </tr>
 
+                <!-- Row 2: Farhan Alkatiri (Skor 70-84) -->
                 <tr>
                     <td class="px-3 font-monospace fw-bold text-secondary">PMB-2026-045</td>
                     <td>
@@ -82,19 +86,20 @@
                         <small class="text-muted" style="font-size: 0.75rem;">NISN: 0023847119</small>
                     </td>
                     <td class="text-center">
-                        <span class="badge bg-warning-subtle text-warning-emphasis fs-6 px-2.5 py-1 fw-bold">78.0</span>
+                        <span class="badge bg-primary-subtle text-primary fs-6 px-2.5 py-1 fw-bold">78</span>
                     </td>
                     <td><span class="fw-medium text-secondary">Program Unggulan</span></td>
                     <td>
-                        <span class="badge-status bg-warning-subtle text-warning-emphasis d-inline-flex align-items-center gap-1 fw-bold text-uppercase" style="font-size: 0.65rem;">
-                            🟡 Dipertimbangkan
+                        <span class="badge bg-primary-subtle text-primary border-0 px-2.5 py-1.5 fw-bold text-uppercase" style="font-size: 0.7rem; border-radius: 6px;">
+                            🔵 Layak Dipertimbangkan
                         </span>
                     </td>
                     <td class="text-center">
-                        <button class="btn btn-sm btn-outline-secondary py-1 px-2.5" onclick="alert('Buka detail lembar instrumen penilaian')">Detail</button>
+                        <button class="btn btn-sm btn-outline-secondary py-1 px-2.5" style="border-radius: 6px;" onclick="alert('Buka detail lembar instrumen penilaian skala 10-100: Farhan Alkatiri')">Detail</button>
                     </td>
                 </tr>
 
+                <!-- Row 3: Siti Humaira (Skor >= 85) -->
                 <tr>
                     <td class="px-3 font-monospace fw-bold text-secondary">PMB-2026-046</td>
                     <td>
@@ -102,19 +107,20 @@
                         <small class="text-muted" style="font-size: 0.75rem;">NISN: 0011837482</small>
                     </td>
                     <td class="text-center">
-                        <span class="badge bg-success-subtle text-success fs-6 px-2.5 py-1 fw-bold">88.5</span>
+                        <span class="badge bg-success-subtle text-success fs-6 px-2.5 py-1 fw-bold">88</span>
                     </td>
-                    <td><span class="fw-medium text-secondary">Program Fullday</span></td>
+                    <td><span class="fw-medium text-secondary">Program Khusus (Tahfidz)</span></td>
                     <td>
-                        <span class="badge-status bg-success-subtle text-success d-inline-flex align-items-center gap-1 fw-bold text-uppercase" style="font-size: 0.65rem;">
-                            🟢 Direkomendasikan
+                        <span class="badge bg-success-subtle text-success border-0 px-2.5 py-1.5 fw-bold text-uppercase" style="font-size: 0.7rem; border-radius: 6px;">
+                            🟢 Direkomendasikan Mutqin
                         </span>
                     </td>
                     <td class="text-center">
-                        <button class="btn btn-sm btn-outline-secondary py-1 px-2.5" onclick="alert('Buka detail lembar instrumen penilaian')">Detail</button>
+                        <button class="btn btn-sm btn-outline-secondary py-1 px-2.5" style="border-radius: 6px;" onclick="alert('Buka detail lembar instrumen penilaian skala 10-100: Siti Humaira')">Detail</button>
                     </td>
                 </tr>
 
+                <!-- Row 4: Bagas Saputra (Skor < 70) -->
                 <tr>
                     <td class="px-3 font-monospace fw-bold text-secondary">PMB-2026-047</td>
                     <td>
@@ -122,22 +128,23 @@
                         <small class="text-muted" style="font-size: 0.75rem;">NISN: 0039485112</small>
                     </td>
                     <td class="text-center">
-                        <span class="badge bg-danger-subtle text-danger fs-6 px-2.5 py-1 fw-bold">54.0</span>
+                        <span class="badge bg-warning-subtle text-warning-emphasis fs-6 px-2.5 py-1 fw-bold">54</span>
                     </td>
-                    <td><span class="fw-medium text-secondary">Program Unggulan</span></td>
+                    <td><span class="fw-medium text-secondary">Program Fullday</span></td>
                     <td>
-                        <span class="badge-status bg-danger-subtle text-danger d-inline-flex align-items-center gap-1 fw-bold text-uppercase" style="font-size: 0.65rem;">
-                            🔴 Tidak Layak
+                        <span class="badge bg-warning-subtle text-warning-emphasis border-0 px-2.5 py-1.5 fw-bold text-uppercase" style="font-size: 0.7rem; border-radius: 6px;">
+                            🟡 Perlu Pendampingan Karakter
                         </span>
                     </td>
                     <td class="text-center">
-                        <button class="btn btn-sm btn-outline-secondary py-1 px-2.5" onclick="alert('Buka detail lembar instrumen penilaian')">Detail</button>
+                        <button class="btn btn-sm btn-outline-secondary py-1 px-2.5" style="border-radius: 6px;" onclick="alert('Buka detail lembar instrumen penilaian skala 10-100: Bagas Saputra')">Detail</button>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
 
+    <!-- PAGINATION AREA -->
     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3 mt-4 pt-3 border-top">
         <p class="text-muted small mb-0">Menampilkan <strong>4</strong> dari <strong>142</strong> riwayat uji</p>
         <nav aria-label="Page navigation">
