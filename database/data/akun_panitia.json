@@ -1,0 +1,20 @@
+[
+    {
+        "avatar": "HP",
+        "nama": "Hendra Pratama",
+        "email": "hendra.p@pmbm.ac.id",
+        "username": "hendra_penguji",
+        "kuota_terpakai": 5,
+        "kuota_maksimal": 5,
+        "daftar_anak": ["Ahmad Dani", "Siti Pertiwi", "Budi Nugraha", "Agus Hidayat", "Dina Amalia"]
+    },
+    {
+        "avatar": "EC",
+        "nama": "Eka Cipta",
+        "email": "eka.c@pmbm.ac.id",
+        "username": "eka_cipta",
+        "kuota_terpakai": 2,
+        "kuota_maksimal": 5,
+        "daftar_anak": ["Rizky Ramadhan", "Farhan Alkatiri"]
+    }
+]

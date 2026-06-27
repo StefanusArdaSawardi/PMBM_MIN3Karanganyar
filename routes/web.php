@@ -73,22 +73,21 @@ Route::prefix('panitia')->group(function () {
     })->name('panitia.timbang');
 });
 
-// 4. KELOMPOK ROUTE: Super Admin (FIX JALUR VIEW FOLDER)
+
+// 4. KELOMPOK ROUTE: Super Admin (FIX SINKRONISASI VIEW & DATA JSON)
 Route::prefix('super-admin')->group(function () {
     // Dashboard
     Route::get('/dashboard', function () {
         $jsonPath = database_path('data/pendaftar_terbaru.json');
         $pendaftar = [];
-        if (Illuminate\Support\Facades\File::exists($jsonPath)) {
-            $pendaftar = json_decode(Illuminate\Support\Facades\File::get($jsonPath), true);
+        if (File::exists($jsonPath)) {
+            $pendaftar = json_decode(File::get($jsonPath), true);
         }
-        // REVISI DISINI: Disesuaikan langsung ke folder pages.Super-Admin lu
         return view('pages.Super-Admin.dashboard', compact('pendaftar'));
     })->name('super.dashboard');
 
     // Screening
     Route::get('/screen-web', function () {
-        // REVISI DISINI: Disesuaikan langsung ke folder pages.Super-Admin lu
         return view('pages.Super-Admin.screen-pmbm');
     })->name('super.screen');
 
@@ -97,9 +96,24 @@ Route::prefix('super-admin')->group(function () {
         return view('pages.Super-Admin.daftar-pmbm'); 
     })->name('super.applicant');
 
-    // Account Management
+    // Account Management (REVISI: Load file JSON untuk Admin TU & Panitia Penguji)
     Route::get('/account-management', function () {
-        return view('pages.Super-Admin.kelola-akun');
+        // 1. Ambil data JSON untuk Admin TU
+        $pathAdmin = database_path('data/akun_admin_tu.json');
+        $admins = [];
+        if (File::exists($pathAdmin)) {
+            $admins = json_decode(File::get($pathAdmin), true);
+        }
+
+        // 2. Ambil data JSON untuk Panitia Penguji
+        $pathPanitia = database_path('data/akun_panitia.json');
+        $panitias = [];
+        if (File::exists($pathPanitia)) {
+            $panitias = json_decode(File::get($pathPanitia), true);
+        }
+
+        // 3. Lempar variabel $admins dan $panitias ke file view blade
+        return view('pages.Super-Admin.kelola-akun', compact('admins', 'panitias'));
     })->name('super.account');
 
     // Accepted List
