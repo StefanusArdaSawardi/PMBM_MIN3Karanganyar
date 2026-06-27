@@ -5,7 +5,7 @@
 @section('content')
 <div class="mb-4">
     <h4 class="fw-bold text-dark mb-1">Dashboard PMBM (Super Admin)</h4>
-    <p class="text-muted small mb-0">Monitoring data penerimaan mahasiswa baru mandiri secara real-time dengan hak akses penuh.</p>
+    <p class="text-muted small mb-0">Monitoring data penerimaan siswa baru mandiri secara real-time dengan hak akses penuh.</p>
 </div>
 
 <div class="row g-4 mb-4">
