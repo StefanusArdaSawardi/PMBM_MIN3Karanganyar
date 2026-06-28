@@ -11,10 +11,37 @@ class Pendaftaran extends Model
 
     protected $fillable = [
         'tanggal_pendaftaran',
-        'status',
+        'status_verifikasi',
+        'status_kelulusan',
+        'status_konfirmasi',
+        'alasan_penolakan',
+        'peringkat_cadangan',
+        'tanggal_verifikasi',
+        'tanggal_kelulusan',
+        'tanggal_konfirmasi',
         'id_murid',
         'id_program',
     ];
+
+    public function isVerified()
+    {
+        return $this->status_verifikasi === 'terverifikasi' || $this->status_verifikasi === 'terverifikasi_onsite';
+    }
+ 
+    public function isRejected()
+    {
+        return $this->status_verifikasi === 'ditolak';
+    }
+ 
+    public function isLulus()
+    {
+        return $this->status_kelulusan === 'lulus';
+    }
+ 
+    public function isCadangan()
+    {
+        return $this->status_kelulusan === 'cadangan';
+    }
 
     public function calonMurid()
     {

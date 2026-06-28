@@ -25,7 +25,19 @@ class AppServiceProvider extends ServiceProvider
             if (file_exists($contentPath)) {
                 $landingContent = json_decode(file_get_contents($contentPath), true);
             }
-            $view->with('landingContent', $landingContent);
+            
+            // Fetch school contacts dynamically with a fallback
+            $schoolContacts = collect();
+            try {
+                if (\Illuminate\Support\Facades\Schema::hasTable('school_contacts')) {
+                    $schoolContacts = \App\Models\SchoolContact::all();
+                }
+            } catch (\Exception $e) {
+                // Failsafe before migration runs
+            }
+ 
+            $view->with('landingContent', $landingContent)
+                 ->with('schoolContacts', $schoolContacts);
         });
     }
 }

@@ -365,6 +365,18 @@
             <input type="text" name="nama_murid" id="nama_murid" required minlength="3" maxlength="255" pattern="[a-zA-Z\s\.,\']+" title="Hanya huruf, spasi, titik, dan koma" value="{{ old('nama_murid') }}" placeholder="Masukkan nama lengkap siswa">
           </div>
           <div class="form-group">
+            <label for="nik">NIK (Nomor Induk Kependudukan) <span style="color: red;">*</span></label>
+            <input type="text" name="nik" id="nik" required minlength="16" maxlength="16" pattern="[0-9]{16}" title="NIK harus tepat 16 digit angka" value="{{ old('nik') }}" placeholder="Masukkan 16 digit NIK" inputmode="numeric">
+          </div>
+          <div class="form-group">
+            <label for="jenis_kelamin">Jenis Kelamin <span style="color: red;">*</span></label>
+            <select name="jenis_kelamin" id="jenis_kelamin" required>
+              <option value="">-- Pilih Jenis Kelamin --</option>
+              <option value="L" {{ old('jenis_kelamin') == 'L' ? 'selected' : '' }}>Laki-laki</option>
+              <option value="P" {{ old('jenis_kelamin') == 'P' ? 'selected' : '' }}>Perempuan</option>
+            </select>
+          </div>
+          <div class="form-group">
             <label for="nisn">NISN <span style="color: red;">*</span></label>
             <input type="text" name="nisn" id="nisn" required minlength="10" maxlength="10" pattern="[0-9]{10}" title="NISN harus tepat 10 digit angka" value="{{ old('nisn') }}" placeholder="Masukkan 10 digit NISN" inputmode="numeric">
           </div>
@@ -507,6 +519,14 @@
               <p id="sum-name">-</p>
             </div>
             <div class="summary-item">
+              <label>Jenis Kelamin</label>
+              <p id="sum-gender">-</p>
+            </div>
+            <div class="summary-item">
+              <label>NIK</label>
+              <p id="sum-nik">-</p>
+            </div>
+            <div class="summary-item">
               <label>NISN</label>
               <p id="sum-nisn">-</p>
             </div>
@@ -570,6 +590,18 @@
 
         // Extra custom validation per step
         if (currentStep === 1) {
+          const nik = document.getElementById('nik').value;
+          if (!/^[0-9]{16}$/.test(nik)) {
+            alert('NIK harus tepat 16 digit angka.');
+            document.getElementById('nik').focus();
+            return;
+          }
+          const jk = document.getElementById('jenis_kelamin').value;
+          if (!jk) {
+            alert('Pilih jenis kelamin terlebih dahulu.');
+            document.getElementById('jenis_kelamin').focus();
+            return;
+          }
           const nisn = document.getElementById('nisn').value;
           if (!/^[0-9]{10}$/.test(nisn)) {
             alert('NISN harus tepat 10 digit angka.\nContoh: 0012345678');
@@ -652,6 +684,9 @@
 
     function updateSummary() {
       document.getElementById('sum-name').innerText = document.getElementById('nama_murid').value || '-';
+      const jk = document.getElementById('jenis_kelamin').value;
+      document.getElementById('sum-gender').innerText = jk === 'L' ? 'Laki-laki' : (jk === 'P' ? 'Perempuan' : '-');
+      document.getElementById('sum-nik').innerText = document.getElementById('nik').value || '-';
       document.getElementById('sum-nisn').innerText = document.getElementById('nisn').value || '-';
       
       const tl = document.getElementById('tempat_lahir').value || '';

@@ -45,83 +45,53 @@
     <!-- Dynamic Student Name -->
     <div class="tania-talia">{{ strtoupper($student->nama_murid) }}</div>
 
-    @if(in_array(strval($pendaftaran->status), ['Diterima', 'Diterima di Program Pilihan']))
-      <!-- Status Diterima (Sudah Daftar Ulang) -->
-      <div class="selamat-anda-telah-keterima" style="color: #047857;">SELAMAT ANDA TELAH DITERIMA</div>
+    @if($pendaftaran->status_verifikasi === 'ditolak')
+      <!-- Status Berkas Online Ditolak (Ada yang salah, perlu diganti) -->
+      <div class="selamat-anda-telah-keterima" style="color: #b91c1c;">STATUS: BERKAS ONLINE DITOLAK</div>
       
       <div class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app">
         <span>
+          <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span" style="color: #b91c1c; font-weight: bold;">
+            Alasan Penolakan: "{{ $pendaftaran->alasan_penolakan }}"
+          </span>
+          <br>
           <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span">
-            Selamat! Anda telah resmi dinyatakan lulus seleksi dan diterima sebagai siswa baru di MIN 3 Karanganyar untuk program pilihan Anda. Silakan
-          </span>
-          <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span2">
-            klik tombol
-          </span>
-          <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span">
-            di bawah ini untuk masuk ke grup WhatsApp resmi koordinasi wali murid baru untuk proses daftar ulang.
-          </span>
-        </span>
-      </div>
-
-      <!-- WhatsApp Link Button -->
-      <a href="https://chat.whatsapp.com/ExampleLinkPMBMMIN3KRA" target="_blank" class="rectangle-21" style="display: flex; align-items: center; justify-content: center; text-decoration: none; border-radius: 6px;">
-        <span class="masuk-ke-grup-whats-app-terbaru" style="position: static; font-size: 14px; font-weight: bold; color: #ffffff;">
-          Masuk Ke Grup WhatsApp Terbaru
-        </span>
-      </a>
-
-    @elseif(strval($pendaftaran->status) === 'Lulus')
-      <!-- Status Lulus Seleksi (Belum Daftar Ulang) -->
-      <div class="selamat-anda-telah-keterima" style="color: #047857;">SELAMAT ANDA LULUS SELEKSI</div>
-      
-      <div class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app">
-        <span>
-          <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span">
-            Selamat! Anda dinyatakan LULUS seleksi penerimaan siswa baru MIN 3 Karanganyar. Harap segera melakukan proses
-          </span>
-          <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span2">
-            daftar ulang
-          </span>
-          <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span">
-            secara langsung ke sekolah atau menghubungi panitia PMBM. Gabung ke grup koordinasi via tombol berikut.
-          </span>
-        </span>
-      </div>
-
-      <!-- WhatsApp Link Button -->
-      <a href="https://chat.whatsapp.com/ExampleLinkPMBMMIN3KRA" target="_blank" class="rectangle-21" style="display: flex; align-items: center; justify-content: center; text-decoration: none; border-radius: 6px;">
-        <span class="masuk-ke-grup-whats-app-terbaru" style="position: static; font-size: 14px; font-weight: bold; color: #ffffff;">
-          Masuk Ke Grup WhatsApp Terbaru
-        </span>
-      </a>
-
-    @elseif(strval($pendaftaran->status) === 'Cadangan')
-      <!-- Status Cadangan Sementara (1 Minggu) -->
-      <div class="selamat-anda-telah-keterima" style="color: #d97706;">STATUS: LULUS CADANGAN</div>
-      
-      <div class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app">
-        <span>
-          <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span">
-            Anda dinyatakan sebagai calon siswa CADANGAN. Status ini bersifat sementara dengan durasi 1 minggu (hingga
-          </span>
-          <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span2">
-            {{ \Carbon\Carbon::parse($pendaftaran->updated_at)->addWeek()->translatedFormat('d F Y') }}
-          </span>
-          <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span">
-            ). Jika tidak diubah ke status Lulus setelah tanggal tersebut, status akan berubah menjadi Tidak Lulus secara otomatis.
+            Harap segera ubah dan lengkapi/revisi data dan dokumen pendaftaran Anda sesuai catatan penolakan di atas.
           </span>
         </span>
       </div>
       
-      <a href="{{ route('landing.kontak') }}" class="rectangle-21" style="display: flex; align-items: center; justify-content: center; text-decoration: none; border-radius: 6px; background: #d97706;">
+      <a href="{{ route('student.edit', $pendaftaran->id_pendaftaran) }}" class="rectangle-21" style="display: flex; align-items: center; justify-content: center; text-decoration: none; border-radius: 6px; background: #ef4444;">
         <span class="masuk-ke-grup-whats-app-terbaru" style="position: static; font-size: 14px; font-weight: bold; color: #ffffff;">
-          Hubungi Panitia PMBM
+          Ubah Data Pendaftaran
         </span>
       </a>
 
-    @elseif(strval($pendaftaran->status) === 'Berkas Diterima')
+    @elseif($pendaftaran->status_verifikasi === 'menunggu_verifikasi')
+      <!-- Status Pending / Baru / Perubahan Data -->
+      <div class="selamat-anda-telah-keterima" style="color: #d97706;">STATUS: MENUNGGU VERIFIKASI BERKAS ONLINE</div>
+      
+      <div class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app">
+        <span>
+          <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span">
+            Berkas pendaftaran online Anda saat ini sedang dalam antrean pemeriksaan oleh panitia PMBM.
+          </span>
+          <br>
+          <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span">
+            Silakan lakukan pengecekan status pendaftaran Anda secara berkala di halaman ini.
+          </span>
+        </span>
+      </div>
+      
+      <a href="{{ route('landing.kontak') }}" class="rectangle-21" style="display: flex; align-items: center; justify-content: center; text-decoration: none; border-radius: 6px; background: #6b7280;">
+        <span class="masuk-ke-grup-whats-app-terbaru" style="position: static; font-size: 14px; font-weight: bold; color: #ffffff;">
+          Hubungi Kontak Sekolah
+        </span>
+      </a>
+
+    @elseif($pendaftaran->status_verifikasi === 'terverifikasi')
       <!-- Status Berkas Online Diterima (Silakan Datang Ke Sekolah) -->
-      <div class="selamat-anda-telah-keterima" style="color: #0d9488;">STATUS: BERKAS ONLINE DITERIMA</div>
+      <div class="selamat-anda-telah-keterima" style="color: #0d9488;">STATUS: BERKAS ONLINE TERVERIFIKASI</div>
       
       <div class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app">
         <span>
@@ -143,9 +113,9 @@
         </span>
       </a>
 
-    @elseif(strval($pendaftaran->status) === 'Berkas Onsite Diterima')
-      <!-- Status Berkas Onsite Diterima (Siap Ujian & Wawancara) -->
-      <div class="selamat-anda-telah-keterima" style="color: #2563eb;">STATUS: BERKAS ONSITE DITERIMA</div>
+    @elseif($pendaftaran->status_verifikasi === 'terverifikasi_onsite' && is_null($pendaftaran->status_kelulusan))
+      <!-- Status Berkas Onsite Diterima (Siap Ujian & Wawancara, Menunggu Kelulusan) -->
+      <div class="selamat-anda-telah-keterima" style="color: #2563eb;">STATUS: BERKAS ONSITE TERVERIFIKASI</div>
       
       <div class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app">
         <span>
@@ -167,62 +137,144 @@
         </span>
       </a>
 
-    @elseif(strval($pendaftaran->status) === 'Berkas Ditolak')
-      <!-- Status Berkas Online Ditolak (Ada yang salah, perlu diganti) -->
-      <div class="selamat-anda-telah-keterima" style="color: #b91c1c;">STATUS: BERKAS ONLINE DITOLAK</div>
+    @elseif($pendaftaran->status_kelulusan === 'lulus')
+      @if($pendaftaran->status_konfirmasi === 'terkonfirmasi')
+        <!-- Status Diterima (Sudah Daftar Ulang) -->
+        <div class="selamat-anda-telah-keterima" style="color: #047857;">SELAMAT ANDA TELAH DITERIMA &amp; DAFTAR ULANG</div>
+        
+        <div class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app">
+          <span>
+            <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span">
+              Selamat! Anda telah resmi dinyatakan diterima dan menyelesaikan proses daftar ulang di MIN 3 Karanganyar. Silakan
+            </span>
+            <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span2">
+              klik tombol di bawah
+            </span>
+            <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span">
+              untuk masuk ke grup WhatsApp resmi koordinasi wali murid baru.
+            </span>
+          </span>
+        </div>
+
+        <!-- WhatsApp Link Button -->
+        <a href="https://chat.whatsapp.com/ExampleLinkPMBMMIN3KRA" target="_blank" class="rectangle-21" style="display: flex; align-items: center; justify-content: center; text-decoration: none; border-radius: 6px;">
+          <span class="masuk-ke-grup-whats-app-terbaru" style="position: static; font-size: 14px; font-weight: bold; color: #ffffff;">
+            Masuk Ke Grup WhatsApp Resmi
+          </span>
+        </a>
+      @elseif($pendaftaran->status_konfirmasi === 'mengundurkan_diri')
+        <!-- Status Mengundurkan Diri -->
+        <div class="selamat-anda-telah-keterima" style="color: #6b7280;">STATUS: MENGUNDURKAN DIRI</div>
+        
+        <div class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app">
+          <span>
+            <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span">
+              Status pendaftaran Anda saat ini tercatat sebagai Mengundurkan Diri dari seleksi masuk MIN 3 Karanganyar.
+            </span>
+            <br>
+            <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span">
+              Hubungi pihak panitia/sekolah jika ini merupakan sebuah kekeliruan data.
+            </span>
+          </span>
+        </div>
+        
+        <a href="{{ route('landing.kontak') }}" class="rectangle-21" style="display: flex; align-items: center; justify-content: center; text-decoration: none; border-radius: 6px; background: #6b7280;">
+          <span class="masuk-ke-grup-whats-app-terbaru" style="position: static; font-size: 14px; font-weight: bold; color: #ffffff;">
+            Hubungi Kontak Sekolah
+          </span>
+        </a>
+      @else
+        <!-- Status Lulus Seleksi (Belum Daftar Ulang) -->
+        <div class="selamat-anda-telah-keterima" style="color: #047857;">SELAMAT ANDA LULUS SELEKSI</div>
+        
+        <div class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app">
+          <span>
+            <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span">
+              Selamat! Anda dinyatakan LULUS seleksi penerimaan siswa baru MIN 3 Karanganyar. Harap segera melakukan proses
+            </span>
+            <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span2">
+              daftar ulang secara onsite
+            </span>
+            <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span">
+              ke sekolah sebelum batas waktu habis.
+            </span>
+          </span>
+          
+          @php
+            $kelulusanTime = $pendaftaran->tanggal_kelulusan ? \Carbon\Carbon::parse($pendaftaran->tanggal_kelulusan) : \Carbon\Carbon::parse($pendaftaran->updated_at);
+            $deadline = $kelulusanTime->addDays(7);
+            $now = \Carbon\Carbon::now();
+            $diffInSeconds = $now->diffInSeconds($deadline, false);
+          @endphp
+
+          @if($diffInSeconds > 0)
+            <div id="countdown-timer" style="margin-top: 15px; font-weight: bold; color: #ef4444; font-size: 14px; background: #fff5f5; border: 1px solid #fee2e2; padding: 10px; border-radius: 8px;">
+              ⏳ SISA WAKTU KONFIRMASI DAFTAR ULANG ONSITE: <span id="timer-display" style="font-family: monospace; font-size: 15px;">--:--:--</span>
+            </div>
+            <script>
+              (function() {
+                  let diff = {{ $diffInSeconds }};
+                  function updateDisplay() {
+                      if (diff <= 0) {
+                          document.getElementById('timer-display').innerText = "Waktu Habis (Dianggap Mengundurkan Diri)";
+                          return;
+                      }
+                      let days = Math.floor(diff / (3600 * 24));
+                      let hours = Math.floor((diff % (3600 * 24)) / 3600);
+                      let minutes = Math.floor((diff % 3600) / 60);
+                      let seconds = diff % 60;
+                      
+                      let text = "";
+                      if (days > 0) text += days + " hari ";
+                      text += String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0') + ":" + String(seconds).padStart(2, '0');
+                      document.getElementById('timer-display').innerText = text;
+                      diff--;
+                      setTimeout(updateDisplay, 1000);
+                  }
+                  updateDisplay();
+              })();
+            </script>
+          @else
+            <div style="margin-top: 15px; font-weight: bold; color: #ef4444; font-size: 14px; background: #fff5f5; border: 1px solid #fee2e2; padding: 10px; border-radius: 8px;">
+              ⚠️ Batas waktu konfirmasi daftar ulang onsite telah habis. Status Anda dianggap Mengundurkan Diri.
+            </div>
+          @endif
+        </div>
+
+        <!-- WhatsApp Link Button -->
+        <a href="https://chat.whatsapp.com/ExampleLinkPMBMMIN3KRA" target="_blank" class="rectangle-21" style="display: flex; align-items: center; justify-content: center; text-decoration: none; border-radius: 6px;">
+          <span class="masuk-ke-grup-whats-app-terbaru" style="position: static; font-size: 14px; font-weight: bold; color: #ffffff;">
+            Masuk Ke Grup WhatsApp Terbaru
+          </span>
+        </a>
+      @endif
+
+    @elseif($pendaftaran->status_kelulusan === 'cadangan')
+      <!-- Status Cadangan Sementara (1 Minggu) -->
+      <div class="selamat-anda-telah-keterima" style="color: #d97706;">STATUS: LULUS CADANGAN</div>
       
       <div class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app">
         <span>
-          <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span" style="color: #b91c1c; font-weight: bold;">
-            Alasan Penolakan: "{{ $pendaftaran->alasan_ditolak }}"
+          <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span">
+            Anda dinyatakan sebagai calon siswa CADANGAN dengan peringkat antrean:
+          </span>
+          <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span2">
+            Peringkat Cadangan Ke-{{ $pendaftaran->peringkat_cadangan ?? 1 }}
           </span>
           <br>
           <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span">
-            Harap segera ubah dan lengkapi/revisi data dan dokumen pendaftaran Anda sesuai catatan penolakan di atas.
+            Peringkat Anda dapat naik menjadi Lulus apabila terdapat calon siswa utama yang mengundurkan diri atau tidak mendaftar ulang hingga batas waktu konfirmasi onsite yang telah ditentukan.
           </span>
         </span>
       </div>
       
-      <a href="{{ route('student.edit', $pendaftaran->id_pendaftaran) }}" class="rectangle-21" style="display: flex; align-items: center; justify-content: center; text-decoration: none; border-radius: 6px; background: #ef4444;">
+      <a href="{{ route('landing.kontak') }}" class="rectangle-21" style="display: flex; align-items: center; justify-content: center; text-decoration: none; border-radius: 6px; background: #d97706;">
         <span class="masuk-ke-grup-whats-app-terbaru" style="position: static; font-size: 14px; font-weight: bold; color: #ffffff;">
-          Ubah Data Pendaftaran
+          Hubungi Panitia PMBM
         </span>
       </a>
 
-    @php
-      $contactPath = storage_path('app/landing_content.json');
-      $contactJson = [];
-      if (file_exists($contactPath)) {
-          $contactJson = json_decode(file_get_contents($contactPath), true);
-      }
-      $waLink = isset($contactJson['phone']) ? 'https://wa.me/' . preg_replace('/[^0-9]/', '', $contactJson['phone']) : 'https://wa.me/6281226676554';
-    @endphp
-
-    @elseif(strval($pendaftaran->status) === 'Pindahkan ke Program Reguler')
-      <!-- Status Rekomendasi Pindah Program Reguler -->
-      <div class="selamat-anda-telah-keterima" style="color: #c2410c;">REKOMENDASI PINDAH PROGRAM REGULER</div>
-      
-      <div class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app">
-        <span>
-          <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span">
-            Berdasarkan hasil pemeringkatan seleksi dan batas kuota program pilihan utama Anda, Anda direkomendasikan untuk
-          </span>
-          <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span2">
-            dipindahkan ke Program Reguler (Fullday)
-          </span>
-          <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span">
-            di MIN 3 Karanganyar. Silakan klik tombol WhatsApp di bawah untuk koordinasi dengan Panitia PMBM.
-          </span>
-        </span>
-      </div>
-      
-      <a href="{{ $waLink }}" target="_blank" class="rectangle-21" style="display: flex; align-items: center; justify-content: center; text-decoration: none; border-radius: 6px; background: #c2410c;">
-        <span class="masuk-ke-grup-whats-app-terbaru" style="position: static; font-size: 14px; font-weight: bold; color: #ffffff;">
-          Hubungi Panitia via WhatsApp
-        </span>
-      </a>
-
-    @elseif(in_array(strval($pendaftaran->status), ['Tidak Lulus', 'Gagal', 'Tidak Keterima', 'Ditolak']))
+    @elseif($pendaftaran->status_kelulusan === 'tidak_lulus')
       <!-- Status Tidak Lulus Seleksi -->
       <div class="selamat-anda-telah-keterima" style="color: #b91c1c;">MAAF, ANDA BELUM LULUS SELEKSI</div>
       
@@ -246,18 +298,18 @@
         </span>
       </a>
 
-    @elseif(strval($pendaftaran->status) === 'Mengundurkan Diri')
-      <!-- Status Mengundurkan Diri -->
-      <div class="selamat-anda-telah-keterima" style="color: #6b7280;">STATUS: MENGUNDURKAN DIRI</div>
+    @else
+      <!-- Status Default / Belum Diumumkan -->
+      <div class="selamat-anda-telah-keterima" style="color: #d97706;">PENGUMUMAN BELUM DIBUKA</div>
       
       <div class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app">
         <span>
           <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span">
-            Status pendaftaran Anda saat ini tercatat sebagai Mengundurkan Diri dari seleksi masuk MIN 3 Karanganyar.
+            Hasil seleksi PMBM untuk calon siswa baru masih diproses oleh tim panitia penerimaan siswa baru.
           </span>
           <br>
           <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span">
-            Hubungi pihak panitia/sekolah jika ini merupakan sebuah kekeliruan data.
+            Silakan lakukan pengecekan secara berkala di halaman ini sesuai tanggal pengumuman resmi.
           </span>
         </span>
       </div>
@@ -265,28 +317,6 @@
       <a href="{{ route('landing.kontak') }}" class="rectangle-21" style="display: flex; align-items: center; justify-content: center; text-decoration: none; border-radius: 6px; background: #6b7280;">
         <span class="masuk-ke-grup-whats-app-terbaru" style="position: static; font-size: 14px; font-weight: bold; color: #ffffff;">
           Hubungi Kontak Sekolah
-        </span>
-      </a>
-
-    @else
-      <!-- Status Pending / Baru / Perubahan Data -->
-      <div class="selamat-anda-telah-keterima" style="color: #d97706;">STATUS: DALAM PROSES VERIFIKASI</div>
-      
-      <div class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app">
-        <span>
-          <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span">
-            Berkas pendaftaran Anda saat ini sedang berada dalam antrean proses pemeriksaan (Screening) oleh panitia PMBM.
-          </span>
-          <br>
-          <span class="untuk-informasi-pendaftaran-ulang-dan-berkas-fisik-lebih-lanjut-silahkan-klik-link-di-bawah-ini-untuk-bergabung-ke-dalam-grup-what-s-app-span">
-            Silakan lakukan pengecekan status di halaman pengumuman hasil kelulusan ini secara berkala.
-          </span>
-        </span>
-      </div>
-      
-      <a href="{{ route('landing.kontak') }}" class="rectangle-21" style="display: flex; align-items: center; justify-content: center; text-decoration: none; border-radius: 6px; background: #6b7280;">
-        <span class="masuk-ke-grup-whats-app-terbaru" style="position: static; font-size: 14px; font-weight: bold; color: #ffffff;">
-          Tanyakan Status ke Admin
         </span>
       </a>
     @endif

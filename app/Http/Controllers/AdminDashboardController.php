@@ -19,12 +19,15 @@ class AdminDashboardController extends Controller
     public function index()
     {
         $this->autoExpireWaitlists();
-
+ 
         $totalPeserta = Pendaftaran::count();
-        $totalTidakKeterima = Pendaftaran::whereIn('status', ['Tidak Lulus', 'Berkas Ditolak', 'Mengundurkan Diri', 'Ditolak'])->count();
-        $totalKeterima = Pendaftaran::whereIn('status', ['Lulus', 'Diterima', 'Diterima di Program Pilihan'])->count();
+        $totalTidakKeterima = Pendaftaran::where('status_kelulusan', 'tidak_lulus')
+            ->orWhere('status_verifikasi', 'ditolak')
+            ->orWhere('status_konfirmasi', 'mengundurkan_diri')
+            ->count();
+        $totalKeterima = Pendaftaran::where('status_kelulusan', 'lulus')->count();
         $tingkatKelulusan = ($totalPeserta > 0) ? round(($totalKeterima / $totalPeserta) * 100) : 0;
-
+ 
         // Group chart counts by year dynamically
         $years = [now()->year - 2, now()->year - 1, now()->year];
         $charts = [
@@ -35,13 +38,13 @@ class AdminDashboardController extends Controller
         foreach ($years as $year) {
             $charts['pendaftar'][$year] = Pendaftaran::whereYear('tanggal_pendaftaran', $year)->count();
             $charts['keterima'][$year] = Pendaftaran::whereYear('tanggal_pendaftaran', $year)
-                ->whereIn('status', ['Lulus', 'Diterima', 'Diterima di Program Pilihan'])
+                ->where('status_kelulusan', 'lulus')
                 ->count();
         }
-
+ 
         return view('dashboard.admin', compact('totalPeserta', 'totalTidakKeterima', 'totalKeterima', 'tingkatKelulusan', 'charts'));
     }
-
+ 
     /**
      * List applicants with filters.
      */
@@ -51,33 +54,40 @@ class AdminDashboardController extends Controller
         $programs = Program::all();
         
         $query = Pendaftaran::with(['calonMurid.ibu', 'program']);
-
+ 
         // Filter by Status
         if ($request->filled('status')) {
-            $query->where('status', $request->status);
+            $status = $request->status;
+            if (in_array($status, ['menunggu_verifikasi', 'ditolak', 'terverifikasi', 'terverifikasi_onsite'])) {
+                $query->where('status_verifikasi', $status);
+            } elseif (in_array($status, ['lulus', 'tidak_lulus', 'cadangan'])) {
+                $query->where('status_kelulusan', $status);
+            } elseif (in_array($status, ['belum_konfirmasi', 'terkonfirmasi', 'mengundurkan_diri'])) {
+                $query->where('status_konfirmasi', $status);
+            }
         }
-
+ 
         // Filter by Program Study
         if ($request->filled('program')) {
             $query->where('id_program', $request->program);
         }
-
+ 
         // Filter by Year
         if ($request->filled('tahun')) {
             $query->whereYear('tanggal_pendaftaran', $request->tahun);
         }
-
+ 
         // Limit results
         $limit = $request->integer('limit', 10);
         if (!in_array($limit, [5, 10, 20, 30])) {
             $limit = 10;
         }
-
+ 
         $pendaftarans = $query->orderBy('created_at', 'desc')->take($limit)->get();
-
+ 
         return view('pendaftaran.index', compact('pendaftarans', 'programs', 'limit'));
     }
-
+ 
     /**
      * View specific applicant profile.
      */
@@ -88,7 +98,7 @@ class AdminDashboardController extends Controller
             ->findOrFail($id);
         
         $student = $pendaftaran->calonMurid;
-
+ 
         return view('profile.show', compact('pendaftaran', 'student'));
     }
 
@@ -97,76 +107,61 @@ class AdminDashboardController extends Controller
      */
     public function updateStatus(Request $request, $id)
     {
-        $request->validate([
-            'status' => 'required|string|in:Pending,Berkas Diterima,Berkas Ditolak,Berkas Onsite Diterima,Lulus,Tidak Lulus,Cadangan,Diterima,Mengundurkan Diri,Diterima di Program Pilihan,Pindahkan ke Program Reguler,Ditolak',
-            'alasan_ditolak' => 'nullable|string|max:1000'
-        ]);
-
         $pendaftaran = Pendaftaran::findOrFail($id);
-        $currentStatus = $pendaftaran->status;
-        $nextStatus = $request->status;
-
-        // Transition logic validation
-        $isValidTransition = false;
-
-        if ($currentStatus === $nextStatus) {
-            $isValidTransition = true;
-        } else {
-            switch ($currentStatus) {
-                case 'Pending':
-                    if (in_array($nextStatus, ['Berkas Diterima', 'Berkas Ditolak'])) {
-                        $isValidTransition = true;
-                    }
-                    break;
-                case 'Berkas Ditolak':
-                    if ($nextStatus === 'Berkas Diterima') {
-                        $isValidTransition = true;
-                    }
-                    break;
-                case 'Berkas Diterima':
-                    if ($nextStatus === 'Berkas Onsite Diterima') {
-                        $isValidTransition = true;
-                    }
-                    break;
-                case 'Berkas Onsite Diterima':
-                    if (in_array($nextStatus, ['Lulus', 'Tidak Lulus', 'Cadangan', 'Diterima di Program Pilihan', 'Pindahkan ke Program Reguler', 'Ditolak'])) {
-                        $isValidTransition = true;
-                    }
-                    break;
-                case 'Diterima di Program Pilihan':
-                case 'Pindahkan ke Program Reguler':
-                case 'Lulus':
-                case 'Cadangan':
-                    if (in_array($nextStatus, ['Diterima', 'Mengundurkan Diri', 'Diterima di Program Pilihan', 'Pindahkan ke Program Reguler', 'Ditolak'])) {
-                        $isValidTransition = true;
-                    }
-                    break;
-                case 'Ditolak':
-                case 'Tidak Lulus':
-                    if (in_array($nextStatus, ['Diterima di Program Pilihan', 'Pindahkan ke Program Reguler', 'Diterima', 'Mengundurkan Diri'])) {
-                        $isValidTransition = true;
-                    }
-                    break;
-            }
+        $action = $request->input('action');
+        
+        switch ($action) {
+            case 'verifikasi_berkas':
+                $request->validate([
+                    'status_verifikasi' => 'required|string|in:terverifikasi,ditolak',
+                    'alasan_penolakan' => 'required_if:status_verifikasi,ditolak|nullable|string|max:1000'
+                ]);
+                $pendaftaran->status_verifikasi = $request->status_verifikasi;
+                if ($request->status_verifikasi === 'ditolak') {
+                    $pendaftaran->alasan_penolakan = $request->alasan_penolakan;
+                } else {
+                    $pendaftaran->alasan_penolakan = null;
+                    $pendaftaran->tanggal_verifikasi = now();
+                }
+                break;
+                
+            case 'cek_berkas_onsite':
+                $pendaftaran->status_verifikasi = 'terverifikasi_onsite';
+                break;
+                
+            case 'penetapan_kelulusan':
+                $request->validate([
+                    'status_kelulusan' => 'required|string|in:lulus,tidak_lulus,cadangan'
+                ]);
+                $pendaftaran->status_kelulusan = $request->status_kelulusan;
+                $pendaftaran->tanggal_kelulusan = now();
+                if ($request->status_kelulusan === 'lulus') {
+                    $pendaftaran->status_konfirmasi = 'belum_konfirmasi';
+                } else {
+                    $pendaftaran->status_konfirmasi = null;
+                }
+                break;
+                
+            case 'konfirmasi_onsite':
+                $request->validate([
+                    'status_konfirmasi' => 'required|string|in:terkonfirmasi,mengundurkan_diri'
+                ]);
+                $pendaftaran->status_konfirmasi = $request->status_konfirmasi;
+                $pendaftaran->tanggal_konfirmasi = now();
+                break;
+                
+            case 'promosi_cadangan':
+                $pendaftaran->status_kelulusan = 'lulus';
+                $pendaftaran->status_konfirmasi = 'belum_konfirmasi';
+                $pendaftaran->peringkat_cadangan = null;
+                $pendaftaran->tanggal_kelulusan = now();
+                break;
+                
+            default:
+                return back()->with('error', 'Aksi pembaruan status tidak dikenal.');
         }
-
-        if (!$isValidTransition) {
-            return back()->with('error', "Transisi status dari {$currentStatus} ke {$nextStatus} tidak diperbolehkan.");
-        }
-
-        // Additional validation
-        if ($nextStatus === 'Berkas Ditolak' && !$request->filled('alasan_ditolak')) {
-            return back()->with('error', "Harap masukkan alasan penolakan berkas.");
-        }
-
-        $pendaftaran->status = $nextStatus;
-        if ($nextStatus === 'Berkas Ditolak') {
-            $pendaftaran->alasan_ditolak = $request->alasan_ditolak;
-        } else {
-            $pendaftaran->alasan_ditolak = null; // Clear reason if transitioned away
-        }
+ 
         $pendaftaran->save();
-
         return redirect()->route('tata_usaha.detail', $id)->with('success', 'Status pendaftaran berhasil diperbarui.');
     }
 
@@ -187,9 +182,6 @@ class AdminDashboardController extends Controller
         abort(404, 'File berkas tidak ditemukan.');
     }
 
-    /**
-     * Manage landing page content (show).
-     */
     public function showContent()
     {
         $contentPath = storage_path('app/landing_content.json');
@@ -197,12 +189,16 @@ class AdminDashboardController extends Controller
         if (file_exists($contentPath)) {
             $content = json_decode(file_get_contents($contentPath), true);
         }
-
+ 
         $programs = Program::all();
         $settings = $content; // map settings to the same content payload
         $dssConfig = \App\Services\DssService::getConfig();
-
-        return view('master.landing', compact('content', 'settings', 'programs', 'dssConfig'));
+        
+        // Fetch FAQs and School Contacts for CRUD management tabs
+        $faqs = \App\Models\Faq::orderBy('created_at', 'desc')->get();
+        $contacts = \App\Models\SchoolContact::all();
+ 
+        return view('master.landing', compact('content', 'settings', 'programs', 'dssConfig', 'faqs', 'contacts'));
     }
 
     /**
@@ -316,7 +312,7 @@ class AdminDashboardController extends Controller
     /**
      * Update school contact and location details.
      */
-    public function updateContact(Request $request)
+    public function updateGeneralContact(Request $request)
     {
         $request->validate([
             'phone' => 'required|string|max:50',
@@ -870,12 +866,126 @@ class AdminDashboardController extends Controller
 
 
     /**
-     * Auto expire waitlisted (Cadangan) candidates after 1 week.
+     * Auto expire waitlisted (Cadangan) candidates and unconfirmed Lulus candidates.
      */
     private function autoExpireWaitlists()
     {
-        Pendaftaran::where('status', 'Cadangan')
+        // Lulus candidates who do not confirm in 1 week automatically expire to 'mengundurkan_diri'
+        Pendaftaran::where('status_kelulusan', 'lulus')
+            ->where(function($q) {
+                $q->whereNull('status_konfirmasi')
+                  ->orWhere('status_konfirmasi', 'belum_konfirmasi');
+            })
+            ->where('tanggal_kelulusan', '<', now()->subWeek())
+            ->update(['status_konfirmasi' => 'mengundurkan_diri']);
+ 
+        // Cadangan candidates who are not promoted automatically expire to 'tidak_lulus'
+        Pendaftaran::where('status_kelulusan', 'cadangan')
             ->where('updated_at', '<', now()->subWeek())
-            ->update(['status' => 'Tidak Lulus']);
+            ->update(['status_kelulusan' => 'tidak_lulus']);
+    }
+ 
+    /**
+     * Store a new FAQ.
+     */
+    public function storeFaq(Request $request)
+    {
+        $request->validate([
+            'question' => 'required|string',
+            'answer' => 'required|string',
+        ]);
+ 
+        \App\Models\Faq::create([
+            'question' => $request->question,
+            'answer' => $request->answer,
+        ]);
+ 
+        return redirect()->route('tata_usaha.content')->with('success_faq', 'FAQ baru berhasil ditambahkan.');
+    }
+ 
+    /**
+     * Update an FAQ.
+     */
+    public function updateFaq(Request $request, $id)
+    {
+        $request->validate([
+            'question' => 'required|string',
+            'answer' => 'required|string',
+        ]);
+ 
+        $faq = \App\Models\Faq::findOrFail($id);
+        $faq->update([
+            'question' => $request->question,
+            'answer' => $request->answer,
+        ]);
+ 
+        return redirect()->route('tata_usaha.content')->with('success_faq', 'FAQ berhasil diperbarui.');
+    }
+ 
+    /**
+     * Delete an FAQ.
+     */
+    public function deleteFaq($id)
+    {
+        $faq = \App\Models\Faq::findOrFail($id);
+        $faq->delete();
+ 
+        return redirect()->route('tata_usaha.content')->with('success_faq', 'FAQ berhasil dihapus.');
+    }
+ 
+    /**
+     * Store a new School Contact.
+     */
+    public function storeContact(Request $request)
+    {
+        $request->validate([
+            'platform_name' => 'required|string',
+            'value' => 'required|string',
+            'link' => 'required|string',
+            'icon' => 'nullable|string',
+        ]);
+ 
+        \App\Models\SchoolContact::create([
+            'platform_name' => $request->platform_name,
+            'value' => $request->value,
+            'link' => $request->link,
+            'icon' => $request->icon,
+        ]);
+ 
+        return redirect()->route('tata_usaha.content')->with('success_contact', 'Kontak/Media Sosial baru berhasil ditambahkan.');
+    }
+ 
+    /**
+     * Update a School Contact.
+     */
+    public function updateContact(Request $request, $id)
+    {
+        $request->validate([
+            'platform_name' => 'required|string',
+            'value' => 'required|string',
+            'link' => 'required|string',
+            'icon' => 'nullable|string',
+        ]);
+ 
+        $contact = \App\Models\SchoolContact::findOrFail($id);
+        $contact->update([
+            'platform_name' => $request->platform_name,
+            'value' => $request->value,
+            'link' => $request->link,
+            'icon' => $request->icon,
+        ]);
+ 
+        return redirect()->route('tata_usaha.content')->with('success_contact', 'Kontak/Media Sosial berhasil diperbarui.');
+    }
+ 
+    /**
+     * Delete a School Contact.
+     */
+    public function deleteContact($id)
+    {
+        $contact = \App\Models\SchoolContact::findOrFail($id);
+        $contact->delete();
+ 
+        return redirect()->route('tata_usaha.content')->with('success_contact', 'Kontak/Media Sosial berhasil dihapus.');
     }
 }

@@ -23,6 +23,7 @@ Route::post('/daftar/edit/{id}', [LandingController::class, 'updateRegisterForm'
 // Checking graduation status
 Route::get('/kelulusan', [LandingController::class, 'cekKelulusan'])->name('landing.cek-kelulusan');
 Route::post('/kelulusan/cek', [LandingController::class, 'checkStatus'])->name('student.status.check');
+Route::get('/api/faqs', [LandingController::class, 'getFaqsJson'])->name('landing.faqs.json');
 
 // 2. Authentication Login Portal
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -48,7 +49,7 @@ Route::middleware('auth:tata_usaha')->prefix('tata-usaha')->group(function () {
     Route::post('/content/terms', [AdminDashboardController::class, 'updateTerms'])->name('tata_usaha.content.update_terms');
     Route::post('/content/booklet', [AdminDashboardController::class, 'uploadBooklet'])->name('tata_usaha.content.upload_booklet');
     Route::post('/content/background', [AdminDashboardController::class, 'updateBackground'])->name('tata_usaha.content.update_background');
-    Route::post('/content/contact', [AdminDashboardController::class, 'updateContact'])->name('tata_usaha.content.update_contact');
+    Route::post('/content/contact', [AdminDashboardController::class, 'updateGeneralContact'])->name('tata_usaha.content.update_contact');
     Route::post('/content/rundown', [AdminDashboardController::class, 'storeRundown'])->name('tata_usaha.rundown.store');
     Route::post('/content/rundown/update/{index}', [AdminDashboardController::class, 'updateRundown'])->name('tata_usaha.rundown.update');
     Route::post('/content/rundown/delete/{index}', [AdminDashboardController::class, 'deleteRundown'])->name('tata_usaha.rundown.delete');
@@ -57,6 +58,16 @@ Route::middleware('auth:tata_usaha')->prefix('tata-usaha')->group(function () {
     Route::post('/content/programs', [AdminDashboardController::class, 'storeProgram'])->name('tata_usaha.programs.store');
     Route::post('/content/programs/update/{id}', [AdminDashboardController::class, 'updateProgram'])->name('tata_usaha.programs.update');
     Route::post('/content/programs/delete/{id}', [AdminDashboardController::class, 'deleteProgram'])->name('tata_usaha.programs.delete');
+ 
+    // FAQs CRUD
+    Route::post('/content/faqs', [AdminDashboardController::class, 'storeFaq'])->name('tata_usaha.faqs.store');
+    Route::post('/content/faqs/update/{id}', [AdminDashboardController::class, 'updateFaq'])->name('tata_usaha.faqs.update');
+    Route::post('/content/faqs/delete/{id}', [AdminDashboardController::class, 'deleteFaq'])->name('tata_usaha.faqs.delete');
+ 
+    // School Contacts CRUD
+    Route::post('/content/contacts', [AdminDashboardController::class, 'storeContact'])->name('tata_usaha.contacts.store');
+    Route::post('/content/contacts/update/{id}', [AdminDashboardController::class, 'updateContact'])->name('tata_usaha.contacts.update');
+    Route::post('/content/contacts/delete/{id}', [AdminDashboardController::class, 'deleteContact'])->name('tata_usaha.contacts.delete');
 
     // User Accounts Management
     Route::get('/accounts', [AdminDashboardController::class, 'accounts'])->name('tata_usaha.accounts');

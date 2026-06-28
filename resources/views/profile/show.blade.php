@@ -94,6 +94,68 @@
       align-items: center;
       gap: 8px;
     }
+    
+    /* Workflow Tracker */
+    .workflow-tracker {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-top: 20px;
+      font-family: inherit;
+    }
+    .tracker-step {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: all 0.3s ease;
+    }
+    .tracker-step.completed {
+      border-color: #a7f3d0;
+      background: #f0fdf4;
+    }
+    .tracker-step.active {
+      border-color: #3b82f6;
+      background: #eff6ff;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.05);
+    }
+    .tracker-step.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .tracker-step-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .tracker-step-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tracker-step.completed .tracker-step-title {
+      color: #065f46;
+    }
+    .tracker-step.active .tracker-step-title {
+      color: #1e3a8a;
+    }
+    .tracker-badge {
+      font-size: 10px;
+      font-weight: bold;
+      padding: 4px 8px;
+      border-radius: 9999px;
+      text-transform: uppercase;
+    }
+    .tracker-badge.completed { background: #d1fae5; color: #065f46; }
+    .tracker-badge.active { background: #dbeafe; color: #1e40af; }
+    .tracker-badge.pending { background: #f1f5f9; color: #64748b; }
+    .tracker-badge.tidak-lulus { background: #fee2e2; color: #b91c1c; }
   </style>
 @endsection
 
@@ -113,16 +175,41 @@
         <div>
           @php
             $badgeClass = 'status-pending';
-            $statusLabel = $pendaftaran->status;
+            $statusLabel = '';
             
-            if ($pendaftaran->status === 'Pending') {
-                $statusLabel = 'BARU / PENDING';
-            }
-            
-            if (in_array($pendaftaran->status, ['Berkas Diterima', 'Berkas Onsite Diterima', 'Lulus', 'Diterima'])) {
-                $badgeClass = 'status-keterima';
-            } elseif (in_array($pendaftaran->status, ['Berkas Ditolak', 'Tidak Lulus', 'Mengundurkan Diri'])) {
+            if ($pendaftaran->status_verifikasi === 'menunggu_verifikasi') {
+                $statusLabel = 'Menunggu Verifikasi';
+                $badgeClass = 'status-pending';
+            } elseif ($pendaftaran->status_verifikasi === 'ditolak') {
+                $statusLabel = 'Berkas Online Ditolak';
                 $badgeClass = 'status-tidak-keterima';
+            } elseif ($pendaftaran->status_verifikasi === 'terverifikasi') {
+                $statusLabel = 'Berkas Online Terverifikasi';
+                $badgeClass = 'status-keterima';
+            } elseif ($pendaftaran->status_verifikasi === 'terverifikasi_onsite') {
+                if (is_null($pendaftaran->status_kelulusan)) {
+                    $statusLabel = 'Berkas Onsite Terverifikasi';
+                    $badgeClass = 'status-keterima';
+                } else {
+                    if ($pendaftaran->status_kelulusan === 'lulus') {
+                        if ($pendaftaran->status_konfirmasi === 'terkonfirmasi') {
+                            $statusLabel = 'Diterima (Terkonfirmasi)';
+                            $badgeClass = 'status-keterima';
+                        } elseif ($pendaftaran->status_konfirmasi === 'mengundurkan_diri') {
+                            $statusLabel = 'Mengundurkan Diri';
+                            $badgeClass = 'status-tidak-keterima';
+                        } else {
+                            $statusLabel = 'Lulus (Belum Konfirmasi)';
+                            $badgeClass = 'status-keterima';
+                        }
+                    } elseif ($pendaftaran->status_kelulusan === 'cadangan') {
+                        $statusLabel = 'Lulus Cadangan';
+                        $badgeClass = 'status-pending';
+                    } elseif ($pendaftaran->status_kelulusan === 'tidak_lulus') {
+                        $statusLabel = 'Tidak Lulus';
+                        $badgeClass = 'status-tidak-keterima';
+                    }
+                }
             }
           @endphp
           <span class="status-badge {{ $badgeClass }}">{{ strtoupper($statusLabel) }}</span>
@@ -230,15 +317,15 @@
           <h3>Verifikasi &amp; Transisi Status</h3>
           
           <!-- Show rejection reason if currently Berkas Ditolak -->
-          @if($pendaftaran->status === 'Berkas Ditolak')
+          @if($pendaftaran->status_verifikasi === 'ditolak')
             <div style="background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 15px; margin-bottom: 20px; color: #b91c1c;">
               <strong style="display: block; margin-bottom: 5px;">✕ Pendaftaran Ditolak</strong>
-              <span>Alasan Penolakan: {{ $pendaftaran->alasan_ditolak }}</span>
+              <span>Alasan Penolakan: {{ $pendaftaran->alasan_penolakan }}</span>
             </div>
           @endif
-
+ 
           <!-- Show reserve status warning if currently Cadangan -->
-          @if($pendaftaran->status === 'Cadangan')
+          @if($pendaftaran->status_kelulusan === 'cadangan')
             @php
               $expiredAt = $pendaftaran->updated_at->addWeek();
               $daysLeft = now()->diffInDays($expiredAt, false);
@@ -248,127 +335,263 @@
               <span style="color: #4b5563; font-size: 13px;">Status ini akan berubah otomatis menjadi <strong>Tidak Lulus</strong> pada {{ $expiredAt->format('d M Y H:i') }} (sisa {{ max(0, ceil($daysLeft)) }} hari lagi) jika tidak diubah ke status Lulus.</span>
             </div>
           @endif
-
           <!-- Error alert inside the actions block -->
           @if(session('error'))
             <div style="padding: 10px 15px; background: #fef2f2; border: 1px solid #fca5a5; color: #b91c1c; font-size: 13px; border-radius: 6px; margin-bottom: 20px; font-weight: bold;">
               {{ session('error') }}
             </div>
           @endif
+          
+          <!-- Workflow Tracker -->
+          <div class="workflow-tracker">
+            
+            <!-- STEP 1: Verifikasi Berkas Online -->
+            @php
+              $step1Active = in_array($pendaftaran->status_verifikasi, ['menunggu_verifikasi', 'ditolak']);
+              $step1Completed = in_array($pendaftaran->status_verifikasi, ['terverifikasi', 'terverifikasi_onsite']);
+            @endphp
+            <div class="tracker-step @if($step1Completed) completed @elseif($step1Active) active @endif">
+              <div class="tracker-step-header">
+                <span class="tracker-step-title">
+                  <span>1️⃣</span> Verifikasi Berkas Online
+                </span>
+                <span class="tracker-badge @if($step1Completed) completed @elseif($pendaftaran->status_verifikasi === 'ditolak') tidak-lulus @else active @endif">
+                  {{ $pendaftaran->status_verifikasi === 'ditolak' ? 'Ditolak' : ($step1Completed ? 'Selesai' : 'Aktif') }}
+                </span>
+              </div>
+              
+              <div class="tracker-step-content" style="font-size: 13px; color: #4b5563; margin-top: 8px;">
+                @if($step1Completed)
+                  <p style="color: #047857; font-weight: bold;">✓ Berkas administrasi online telah disetujui.</p>
+                @elseif($pendaftaran->status_verifikasi === 'ditolak')
+                  <p style="color: #b91c1c; font-weight: bold; margin-bottom: 10px;">✕ Berkas online ditolak dengan alasan: "{{ $pendaftaran->alasan_penolakan }}"</p>
+                  <form action="{{ route('tata_usaha.status', $pendaftaran->id_pendaftaran) }}" method="POST" style="display: inline;">
+                    @csrf
+                    <input type="hidden" name="action" value="verifikasi_berkas">
+                    <input type="hidden" name="status_verifikasi" value="terverifikasi">
+                    <button type="submit" class="btn-action" style="background: #298752; color: #ffffff; border: none; border-radius: 8px;">
+                      ✓ Ubah &amp; Setujui Berkas
+                    </button>
+                  </form>
+                @else
+                  <p style="margin-bottom: 15px;">Periksa berkas dokumen yang diunggah pendaftar. Tentukan apakah lolos administrasi atau ditolak.</p>
+                  <div style="display: flex; gap: 10px;">
+                    <form action="{{ route('tata_usaha.status', $pendaftaran->id_pendaftaran) }}" method="POST" style="display: inline;">
+                      @csrf
+                      <input type="hidden" name="action" value="verifikasi_berkas">
+                      <input type="hidden" name="status_verifikasi" value="terverifikasi">
+                      <button type="submit" class="btn-action" style="background: #298752; color: #ffffff; border: none; border-radius: 8px;">
+                        ✓ Terima Berkas (Lolos Administrasi)
+                      </button>
+                    </form>
+                    
+                    <button onclick="toggleRejectionForm()" class="btn-action" style="background: #ef4444; color: #ffffff; border: none; border-radius: 8px;">
+                      ✕ Tolak Berkas
+                    </button>
+                  </div>
 
-          <div style="display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap; align-items: flex-start;">
+                  <!-- Rejection Form Inline -->
+                  <div id="rejectionFormArea" style="display: none; background: #ffffff; border: 1px solid #fca5a5; border-radius: 8px; padding: 15px; margin-top: 15px;">
+                    <h4 style="font-weight: bold; color: #b91c1c; margin-bottom: 10px; font-size: 13px;">Alasan Penolakan Berkas</h4>
+                    <form action="{{ route('tata_usaha.status', $pendaftaran->id_pendaftaran) }}" method="POST">
+                      @csrf
+                      <input type="hidden" name="action" value="verifikasi_berkas">
+                      <input type="hidden" name="status_verifikasi" value="ditolak">
+                      <div class="form-group" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
+                        <textarea name="alasan_penolakan" placeholder="Sebutkan berkas yang kurang atau tidak sesuai..." style="width: 100%; padding: 10px; border: 1px solid #becabe; border-radius: 6px; font-family: inherit; font-size: 13px; height: 80px; resize: none;" required></textarea>
+                      </div>
+                      <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                        <button type="button" onclick="toggleRejectionForm()" style="background: #e2e8f0; color: #475569; padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 11px; font-weight: bold;">Batal</button>
+                        <button type="submit" style="background: #ef4444; color: #ffffff; padding: 6px 12px; border-radius: 6px; border: none; cursor: pointer; font-size: 11px; font-weight: bold;">Kirim</button>
+                      </div>
+                    </form>
+                  </div>
+                @endif
+              </div>
+            </div>
+
+            <!-- STEP 2: Verifikasi Berkas Onsite -->
+            @php
+              $step2Disabled = !$step1Completed;
+              $step2Active = $pendaftaran->status_verifikasi === 'terverifikasi';
+              $step2Completed = $pendaftaran->status_verifikasi === 'terverifikasi_onsite';
+            @endphp
+            <div class="tracker-step @if($step2Disabled) disabled @elseif($step2Completed) completed @elseif($step2Active) active @endif">
+              <div class="tracker-step-header">
+                <span class="tracker-step-title">
+                  <span>2️⃣</span> Verifikasi Berkas Onsite
+                </span>
+                <span class="tracker-badge @if($step2Completed) completed @elseif($step2Active) active @else pending @endif">
+                  @if($step2Completed) Selesai @elseif($step2Active) Aktif @else Menunggu @endif
+                </span>
+              </div>
+              
+              <div class="tracker-step-content" style="font-size: 13px; color: #4b5563; margin-top: 8px;">
+                @if($step2Completed)
+                  <p style="color: #047857; font-weight: bold;">✓ Berkas fisik telah diverifikasi secara onsite.</p>
+                @elseif($step2Active)
+                  <p style="margin-bottom: 12px;">Wali murid harus mengumpulkan berkas fisik secara onsite ke sekolah. Jika berkas fisik sudah lengkap dan terverifikasi oleh panitia, tandai di bawah.</p>
+                  <form action="{{ route('tata_usaha.status', $pendaftaran->id_pendaftaran) }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="action" value="cek_berkas_onsite">
+                    <button type="submit" class="btn-action" style="background: #008744; color: #ffffff; border: none; border-radius: 8px;">
+                      📁 Konfirmasi Berkas Onsite Lengkap
+                    </button>
+                  </form>
+                @else
+                  <p>Menunggu verifikasi berkas online disetujui.</p>
+                @endif
+              </div>
+            </div>
+
+            <!-- STEP 3: Evaluasi &amp; Penetapan Kelulusan -->
+            @php
+              $step3Disabled = !$step2Completed;
+              $hasHasil = !is_null($student->hasil);
+              $step3Completed = !is_null($pendaftaran->status_kelulusan);
+              $step3Active = $step2Completed && !$step3Completed;
+            @endphp
+            <div class="tracker-step @if($step3Disabled) disabled @elseif($step3Completed) completed @elseif($step3Active) active @endif">
+              <div class="tracker-step-header">
+                <span class="tracker-step-title">
+                  <span>3️⃣</span> Evaluasi &amp; Penetapan Kelulusan
+                </span>
+                <span class="tracker-badge @if($step3Completed) completed @elseif($step3Active) active @else pending @endif">
+                  @if($step3Completed) Selesai @elseif($step3Active) Aktif @else Menunggu @endif
+                </span>
+              </div>
+              
+              <div class="tracker-step-content" style="font-size: 13px; color: #4b5563; margin-top: 8px;">
+                <!-- Nilai & Rekomendasi Display -->
+                @if($hasHasil)
+                  <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin-bottom: 15px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.01);">
+                    <strong style="color: #0f7643; display: block; margin-bottom: 8px; font-size: 12px; text-transform: uppercase;">Hasil Ujian &amp; Wawancara (Panitia)</strong>
+                    <div style="display: grid; grid-template-cols: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+                      <div>Hafalan: <strong>{{ $student->hasil->nilai_hafalan }}</strong></div>
+                      <div>Wawancara: <strong>{{ $student->hasil->nilai_wawancara }}</strong></div>
+                      <div>Calistung: <strong>{{ $student->hasil->nilai_calistung }}</strong></div>
+                      <div>Tasmi: <strong>{{ $student->hasil->nilai_tasmi }}</strong></div>
+                      <div>Kemandirian: <strong>{{ $student->hasil->nilai_mandiri }}</strong></div>
+                    </div>
+                    <div style="border-top: 1px solid #f1f5f9; padding-top: 8px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                      <div>Nilai Akhir Rata-rata: <strong style="font-size: 14px; color: #008744;">{{ number_format($student->hasil->nilai_akhir, 2) }}</strong></div>
+                      @php
+                        $recom = \App\Services\DssService::getRecommendation($pendaftaran);
+                        $recomColor = $recom === 'Diterima di Program Pilihan' ? '#047857' : ($recom === 'Pindahkan ke Program Reguler' ? '#c2410c' : '#b91c1c');
+                      @endphp
+                      <div>Saran Sistem DSS: <strong style="color: {{ $recomColor }}">{{ $recom }}</strong></div>
+                    </div>
+                  </div>
+                @else
+                  <div style="background: #fffbeb; border: 1px solid #fef3c7; border-radius: 8px; padding: 12px; margin-bottom: 15px; color: #b45309;">
+                    ⏳ Menunggu panitia PMBM memasukkan nilai tes tertulis &amp; wawancara calon siswa.
+                  </div>
+                @endif
+
+                @if($step3Completed)
+                  <p>Kelulusan ditetapkan: <strong style="color: #008744; text-transform: uppercase;">{{ $pendaftaran->status_kelulusan }}</strong> @if($pendaftaran->status_kelulusan === 'cadangan' && $pendaftaran->peringkat_cadangan) (Antrean ke-{{ $pendaftaran->peringkat_cadangan }}) @endif</p>
+                @elseif($step3Active)
+                  @if($hasHasil)
+                    <p style="margin-bottom: 12px;">Pilih keputusan kelulusan untuk siswa ini berdasarkan hasil evaluasi di atas:</p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                      <form action="{{ route('tata_usaha.status', $pendaftaran->id_pendaftaran) }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="action" value="penetapan_kelulusan">
+                        <input type="hidden" name="status_kelulusan" value="lulus">
+                        <button type="submit" class="btn-action" style="background: #298752; color: #ffffff; border: none; border-radius: 8px;">Nyatakan Lulus</button>
+                      </form>
+
+                      <form action="{{ route('tata_usaha.status', $pendaftaran->id_pendaftaran) }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="action" value="penetapan_kelulusan">
+                        <input type="hidden" name="status_kelulusan" value="cadangan">
+                        <button type="submit" class="btn-action" style="background: #d97706; color: #ffffff; border: none; border-radius: 8px;">Lulus Cadangan</button>
+                      </form>
+
+                      <form action="{{ route('tata_usaha.status', $pendaftaran->id_pendaftaran) }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="action" value="penetapan_kelulusan">
+                        <input type="hidden" name="status_kelulusan" value="tidak_lulus">
+                        <button type="submit" class="btn-action" style="background: #ef4444; color: #ffffff; border: none; border-radius: 8px;" onclick="return confirm('Apakah Anda yakin?')">Tidak Lulus</button>
+                      </form>
+                    </div>
+                  @else
+                    <p>Keputusan kelulusan terkunci hingga nilai ujian dimasukkan oleh panitia.</p>
+                  @endif
+                @else
+                  <p>Menunggu berkas fisik onsite diverifikasi.</p>
+                @endif
+              </div>
+            </div>
+
+            <!-- STEP 4: Konfirmasi Daftar Ulang Onsite -->
+            @php
+              $step4Disabled = !$step3Completed || $pendaftaran->status_kelulusan === 'tidak_lulus';
+              $step4Completed = !is_null($pendaftaran->status_konfirmasi) && $pendaftaran->status_konfirmasi !== 'belum_konfirmasi';
+              $step4Active = !$step4Disabled && !$step4Completed;
+            @endphp
+            <div class="tracker-step @if($step4Disabled) disabled @elseif($step4Completed) completed @elseif($step4Active) active @endif">
+              <div class="tracker-step-header">
+                <span class="tracker-step-title">
+                  <span>4️⃣</span> Konfirmasi &amp; Daftar Ulang Onsite
+                </span>
+                <span class="tracker-badge @if($step4Completed) completed @elseif($step4Active) active @else pending @endif">
+                  @if($step4Completed) Selesai @elseif($step4Active) Aktif @else Menunggu @endif
+                </span>
+              </div>
+              
+              <div class="tracker-step-content" style="font-size: 13px; color: #4b5563; margin-top: 8px;">
+                @if($pendaftaran->status_kelulusan === 'tidak_lulus')
+                  <p>Calon siswa dinyatakan Tidak Lulus, tidak memerlukan daftar ulang.</p>
+                @elseif($step4Completed)
+                  <p>Konfirmasi status: <strong style="text-transform: uppercase; color: #008744;">{{ $pendaftaran->status_konfirmasi }}</strong></p>
+                @elseif($step4Active)
+                  @if($pendaftaran->status_kelulusan === 'lulus')
+                    <p style="margin-bottom: 12px;">Wali murid harus melakukan konfirmasi daftar ulang secara onsite. Update status kehadiran di bawah:</p>
+                    <div style="display: flex; gap: 10px;">
+                      <form action="{{ route('tata_usaha.status', $pendaftaran->id_pendaftaran) }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="action" value="konfirmasi_onsite">
+                        <input type="hidden" name="status_konfirmasi" value="terkonfirmasi">
+                        <button type="submit" class="btn-action" style="background: #298752; color: #ffffff; border: none; border-radius: 8px;">Terkonfirmasi (Hadir)</button>
+                      </form>
+
+                      <form action="{{ route('tata_usaha.status', $pendaftaran->id_pendaftaran) }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="action" value="konfirmasi_onsite">
+                        <input type="hidden" name="status_konfirmasi" value="mengundurkan_diri">
+                        <button type="submit" class="btn-action" style="background: #6b7280; color: #ffffff; border: none; border-radius: 8px;" onclick="return confirm('Apakah Anda yakin?')">Mengundurkan Diri</button>
+                      </form>
+                    </div>
+                  @elseif($pendaftaran->status_kelulusan === 'cadangan')
+                    <p style="margin-bottom: 12px;">Calon siswa ini berada dalam status Cadangan. Anda dapat mempromosikan mereka ke Lulus jika ada siswa utama yang mengundurkan diri.</p>
+                    <div style="display: flex; gap: 10px;">
+                      <form action="{{ route('tata_usaha.status', $pendaftaran->id_pendaftaran) }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="action" value="promosi_cadangan">
+                        <button type="submit" class="btn-action" style="background: #0f7643; color: #ffffff; border: none; border-radius: 8px;">⭐ Promosikan ke Lulus</button>
+                      </form>
+
+                      <form action="{{ route('tata_usaha.status', $pendaftaran->id_pendaftaran) }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="action" value="penetapan_kelulusan">
+                        <input type="hidden" name="status_kelulusan" value="tidak_lulus">
+                        <button type="submit" class="btn-action" style="background: #ef4444; color: #ffffff; border: none; border-radius: 8px;" onclick="return confirm('Apakah Anda yakin?')">Tolak (Tidak Lulus)</button>
+                      </form>
+                    </div>
+                  @endif
+                @else
+                  <p>Menunggu hasil kelulusan diumumkan.</p>
+                @endif
+              </div>
+            </div>
+
+          </div>
+
+          <div style="margin-top: 30px;">
             <a href="{{ route('scores.index') }}" class="btn-action" style="background: #f3f4f6; color: #4b5563; text-decoration: none; border: 1px solid #d1d5db; border-radius: 8px;">
               ← Kembali ke Daftar
             </a>
-
-            <!-- State: Pending (Baru/Perubahan) -->
-            @if($pendaftaran->status === 'Pending')
-              <!-- Action: Terima Berkas -->
-              <form action="{{ route('tata_usaha.status', $pendaftaran->id_pendaftaran) }}" method="POST" style="display: inline;">
-                @csrf
-                <input type="hidden" name="status" value="Berkas Diterima">
-                <button type="submit" class="btn-action" style="background: #298752; color: #ffffff; border: none; border-radius: 8px;">
-                  ✓ Terima Berkas (Lolos Administrasi)
-                </button>
-              </form>
-
-              <!-- Action: Tolak Berkas -->
-              <button onclick="toggleRejectionForm()" class="btn-action" style="background: #ef4444; color: #ffffff; border: none; border-radius: 8px;">
-                ✕ Tolak Berkas
-              </button>
-            @endif
-
-            <!-- State: Berkas Ditolak -->
-            @if($pendaftaran->status === 'Berkas Ditolak')
-              <!-- Action: Terima Berkas (Lolos Administrasi setelah revisi) -->
-              <form action="{{ route('tata_usaha.status', $pendaftaran->id_pendaftaran) }}" method="POST" style="display: inline;">
-                @csrf
-                <input type="hidden" name="status" value="Berkas Diterima">
-                <button type="submit" class="btn-action" style="background: #298752; color: #ffffff; border: none; border-radius: 8px;">
-                  ✓ Ubah &amp; Terima Berkas (Lolos Administrasi)
-                </button>
-              </form>
-            @endif
-
-            <!-- State: Berkas Diterima -->
-            @if($pendaftaran->status === 'Berkas Diterima')
-              <!-- Action: Verifikasi Berkas Onsite -->
-              <form action="{{ route('tata_usaha.status', $pendaftaran->id_pendaftaran) }}" method="POST" style="display: inline;">
-                @csrf
-                <input type="hidden" name="status" value="Berkas Onsite Diterima">
-                <button type="submit" class="btn-action" style="background: #005b31; color: #ffffff; border: none; border-radius: 8px;">
-                  📁 Verifikasi Berkas Onsite Selesai (Siap Ujian &amp; Wawancara)
-                </button>
-              </form>
-            @endif
-
-            <!-- State: Berkas Onsite Diterima -->
-            @if($pendaftaran->status === 'Berkas Onsite Diterima')
-              <!-- Action: Lulus -->
-              <form action="{{ route('tata_usaha.status', $pendaftaran->id_pendaftaran) }}" method="POST" style="display: inline;">
-                @csrf
-                <input type="hidden" name="status" value="Lulus">
-                <button type="submit" class="btn-action" style="background: #298752; color: #ffffff; border: none; border-radius: 8px;">
-                  🎓 Nyatakan Lulus Seleksi
-                </button>
-              </form>
-
-              <!-- Action: Cadangan -->
-              <form action="{{ route('tata_usaha.status', $pendaftaran->id_pendaftaran) }}" method="POST" style="display: inline;">
-                @csrf
-                <input type="hidden" name="status" value="Cadangan">
-                <button type="submit" class="btn-action" style="background: #d97706; color: #ffffff; border: none; border-radius: 8px;" onclick="return confirm('Apakah Anda yakin ingin memasukkan calon siswa ini ke status cadangan sementara?')">
-                  ⏳ Nyatakan Lulus Cadangan (1 Minggu)
-                </button>
-              </form>
-
-              <!-- Action: Tidak Lulus -->
-              <form action="{{ route('tata_usaha.status', $pendaftaran->id_pendaftaran) }}" method="POST" style="display: inline;">
-                @csrf
-                <input type="hidden" name="status" value="Tidak Lulus">
-                <button type="submit" class="btn-action" style="background: #ef4444; color: #ffffff; border: none; border-radius: 8px;" onclick="return confirm('Apakah Anda yakin ingin menyatakan siswa ini tidak lulus?')">
-                  ✕ Nyatakan Tidak Lulus
-                </button>
-              </form>
-            @endif
-
-            <!-- State: Lulus or Cadangan -->
-            @if($pendaftaran->status === 'Lulus' || $pendaftaran->status === 'Cadangan')
-              <!-- Action: Diterima (Daftar Ulang) -->
-              <form action="{{ route('tata_usaha.status', $pendaftaran->id_pendaftaran) }}" method="POST" style="display: inline;">
-                @csrf
-                <input type="hidden" name="status" value="Diterima">
-                <button type="submit" class="btn-action" style="background: #298752; color: #ffffff; border: none; border-radius: 8px;">
-                  ✓ Daftar Ulang: Diterima
-                </button>
-              </form>
-
-              <!-- Action: Mengundurkan Diri -->
-              <form action="{{ route('tata_usaha.status', $pendaftaran->id_pendaftaran) }}" method="POST" style="display: inline;">
-                @csrf
-                <input type="hidden" name="status" value="Mengundurkan Diri">
-                <button type="submit" class="btn-action" style="background: #6b7280; color: #ffffff; border: none; border-radius: 8px;" onclick="return confirm('Apakah Anda yakin ingin mencatat status mengundurkan diri?')">
-                  ✕ Daftar Ulang: Mengundurkan Diri
-                </button>
-              </form>
-            @endif
-          </div>
-
-          <!-- Rejection Form Popup/Toggle Area -->
-          <div id="rejectionFormArea" style="display: none; background: #f8fafc; border: 1px solid #becabe; border-radius: 12px; padding: 20px; margin-top: 20px; width: 100%; max-width: 500px;">
-            <h4 style="font-weight: bold; color: #b91c1c; margin-bottom: 15px; font-size: 14px;">Masukkan Alasan Penolakan Berkas</h4>
-            <form action="{{ route('tata_usaha.status', $pendaftaran->id_pendaftaran) }}" method="POST">
-              @csrf
-              <input type="hidden" name="status" value="Berkas Ditolak">
-              <div class="form-group" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;">
-                <label style="font-size: 11px; font-weight: bold; color: #4b5563;">DESKRIPSI ALASAN</label>
-                <textarea name="alasan_ditolak" placeholder="Contoh: Berkas Akta Kelahiran tidak terbaca jelas atau file rusak..." style="width: 100%; padding: 10px; border: 1px solid #becabe; border-radius: 6px; font-family: inherit; font-size: 13px; height: 100px; resize: none;" required></textarea>
-              </div>
-              <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                <button type="button" onclick="toggleRejectionForm()" style="background: #e2e8f0; color: #475569; padding: 8px 15px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; font-weight: bold;">Batal</button>
-                <button type="submit" style="background: #ef4444; color: #ffffff; padding: 8px 15px; border-radius: 6px; border: none; cursor: pointer; font-size: 12px; font-weight: bold;">Kirim Penolakan</button>
-              </div>
-            </form>
           </div>
         </div>
 

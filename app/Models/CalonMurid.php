@@ -11,6 +11,8 @@ class CalonMurid extends Model
 
     protected $fillable = [
         'nama_murid',
+        'jenis_kelamin',
+        'nik',
         'nisn',
         'tempat_lahir',
         'tanggal_lahir',

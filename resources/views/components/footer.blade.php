@@ -26,11 +26,33 @@
     </div>
   </div>
 
+  @php
+    $addressContact = $schoolContacts->firstWhere('platform_name', 'Alamat');
+    $phoneContact = $schoolContacts->firstWhere('platform_name', 'Telepon') ?? $schoolContacts->firstWhere('platform_name', 'WhatsApp');
+    $emailContact = $schoolContacts->firstWhere('platform_name', 'Email');
+  @endphp
+
   <div class="sroyo-kec-jaten-kabupaten-karanganyar-jawa-tengah-57731">
-    {{ $landingContent['address'] ?? 'Sroyo, Kec. Jaten, Kabupaten Karanganyar, Jawa Tengah 57731' }}
+    @if($addressContact)
+      <a href="{{ $addressContact->link }}" target="_blank" style="color: inherit; text-decoration: none; pointer-events: auto;">{{ $addressContact->value }}</a>
+    @else
+      {{ $landingContent['address'] ?? 'Sroyo, Kec. Jaten, Kabupaten Karanganyar, Jawa Tengah 57731' }}
+    @endif
   </div>
-  <div class="_0812-2667-6554">{{ $landingContent['phone'] ?? '0812-2667-6554' }}</div>
-  <div class="min-3-kra-gmail-com">{{ $landingContent['email'] ?? 'min3kra@gmail.com' }}</div>
+  <div class="_0812-2667-6554">
+    @if($phoneContact)
+      <a href="{{ $phoneContact->link }}" style="color: inherit; text-decoration: none; pointer-events: auto;">{{ $phoneContact->value }}</a>
+    @else
+      {{ $landingContent['phone'] ?? '0812-2667-6554' }}
+    @endif
+  </div>
+  <div class="min-3-kra-gmail-com">
+    @if($emailContact)
+      <a href="{{ $emailContact->link }}" style="color: inherit; text-decoration: none; pointer-events: auto;">{{ $emailContact->value }}</a>
+    @else
+      {{ $landingContent['email'] ?? 'min3kra@gmail.com' }}
+    @endif
+  </div>
   <div class="hubungi-kami">HUBUNGI KAMI</div>
 
   <div class="container2">

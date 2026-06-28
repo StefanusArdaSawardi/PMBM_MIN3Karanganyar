@@ -82,9 +82,9 @@ class LandingController extends Controller
         $namaMurid = trim($request->input('nama_murid'));
 
         // Run waitlist cleanup
-        \App\Models\Pendaftaran::where('status', 'Cadangan')
+        \App\Models\Pendaftaran::where('status_kelulusan', 'cadangan')
             ->where('updated_at', '<', now()->subWeek())
-            ->update(['status' => 'Tidak Lulus']);
+            ->update(['status_kelulusan' => 'tidak_lulus']);
 
         // Extract numeric ID from input e.g. "PMB-2026-001" or "001" or "1" -> 1
         $id = null;
@@ -128,16 +128,16 @@ class LandingController extends Controller
         if (session('verified_pendaftaran_id') != $id) {
             abort(403, 'Sesi verifikasi pendaftaran tidak valid. Silakan cek status pendaftaran Anda kembali.');
         }
-
-        if ($pendaftaran->status !== 'Berkas Ditolak') {
+ 
+        if ($pendaftaran->status_verifikasi !== 'ditolak') {
             abort(403, 'Pendaftaran Anda tidak dalam status Berkas Ditolak, sehingga data tidak dapat diubah.');
         }
-
+ 
         $student = $pendaftaran->calonMurid;
         $ayah = $student->ayah;
         $ibu = $student->ibu;
         $programs = Program::all();
-
+ 
         return view('pendaftaran.edit', compact('pendaftaran', 'student', 'ayah', 'ibu', 'programs'));
     }
 
@@ -147,18 +147,20 @@ class LandingController extends Controller
     public function updateRegisterForm(Request $request, $id)
     {
         $pendaftaran = Pendaftaran::findOrFail($id);
-
+ 
         if (session('verified_pendaftaran_id') != $id) {
             abort(403, 'Sesi verifikasi pendaftaran tidak valid.');
         }
-
-        if ($pendaftaran->status !== 'Berkas Ditolak') {
+ 
+        if ($pendaftaran->status_verifikasi !== 'ditolak') {
             abort(403, 'Pendaftaran Anda tidak dalam status Berkas Ditolak.');
         }
-
+ 
         $request->validate([
             // Student Data
             'nama_murid' => ['required', 'string', 'min:3', 'max:255', 'regex:/^[a-zA-Z\s\.\,]+$/'],
+            'nik' => ['required', 'string', 'size:16', 'regex:/^[0-9]{16}$/'],
+            'jenis_kelamin' => ['required', 'in:L,P'],
             'nisn' => ['required', 'string', 'size:10', 'regex:/^[0-9]{10}$/'],
             'id_program' => 'required|exists:programs,id_program',
             'tempat_lahir' => ['required', 'string', 'min:3', 'max:100', 'regex:/^[a-zA-Z\s]+$/'],
@@ -170,13 +172,13 @@ class LandingController extends Controller
             'pekerjaan_ayah' => 'nullable|string|min:3|max:100',
             'nomor_telpon_ayah' => ['nullable', 'string', 'regex:/^(08|62)[0-9]{8,13}$/'],
             'email_ayah' => 'nullable|email|max:100',
-
+ 
             // Mother Data
             'nama_ibu' => ['required', 'string', 'min:3', 'max:255', 'regex:/^[a-zA-Z\s\.\,]+$/'],
             'pekerjaan_ibu' => 'nullable|string|min:3|max:100',
             'nomor_telpon_ibu' => ['nullable', 'string', 'regex:/^(08|62)[0-9]{8,13}$/'],
             'email_ibu' => 'required|email|max:100',
-
+ 
             // Files (all nullable on edit)
             'pas_foto' => 'nullable|file|image|max:5120',
             'kartu_keluarga' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
@@ -185,6 +187,8 @@ class LandingController extends Controller
         ], [
             'nama_murid.min' => 'Nama murid minimal 3 karakter.',
             'nama_murid.regex' => 'Nama murid hanya boleh berisi huruf, spasi, titik, dan koma.',
+            'nik.size' => 'NIK harus tepat 16 digit angka.',
+            'nik.regex' => 'NIK harus berupa 16 digit angka.',
             'nisn.size' => 'NISN harus tepat 10 digit angka.',
             'nisn.regex' => 'NISN harus berupa 10 digit angka (tanpa huruf/simbol).',
             'tempat_lahir.min' => 'Tempat lahir minimal 3 karakter.',
@@ -198,11 +202,11 @@ class LandingController extends Controller
             'nomor_telpon_ayah.regex' => 'No. telpon ayah harus format Indonesia (08xxx atau 62xxx), 10-15 digit.',
             'nomor_telpon_ibu.regex' => 'No. telpon ibu harus format Indonesia (08xxx atau 62xxx), 10-15 digit.',
         ]);
-
+ 
         $student = $pendaftaran->calonMurid;
         $ayah = $student->ayah;
         $ibu = $student->ibu;
-
+ 
         // Update Father
         $ayah->update([
             'nama_ayah' => $request->nama_ayah,
@@ -211,7 +215,7 @@ class LandingController extends Controller
             'nomor_telpon' => $request->nomor_telpon_ayah,
             'email' => $request->email_ayah,
         ]);
-
+ 
         // Update Mother
         $ibu->update([
             'nama_ibu' => $request->nama_ibu,
@@ -220,7 +224,7 @@ class LandingController extends Controller
             'nomor_telpon' => $request->nomor_telpon_ibu,
             'email' => $request->email_ibu,
         ]);
-
+ 
         // Handle file uploads
         $files = [];
         $documentFields = ['pas_foto', 'kartu_keluarga', 'akta_kelahiran', 'kartu_identitas_anak'];
@@ -239,10 +243,12 @@ class LandingController extends Controller
                 $files[$field] = $student->$field;
             }
         }
-
+ 
         // Update Student
         $student->update([
             'nama_murid' => $request->nama_murid,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'nik' => $request->nik,
             'nisn' => $request->nisn,
             'tempat_lahir' => $request->tempat_lahir,
             'tanggal_lahir' => $request->tanggal_lahir,
@@ -253,14 +259,14 @@ class LandingController extends Controller
             'akta_kelahiran' => $files['akta_kelahiran'],
             'kartu_identitas_anak' => $files['kartu_identitas_anak'],
         ]);
-
+ 
         // Update Pendaftaran status to Pending (Baru / Perubahan Data) and clear rejection reason
         $pendaftaran->update([
-            'status' => 'Pending',
+            'status_verifikasi' => 'menunggu_verifikasi',
             'id_program' => $request->id_program,
-            'alasan_ditolak' => null,
+            'alasan_penolakan' => null,
         ]);
-
+ 
         return redirect()->route('landing.cek-kelulusan')->with('success_edit', 'Data pendaftaran Anda berhasil diperbarui dan berkas dikirim kembali untuk diverifikasi.');
     }
 
@@ -284,12 +290,26 @@ class LandingController extends Controller
             'nomor_telpon_ayah' => ['nullable', 'string', 'regex:/^(08|62)[0-9]{8,13}$/'],
             'email_ayah' => 'nullable|email|max:100',
 
+            'nik' => ['required', 'string', 'size:16', 'regex:/^[0-9]{16}$/'],
+            'jenis_kelamin' => ['required', 'in:L,P'],
+            'nisn' => ['required', 'string', 'size:10', 'regex:/^[0-9]{10}$/'],
+            'id_program' => 'required|exists:programs,id_program',
+            'tempat_lahir' => ['required', 'string', 'min:3', 'max:100', 'regex:/^[a-zA-Z\s]+$/'],
+            'tanggal_lahir' => 'required|date|before:today',
+            'alamat' => 'required|string|min:10',
+            
+            // Father Data
+            'nama_ayah' => ['required', 'string', 'min:3', 'max:255', 'regex:/^[a-zA-Z\s\.\,]+$/'],
+            'pekerjaan_ayah' => 'nullable|string|min:3|max:100',
+            'nomor_telpon_ayah' => ['nullable', 'string', 'regex:/^(08|62)[0-9]{8,13}$/'],
+            'email_ayah' => 'nullable|email|max:100',
+ 
             // Mother Data
             'nama_ibu' => ['required', 'string', 'min:3', 'max:255', 'regex:/^[a-zA-Z\s\.\,]+$/'],
             'pekerjaan_ibu' => 'nullable|string|min:3|max:100',
             'nomor_telpon_ibu' => ['nullable', 'string', 'regex:/^(08|62)[0-9]{8,13}$/'],
             'email_ibu' => 'required|email|max:100',
-
+ 
             // Files
             'pas_foto' => 'nullable|file|image|max:5120',
             'kartu_keluarga' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
@@ -299,6 +319,8 @@ class LandingController extends Controller
             // Custom error messages in Bahasa Indonesia
             'nama_murid.min' => 'Nama murid minimal 3 karakter.',
             'nama_murid.regex' => 'Nama murid hanya boleh berisi huruf, spasi, titik, dan koma.',
+            'nik.size' => 'NIK harus tepat 16 digit angka.',
+            'nik.regex' => 'NIK harus berupa 16 digit angka.',
             'nisn.size' => 'NISN harus tepat 10 digit angka.',
             'nisn.regex' => 'NISN harus berupa 10 digit angka (tanpa huruf/simbol).',
             'tempat_lahir.min' => 'Tempat lahir minimal 3 karakter.',
@@ -312,7 +334,7 @@ class LandingController extends Controller
             'nomor_telpon_ayah.regex' => 'No. telpon ayah harus format Indonesia (08xxx atau 62xxx), 10-15 digit.',
             'nomor_telpon_ibu.regex' => 'No. telpon ibu harus format Indonesia (08xxx atau 62xxx), 10-15 digit.',
         ]);
-
+ 
         // Create Father
         $ayah = AyahCalonMurid::create([
             'nama_ayah' => $request->nama_ayah,
@@ -321,7 +343,7 @@ class LandingController extends Controller
             'nomor_telpon' => $request->nomor_telpon_ayah,
             'email' => $request->email_ayah,
         ]);
-
+ 
         // Create Mother
         $ibu = IbuCalonMurid::create([
             'nama_ibu' => $request->nama_ibu,
@@ -330,7 +352,7 @@ class LandingController extends Controller
             'nomor_telpon' => $request->nomor_telpon_ibu,
             'email' => $request->email_ibu,
         ]);
-
+ 
         // Upload documents helper
         $files = [];
         $documentFields = ['pas_foto', 'kartu_keluarga', 'akta_kelahiran', 'kartu_identitas_anak'];
@@ -345,10 +367,12 @@ class LandingController extends Controller
                 $files[$field] = null;
             }
         }
-
+ 
         // Create Student
         $student = CalonMurid::create([
             'nama_murid' => $request->nama_murid,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'nik' => $request->nik,
             'nisn' => $request->nisn,
             'tempat_lahir' => $request->tempat_lahir,
             'tanggal_lahir' => $request->tanggal_lahir,
@@ -361,17 +385,26 @@ class LandingController extends Controller
             'akta_kelahiran' => $files['akta_kelahiran'],
             'kartu_identitas_anak' => $files['kartu_identitas_anak'],
         ]);
-
+ 
         // Create Registration
         $pendaftaran = Pendaftaran::create([
             'tanggal_pendaftaran' => now(),
-            'status' => 'Pending',
+            'status_verifikasi' => 'menunggu_verifikasi',
             'id_murid' => $student->id_murid,
             'id_program' => $request->id_program,
         ]);
-
+ 
         $regNumber = 'PMB-2026-' . str_pad($pendaftaran->id_pendaftaran, 3, '0', STR_PAD_LEFT);
-
+ 
         return redirect()->route('student.register')->with('success', $regNumber);
+    }
+ 
+    /**
+     * Return active FAQs in JSON format for the Chatbot.
+     */
+    public function getFaqsJson()
+    {
+        $faqs = \App\Models\Faq::orderBy('created_at', 'asc')->get();
+        return response()->json($faqs);
     }
 }

@@ -155,9 +155,10 @@ class DssService
             $sortedResults = HasilWawancaraDanUjian::where('id_program', $program->id_program)
                 ->orderBy('nilai_akhir', 'desc')
                 ->get();
-
+ 
             $quota = $program->kuota_program ?: 10;
-
+            $cadanganRank = 1;
+ 
             foreach ($sortedResults as $index => $result) {
                 $rank = $index + 1;
                 
@@ -165,15 +166,42 @@ class DssService
                 $pendaftaran = Pendaftaran::where('id_murid', $result->id_murid)->first();
                 if ($pendaftaran) {
                     if ($rank <= $quota) {
-                        $pendaftaran->status = 'Diterima di Program Pilihan';
+                        $pendaftaran->peringkat_cadangan = null;
                     } elseif ($result->nilai_akhir >= 60.0) {
-                        $pendaftaran->status = 'Pindahkan ke Program Reguler';
+                        $pendaftaran->peringkat_cadangan = $cadanganRank++;
                     } else {
-                        $pendaftaran->status = 'Ditolak';
+                        $pendaftaran->peringkat_cadangan = null;
                     }
                     $pendaftaran->save();
                 }
             }
+        }
+    }
+ 
+    /**
+     * Get the advisory recommendation status for an applicant.
+     */
+    public static function getRecommendation($pendaftaran)
+    {
+        $result = HasilWawancaraDanUjian::where('id_murid', $pendaftaran->id_murid)->first();
+        if (!$result) {
+            return 'Belum Dinilai';
+        }
+        
+        $program = $pendaftaran->program;
+        $quota = $program->kuota_program ?: 10;
+        
+        // Find the rank of this student among all candidates in this program sorted by score
+        $rank = HasilWawancaraDanUjian::where('id_program', $program->id_program)
+            ->where('nilai_akhir', '>', $result->nilai_akhir)
+            ->count() + 1;
+            
+        if ($rank <= $quota) {
+            return 'Diterima di Program Pilihan';
+        } elseif ($result->nilai_akhir >= 60.0) {
+            return 'Pindahkan ke Program Reguler';
+        } else {
+            return 'Ditolak';
         }
     }
 }

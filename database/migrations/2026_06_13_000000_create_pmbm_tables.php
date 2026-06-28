@@ -58,6 +58,8 @@ return new class extends Migration
         Schema::create('calon_murids', function (Blueprint $table) {
             $table->id('id_murid');
             $table->string('nama_murid');
+            $table->enum('jenis_kelamin', ['L', 'P'])->nullable();
+            $table->string('nik', 16)->nullable();
             $table->string('nisn')->nullable();
             $table->string('tempat_lahir')->nullable();
             $table->date('tanggal_lahir')->nullable();
@@ -77,7 +79,14 @@ return new class extends Migration
         Schema::create('pendaftarans', function (Blueprint $table) {
             $table->id('id_pendaftaran');
             $table->date('tanggal_pendaftaran');
-            $table->string('status')->default('Pending');
+            $table->string('status_verifikasi')->default('menunggu_verifikasi');
+            $table->string('status_kelulusan')->nullable();
+            $table->string('status_konfirmasi')->nullable();
+            $table->text('alasan_penolakan')->nullable();
+            $table->integer('peringkat_cadangan')->nullable();
+            $table->timestamp('tanggal_verifikasi')->nullable();
+            $table->timestamp('tanggal_kelulusan')->nullable();
+            $table->timestamp('tanggal_konfirmasi')->nullable();
             
             $table->foreignId('id_murid')->constrained('calon_murids', 'id_murid')->onDelete('cascade');
             $table->foreignId('id_program')->constrained('programs', 'id_program')->onDelete('cascade');
@@ -131,6 +140,16 @@ return new class extends Migration
             $table->foreignId('id_program')->constrained('programs', 'id_program')->onDelete('cascade');
             $table->timestamps();
         });
+
+        // 11. school_contacts
+        Schema::create('school_contacts', function (Blueprint $table) {
+            $table->id();
+            $table->string('platform_name');
+            $table->string('value');
+            $table->string('link');
+            $table->string('icon')->nullable();
+            $table->timestamps();
+        });
     }
 
     /**
@@ -138,6 +157,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('school_contacts');
         Schema::dropIfExists('hasil_wawancara_dan_ujians');
         Schema::dropIfExists('jadwal_wawancara_dan_ujians');
         Schema::dropIfExists('panitia_pmbms');

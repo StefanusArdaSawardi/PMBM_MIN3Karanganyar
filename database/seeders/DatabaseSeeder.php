@@ -47,6 +47,8 @@ class DatabaseSeeder extends Seeder
             PmbmPhaseSeeder::class,
             TataUsahaSeeder::class,
             PendaftaranSeeder::class,
+            FaqSeeder::class,
+            SchoolContactSeeder::class,
         ]);
     }
 }

@@ -15,15 +15,19 @@ class PanitiaDashboardController extends Controller
     {
         // Count how many have been evaluated (having interview score)
         $telahDiujiCount = HasilWawancaraDanUjian::whereNotNull('nilai_wawancara')->count();
-
-        // Count how many are still pending / not evaluated yet
-        $antreanCount = CalonMurid::whereDoesntHave('hasil', function($q) {
+ 
+        // Count how many are still pending / not evaluated yet (must be verified onsite)
+        $antreanCount = CalonMurid::whereHas('pendaftaran', function($q) {
+            $q->where('status_verifikasi', 'terverifikasi_onsite');
+        })->whereDoesntHave('hasil', function($q) {
             $q->whereNotNull('nilai_wawancara');
         })->count();
-
-        // Get queue of all candidates with their registration details and existing scores
-        $queue = CalonMurid::with(['pendaftaran.program', 'hasil'])->get();
-
+ 
+        // Get queue of onsite-verified candidates with their registration details and existing scores
+        $queue = CalonMurid::whereHas('pendaftaran', function($q) {
+            $q->where('status_verifikasi', 'terverifikasi_onsite');
+        })->with(['pendaftaran.program', 'hasil'])->get();
+ 
         return view('dashboard.panitia', compact('telahDiujiCount', 'antreanCount', 'queue'));
     }
 
