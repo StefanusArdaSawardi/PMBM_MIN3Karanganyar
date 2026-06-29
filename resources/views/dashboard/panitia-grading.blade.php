@@ -2,344 +2,156 @@
 
 @section('title', 'Instrumen Penilaian - Penguji PMBM')
 
-@section('styles')
-  <link rel="stylesheet" href="{{ asset('assets/panitia/grading/vars.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/panitia/grading/style.css') }}">
-  <style>
-    .select-input {
-      width: 100%;
-      height: 100%;
-      padding: 0 40px 0 15px;
-      font-family: inherit;
-      font-size: 13px;
-      font-weight: bold;
-      color: #374151;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      background: #ffffff;
-      cursor: pointer;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      outline: none;
-    }
-    .select-input:focus {
-      border-color: #298752;
-    }
-    .rating-field {
-      width: 100%;
-      height: 100%;
-      padding: 10px 15px;
-      font-family: inherit;
-      font-size: 14px;
-      color: #1f2937;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      background: #ffffff;
-      outline: none;
-    }
-    .rating-field:focus {
-      border-color: #298752;
-    }
-    .note-area {
-      width: 100%;
-      height: 100%;
-      padding: 12px 15px;
-      font-family: inherit;
-      font-size: 13px;
-      color: #1f2937;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      background: #ffffff;
-      outline: none;
-      resize: none;
-      line-height: 1.5;
-    }
-    .note-area:focus {
-      border-color: #298752;
-    }
-    .btn-grade-submit {
-      width: 100%;
-      height: 100%;
-      border: none;
-      background: none;
-      cursor: pointer;
-      position: relative;
-      display: block;
-      padding: 0;
-    }
-  </style>
-@endsection
-
 @section('content')
-  <div class="desktop-23">
+  <div class="relative min-h-screen bg-white flow-root">
     <!-- Panitia Sidebar/Topbar Included -->
     @include('components.sidebar-panitia', ['activeFolder' => 'grading'])
 
-    <!-- Student Identity Header -->
-    <div class="section-student-identity-card">
-      <div class="container3">
-        <div class="container4">
-          <div class="text4">SEDANG DIUJI:</div>
-          <div class="heading-1">
-            <div class="text5">{{ $student->nama_murid }}</div>
-          </div>
-          <div class="container5">
-            <div class="container6">
-              <div class="strong-no-daftar">
-                <span>
-                  <span class="strong-no-daftar-span">No. Daftar:</span>
-                  <span class="strong-no-daftar-span2">PMB-2026-{{ str_pad($student->id_murid, 3, '0', STR_PAD_LEFT) }}</span>
-                </span>
-              </div>
+    <div class="relative mt-[156px] mx-[146px] flex flex-col gap-6 pb-10 max-[1024px]:mx-6 max-[1024px]:mt-[140px]">
+      <!-- Student Identity Header -->
+      <div class="bg-white border-l-4 border-[#005b31] rounded-xl shadow-[0_1px_1px_rgba(0,0,0,0.05)] pl-7 pr-6 py-6 flex flex-col gap-4 max-w-[640px] max-[640px]:max-w-none">
+        <div class="flex flex-col gap-1.5">
+          <div class="text-[#6f7a70] text-[12px] font-medium tracking-[0.6px] uppercase" style="font-family: 'WorkSans-Medium', sans-serif;">SEDANG DIUJI:</div>
+          <div class="text-[#121c2a] text-[24px] font-bold" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">{{ $student->nama_murid }}</div>
+          <div class="flex items-center gap-3 flex-wrap">
+            <div class="text-[#3f4940] text-[14px]" style="font-family: 'WorkSans-SemiBold', sans-serif;">
+              <span class="font-semibold">No. Daftar:</span>
+              <span style="font-family: 'WorkSans-Regular', sans-serif;"> PMB-2026-{{ str_pad($student->id_murid, 3, '0', STR_PAD_LEFT) }}</span>
             </div>
-            <div class="overlay-border">
-              <div class="text6">{{ $student->pendaftaran->program->nama_program ?? 'Umum' }}</div>
+            <div class="bg-[#6bff8f]/20 border border-[#006e2f]/20 rounded-full px-3 py-1">
+              <div class="text-[#006e2f] text-[12px] font-medium" style="font-family: 'WorkSans-Medium', sans-serif;">{{ $student->pendaftaran->program->nama_program ?? 'Umum' }}</div>
             </div>
           </div>
         </div>
-        <div class="background-border">
-          <img class="container7" src="{{ asset('assets/panitia/grading/container6.svg') }}" />
-          <div class="container">
-            <div class="text7">Sesi Wawancara & Ujian</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Main Scoring Form -->
-    <form action="{{ route('panitia.grading', $student->id_murid) }}" method="POST" class="assessment-form-card" style="height: auto; padding-bottom: 25px;">
-      @csrf
-
-      <!-- Messages Flash -->
-      @if(session('success_grading'))
-        <div style="margin: 15px; padding: 12px; background: #ecfdf5; border: 1px solid #a7f3d0; color: #047857; font-family: sans-serif; font-size: 13px; border-radius: 8px;">
-          {{ session('success_grading') }}
-        </div>
-      @endif
-
-      @if($errors->any())
-        <div style="margin: 15px; padding: 12px; background: #fee2e2; border: 1px solid #fca5a5; color: #b91c1c; font-family: sans-serif; font-size: 13px; border-radius: 8px;">
-          {{ $errors->first() }}
-        </div>
-      @endif
-
-      <div class="background-horizontal-border">
-        <div class="container8">
-          <div class="container">
-            <div class="text8">📝</div>
-          </div>
-          <div class="heading-2">
-            <div class="text9">Instrumen Penilaian Calon Siswa</div>
-          </div>
+        <div class="bg-[#e6eeff] border border-[#becabe] rounded-lg flex items-center gap-2 p-3 self-start">
+          <img class="w-[22px] h-[19px]" src="{{ asset('assets/panitia/grading/container6.svg') }}" alt="">
+          <div class="text-[#007432] text-[14px] font-semibold tracking-[0.7px]" style="font-family: 'WorkSans-SemiBold', sans-serif;">Sesi Wawancara &amp; Ujian</div>
         </div>
       </div>
 
-      <div class="container9" style="height: auto;">
-        
-        <!-- 1. Nilai Hafalan -->
-        <div class="_1-opsi-hafalan">
-          <div class="label">
-            <div class="_1-opsi-hafalan2">1. Nilai Hafalan (1 - 100)</div>
-          </div>
-          <div class="container6" style="border: none; padding: 0;">
-            <input 
-              type="number" 
-              name="nilai_hafalan" 
-              id="nilai_hafalan" 
-              required 
-              min="1" 
-              max="100" 
-              class="rating-field" 
-              placeholder="Masukkan nilai hafalan (1 - 100)"
-              value="{{ $student->hasil->nilai_hafalan ?? '' }}"
-            >
-          </div>
+      <!-- Progress Tracker -->
+      <div class="flex items-center justify-center gap-4 max-[640px]:gap-3">
+        <div class="flex flex-col items-center">
+          <div class="bg-[#005b31] rounded-full w-8 h-8 flex items-center justify-center text-white text-[12px] font-bold">1</div>
+          <div class="text-[#005b31] text-[12px] mt-1" style="font-family: 'WorkSans-Regular', sans-serif;">Identitas</div>
         </div>
-
-        <!-- 2. Nilai Wawancara -->
-        <div class="_2-bacaan-tasmi">
-          <div class="label">
-            <div class="_2-bacaan-tasmi2">2. Nilai Wawancara (1 - 100)</div>
-          </div>
-          <div class="container6" style="border: none; padding: 0;">
-            <input 
-              type="number" 
-              name="nilai_wawancara" 
-              id="nilai_wawancara" 
-              required 
-              min="1" 
-              max="100" 
-              class="rating-field" 
-              placeholder="Masukkan nilai wawancara (1 - 100)"
-              value="{{ $student->hasil->nilai_wawancara ?? '' }}"
-            >
-          </div>
+        <div class="bg-[#005b31] h-px w-12 max-[640px]:w-6"></div>
+        <div class="flex flex-col items-center">
+          <div class="bg-[#0f7643] rounded-full w-8 h-8 flex items-center justify-center text-white text-[12px] font-bold">2</div>
+          <div class="text-[#0f7643] text-[12px] mt-1" style="font-family: 'WorkSans-Regular', sans-serif;">Penilaian</div>
         </div>
-
-        <!-- 3. Nilai Calistung -->
-        <div class="_3-kemampuan-calistung" style="margin-top: 15px;">
-          <div class="label">
-            <div class="_3-kemampuan-calistung2">3. Nilai Calistung (1 - 100)</div>
-          </div>
-          <div class="container6" style="border: none; padding: 0;">
-            <input 
-              type="number" 
-              name="nilai_calistung" 
-              id="nilai_calistung" 
-              required 
-              min="1" 
-              max="100" 
-              class="rating-field" 
-              placeholder="Masukkan nilai calistung (1 - 100)"
-              value="{{ $student->hasil->nilai_calistung ?? '' }}"
-            >
-          </div>
-        </div>
-
-        <!-- 4. Nilai Tasmi -->
-        <div class="_4-aspek-kemandirian" style="margin-top: 15px;">
-          <div class="label">
-            <div class="_4-aspek-kemandirian2" style="font-family: inherit; font-size: 13px; font-weight: bold; color: #374151;">4. Nilai Tasmi (1 - 100)</div>
-          </div>
-          <div class="container6" style="border: none; padding: 0;">
-            <input 
-              type="number" 
-              name="nilai_tasmi" 
-              id="nilai_tasmi" 
-              required 
-              min="1" 
-              max="100" 
-              class="rating-field" 
-              placeholder="Masukkan nilai tasmi (1 - 100)"
-              value="{{ $student->hasil->nilai_tasmi ?? '' }}"
-            >
-          </div>
-        </div>
-
-        <!-- 5. Nilai Mandiri -->
-        <div class="aspek-kemandirian-input" style="margin-top: 15px; display: flex; flex-direction: column; gap: 8px;">
-          <div class="label">
-            <div class="_4-aspek-kemandirian2" style="font-family: inherit; font-size: 13px; font-weight: bold; color: #374151;">5. Nilai Mandiri (1 - 100)</div>
-          </div>
-          <div class="container6" style="border: none; padding: 0;">
-            <input 
-              type="number" 
-              name="nilai_mandiri" 
-              id="nilai_mandiri" 
-              required 
-              min="1" 
-              max="100" 
-              class="rating-field" 
-              placeholder="Masukkan nilai mandiri (1 - 100)"
-              value="{{ $student->hasil->nilai_mandiri ?? '' }}"
-            >
-          </div>
-        </div>
-
-        <!-- 6. Jalur Prestasi -->
-        <div class="_5-jalur-prestasi" style="display: flex; align-items: center; gap: 10px; margin-top: 15px;">
-          <input 
-            type="checkbox" 
-            id="prestasi_check" 
-            style="width: 20px; height: 20px; cursor: pointer; border: 1px solid #d1d5db; border-radius: 4px;"
-            {{ $student->id_kejuaraan ? 'checked' : '' }}
-            disabled
-          >
-          <label for="prestasi_check" style="font-weight: bold; color: #374151; font-size: 13px; cursor: pointer;">
-            🏆 Calon Murid Memiliki Prestasi Terverifikasi
-          </label>
-        </div>
-
-        <!-- 7. Hasil Wawancara Orang Tua -->
-        <div class="_6-hasil-wawancara-orang-tua" style="margin-top: 15px;">
-          <div class="label">
-            <div class="_6-hasil-wawancara-orang-tua-skala-1-10">
-              6. Rating Dukungan Orang Tua (Skala 1 - 10)
-            </div>
-          </div>
-          <div class="input2" style="border: none; padding: 0; height: 42px; margin-bottom: 5px;">
-            <input 
-              type="number" 
-              name="rating_ortu" 
-              min="1" 
-              max="10" 
-              class="rating-field" 
-              placeholder="Rating angka 1 s/d 10" 
-              value="{{ $student->hasil->rating_ortu ?? '8' }}"
-            />
-          </div>
-          <div class="container6">
-            <div class="_10-sangat-mendukung-1-tidak-mendukung">
-              * 10 (Sangat Mendukung), 1 (Tidak Mendukung)
-            </div>
-          </div>
-        </div>
-
-        <!-- 8. Catatan Penguji -->
-        <div class="_7-catatan-penguji" style="margin-top: 15px;">
-          <div class="label">
-            <div class="_7-catatan-penguji2">7. Catatan &amp; Rekomendasi Penguji</div>
-          </div>
-          <div class="textarea" style="border: none; padding: 0; height: 100px;">
-            <textarea name="catatan" class="note-area" placeholder="Tuliskan catatan khusus atau rekomendasi hasil wawancara di sini...">{{ $student->hasil->catatan_manual ?? '' }}</textarea>
-          </div>
+        <div class="bg-[#becabe] h-px w-12 max-[640px]:w-6"></div>
+        <div class="flex flex-col items-center">
+          <div class="border-2 border-[#becabe] rounded-full w-8 h-8 flex items-center justify-center text-[#becabe] text-[12px] font-bold">3</div>
+          <div class="text-[#becabe] text-[12px] mt-1" style="font-family: 'WorkSans-Regular', sans-serif;">Selesai</div>
         </div>
       </div>
 
-      <!-- Action buttons -->
-      <div class="action-buttons" style="position: static; margin-top: 30px; display: flex; justify-content: flex-end; gap: 15px; padding: 0 40px;">
-        <a href="{{ route('panitia.dashboard') }}" class="button" style="text-decoration: none; display: flex; align-items: center; justify-content: center; background: #f3f4f6; color: #4b5563; font-weight: bold; border-radius: 8px; width: 100px; height: 44px;">
-          Batal
-        </a>
+      <!-- Main Scoring Form -->
+      <form action="{{ route('panitia.grading', $student->id_murid) }}" method="POST" class="bg-white border border-[#becabe] rounded-xl shadow-[0_1px_2px_rgba(0,0,0,0.05)] overflow-hidden max-w-[800px] w-full mx-auto">
+        @csrf
 
-        <div class="button2" style="width: 240px; height: 44px; padding: 0;">
-          <button type="submit" class="btn-grade-submit">
-            <div class="button-shadow" style="width: 100%; height: 100%;"></div>
-            <div class="container20" style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; z-index: 10;">
-              <img src="{{ asset('assets/panitia/grading/container34.svg') }}" style="width: 100%; height: 100%;" />
-            </div>
-            <div style="position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: #298752; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
-              <span class="text" style="position: static; color: #ffffff; padding-left: 20px;">Simpan Nilai &amp; Selesai</span>
-            </div>
+        <!-- Messages Flash -->
+        @if(session('success_grading'))
+          <div class="m-4 p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 text-[13px] rounded-lg">
+            {{ session('success_grading') }}
+          </div>
+        @endif
+
+        @if($errors->any())
+          <div class="m-4 p-3 bg-red-100 border border-red-300 text-red-700 text-[13px] rounded-lg">
+            {{ $errors->first() }}
+          </div>
+        @endif
+
+        <!-- Header -->
+        <div class="bg-[#eff4ff] border-b border-[#becabe] px-6 py-6 flex items-center gap-3">
+          <div class="text-[20px]">📝</div>
+          <div class="text-[#121c2a] text-[20px] font-semibold" style="font-family: 'PlusJakartaSans-SemiBold', sans-serif;">Instrumen Penilaian Calon Siswa</div>
+        </div>
+
+        <div class="p-6 flex flex-col gap-6">
+          <!-- 1. Nilai Hafalan -->
+          <div class="flex flex-col gap-1">
+            <label for="nilai_hafalan" class="text-[#121c2a] text-[14px] font-semibold tracking-[0.7px]" style="font-family: 'WorkSans-SemiBold', sans-serif;">1. Nilai Hafalan (1 - 100)</label>
+            <input type="number" name="nilai_hafalan" id="nilai_hafalan" required min="1" max="100"
+                   value="{{ $student->hasil->nilai_hafalan ?? '' }}" placeholder="Masukkan nilai hafalan (1 - 100)"
+                   class="w-full px-[17px] py-3 text-[14px] text-gray-800 border border-[#becabe] rounded-lg bg-[#f8f9ff] outline-none focus:border-[#298752]">
+          </div>
+
+          <!-- 2. Nilai Wawancara -->
+          <div class="flex flex-col gap-1">
+            <label for="nilai_wawancara" class="text-[#121c2a] text-[14px] font-semibold tracking-[0.7px]" style="font-family: 'WorkSans-SemiBold', sans-serif;">2. Nilai Wawancara (1 - 100)</label>
+            <input type="number" name="nilai_wawancara" id="nilai_wawancara" required min="1" max="100"
+                   value="{{ $student->hasil->nilai_wawancara ?? '' }}" placeholder="Masukkan nilai wawancara (1 - 100)"
+                   class="w-full px-[17px] py-3 text-[14px] text-gray-800 border border-[#becabe] rounded-lg bg-[#f8f9ff] outline-none focus:border-[#298752]">
+          </div>
+
+          <!-- 3. Nilai Calistung -->
+          <div class="flex flex-col gap-1">
+            <label for="nilai_calistung" class="text-[#121c2a] text-[14px] font-semibold tracking-[0.7px]" style="font-family: 'WorkSans-SemiBold', sans-serif;">3. Nilai Calistung (1 - 100)</label>
+            <input type="number" name="nilai_calistung" id="nilai_calistung" required min="1" max="100"
+                   value="{{ $student->hasil->nilai_calistung ?? '' }}" placeholder="Masukkan nilai calistung (1 - 100)"
+                   class="w-full px-[17px] py-3 text-[14px] text-gray-800 border border-[#becabe] rounded-lg bg-[#f8f9ff] outline-none focus:border-[#298752]">
+          </div>
+
+          <!-- 4. Nilai Tasmi -->
+          <div class="flex flex-col gap-1">
+            <label for="nilai_tasmi" class="text-[#121c2a] text-[14px] font-semibold tracking-[0.7px]" style="font-family: 'WorkSans-SemiBold', sans-serif;">4. Nilai Tasmi (1 - 100)</label>
+            <input type="number" name="nilai_tasmi" id="nilai_tasmi" required min="1" max="100"
+                   value="{{ $student->hasil->nilai_tasmi ?? '' }}" placeholder="Masukkan nilai tasmi (1 - 100)"
+                   class="w-full px-[17px] py-3 text-[14px] text-gray-800 border border-[#becabe] rounded-lg bg-[#f8f9ff] outline-none focus:border-[#298752]">
+          </div>
+
+          <!-- 5. Nilai Mandiri -->
+          <div class="flex flex-col gap-1">
+            <label for="nilai_mandiri" class="text-[#121c2a] text-[14px] font-semibold tracking-[0.7px]" style="font-family: 'WorkSans-SemiBold', sans-serif;">5. Nilai Mandiri (1 - 100)</label>
+            <input type="number" name="nilai_mandiri" id="nilai_mandiri" required min="1" max="100"
+                   value="{{ $student->hasil->nilai_mandiri ?? '' }}" placeholder="Masukkan nilai mandiri (1 - 100)"
+                   class="w-full px-[17px] py-3 text-[14px] text-gray-800 border border-[#becabe] rounded-lg bg-[#f8f9ff] outline-none focus:border-[#298752]">
+          </div>
+
+          <!-- 6. Jalur Prestasi -->
+          <div class="border border-[#becabe] rounded-lg p-[17px] flex items-center gap-3">
+            <input type="checkbox" id="prestasi_check"
+                   class="w-5 h-5 cursor-pointer rounded border border-gray-300"
+                   {{ $student->id_kejuaraan ? 'checked' : '' }} disabled>
+            <label for="prestasi_check" class="flex items-center gap-2 text-[#3f4940] text-[14px] font-medium cursor-pointer" style="font-family: 'WorkSans-Medium', sans-serif;">
+              <span class="text-[20px]">🏆</span> Calon Murid Memiliki Prestasi Terverifikasi
+            </label>
+          </div>
+
+          <!-- 7. Rating Dukungan Orang Tua -->
+          <div class="flex flex-col gap-1">
+            <label for="rating_ortu" class="text-[#121c2a] text-[14px] font-semibold tracking-[0.7px]" style="font-family: 'WorkSans-SemiBold', sans-serif;">6. Rating Dukungan Orang Tua (Skala 1 - 10)</label>
+            <input type="number" name="rating_ortu" id="rating_ortu" min="1" max="10"
+                   value="{{ $student->hasil->rating_ortu ?? '8' }}" placeholder="Rating angka 1 s/d 10"
+                   class="w-full px-[17px] py-3 text-[14px] text-gray-800 border border-[#becabe] rounded-lg bg-[#f8f9ff] outline-none focus:border-[#298752]">
+            <div class="text-[#6f7a70] text-[12px] italic" style="font-family: 'WorkSans-Regular', sans-serif;">* 10 (Sangat Mendukung), 1 (Tidak Mendukung)</div>
+          </div>
+
+          <!-- 8. Catatan Penguji -->
+          <div class="flex flex-col gap-1">
+            <label for="catatan" class="text-[#121c2a] text-[14px] font-semibold tracking-[0.7px]" style="font-family: 'WorkSans-SemiBold', sans-serif;">7. Catatan &amp; Rekomendasi Penguji</label>
+            <textarea name="catatan" id="catatan" rows="4" placeholder="Tuliskan catatan khusus atau rekomendasi hasil wawancara di sini..."
+                      class="w-full px-[17px] py-3 text-[14px] text-gray-800 border border-[#becabe] rounded-lg bg-[#f8f9ff] outline-none focus:border-[#298752] resize-none">{{ $student->hasil->catatan_manual ?? '' }}</textarea>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="bg-[#eff4ff] border-t border-[#becabe] px-6 py-6 flex items-center justify-end gap-4 max-[480px]:flex-col max-[480px]:items-stretch">
+          <a href="{{ route('panitia.dashboard') }}" class="border border-[#6f7a70] rounded-lg px-10 py-3 text-[#3f4940] text-[16px] font-bold text-center no-underline" style="font-family: 'WorkSans-SemiBold', sans-serif;">
+            Batal
+          </a>
+          <button type="submit" class="bg-[#005b31] rounded-lg px-10 py-3 flex items-center justify-center gap-2 shadow-[0_4px_6px_-1px_rgba(0,0,0,0.1),0_2px_4px_-2px_rgba(0,0,0,0.1)] cursor-pointer">
+            <img class="w-[18px] h-[18px]" src="{{ asset('assets/panitia/grading/container34.svg') }}" alt="">
+            <span class="text-white text-[16px] font-bold" style="font-family: 'WorkSans-SemiBold', sans-serif;">Simpan Nilai &amp; Selesai</span>
           </button>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
 
     <!-- Footer Component Included -->
     @include('components.footer-panitia', ['isGrading' => true])
-
-    <!-- Progress Tracker -->
-    <div class="progress-tracker-placeholder">
-      <div class="container21">
-        <div class="container22">
-          <div class="background2">
-            <div class="text14">1</div>
-          </div>
-          <div class="margin3">
-            <div class="text15">Identitas</div>
-          </div>
-        </div>
-        <div class="horizontal-divider"></div>
-        <div class="container22">
-          <div class="background2" style="background: #0f7643;">
-            <div class="text14">2</div>
-          </div>
-          <div class="margin3">
-            <div class="text15" style="color: #0f7643;">Penilaian</div>
-          </div>
-        </div>
-        <div class="horizontal-divider2"></div>
-        <div class="container22">
-          <div class="border">
-            <div class="text16">3</div>
-          </div>
-          <div class="margin3">
-            <div class="text17">Selesai</div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 @endsection

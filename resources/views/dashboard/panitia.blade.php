@@ -2,11 +2,6 @@
 
 @section('title', 'Antrean Uji Wawancara - Penguji PMBM')
 
-@section('styles')
-  <link rel="stylesheet" href="{{ asset('assets/panitia/queue/vars.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/panitia/queue/style.css') }}">
-@endsection
-
 @section('content')
   <div class="relative min-h-screen bg-white flow-root">
     <!-- Panitia Sidebar/Topbar Included -->

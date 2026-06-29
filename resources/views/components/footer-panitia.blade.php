@@ -1,63 +1,11 @@
 <!-- Panitia Footer Component -->
-@if(isset($isGrading) && $isGrading)
-<div class="footer-shared-component2">
-  <div class="container">
-    <div class="text2">© 2026 PMBM Sistem. All Rights Reserved.</div>
-  </div>
-  <div class="margin">
-    <div class="container2">
-      <div class="link">
-        <div class="text2">Privacy Policy</div>
-      </div>
-      <div class="margin2">
-        <div class="text3">|</div>
-      </div>
-      <div class="link-margin">
-        <div class="link-help-center">Help Center</div>
-      </div>
-      <div class="margin2">
-        <div class="text3">|</div>
-      </div>
-      <div class="link-margin">
-        <div class="link-contact-admin">Contact Admin</div>
-      </div>
-    </div>
+<div class="relative bg-[#f8f9ff] border-t border-[#becabe] flex flex-col gap-1 items-center justify-center py-6 px-5">
+  <div class="text-[#3f4940] text-[14px]" style="font-family: 'WorkSans-Regular', sans-serif;">© 2026 PMBM Sistem. All Rights Reserved.</div>
+  <div class="flex items-center gap-4 mt-1 flex-wrap justify-center">
+    <div class="text-[#3f4940] text-[14px]" style="font-family: 'WorkSans-Regular', sans-serif;">Privacy Policy</div>
+    <div class="text-[#becabe] text-[12px]">|</div>
+    <div class="text-[#3f4940] text-[14px]" style="font-family: 'WorkSans-Regular', sans-serif;">Help Center</div>
+    <div class="text-[#becabe] text-[12px]">|</div>
+    <div class="text-[#3f4940] text-[14px]" style="font-family: 'WorkSans-Regular', sans-serif;">Contact Admin</div>
   </div>
 </div>
-@else
-<div class="footer-shared-component">
-  <div class="container3">
-    <div class="text4">© 2026 PMBM Sistem. All Rights Reserved.</div>
-  </div>
-  <div class="margin">
-    <div class="container7">
-      <div class="link">
-        <div class="text4">Privacy Policy</div>
-      </div>
-      <div class="margin2">
-        <div class="text5">|</div>
-      </div>
-      <div class="link-margin">
-        <div class="link-help-center">Help Center</div>
-      </div>
-      <div class="margin2">
-        <div class="text5">|</div>
-      </div>
-      <div class="link-margin">
-        <div class="link-contact-admin">Contact Admin</div>
-      </div>
-    </div>
-  </div>
-</div>
-@endif
-
-<style>
-  .footer-shared-component,
-  .footer-shared-component2 {
-    position: relative !important;
-    left: auto !important;
-    right: auto !important;
-    top: auto !important;
-    width: 100% !important;
-  }
-</style>
