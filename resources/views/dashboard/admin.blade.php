@@ -34,7 +34,7 @@
         </a>
 
         <!-- Total Keterima Card -->
-        <a href="{{ route('scores.index', ['status' => 'Keterima']) }}" class="flex-1 min-w-[200px] no-underline text-inherit">
+        <a href="{{ route('scores.index', ['status' => 'lulus']) }}" class="flex-1 min-w-[200px] no-underline text-inherit">
           <div class="bg-white border border-[#becabe] rounded-xl p-6 flex flex-col gap-1 w-full h-full transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(0,91,49,0.12)] hover:border-[#005b31]">
             <div class="flex flex-row items-start justify-between w-full">
               <img class="w-9 h-10" src="{{ asset('assets/admin/dashboard/background7.svg') }}" alt="">
@@ -50,7 +50,7 @@
         </a>
 
         <!-- Total Tidak Keterima Card -->
-        <a href="{{ route('scores.index', ['status' => 'Tidak Keterima']) }}" class="flex-1 min-w-[200px] no-underline text-inherit">
+        <a href="{{ route('scores.index', ['status' => 'tidak_lulus']) }}" class="flex-1 min-w-[200px] no-underline text-inherit">
           <div class="bg-white border border-[#becabe] rounded-xl p-6 flex flex-col gap-1 w-full h-full transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(185,28,28,0.12)] hover:border-[#b91c1c]">
             <div class="flex flex-row items-start justify-between w-full">
               <img class="w-9 h-[43px]" src="{{ asset('assets/admin/dashboard/background3.svg') }}" alt="">

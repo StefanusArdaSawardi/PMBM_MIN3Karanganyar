@@ -17,7 +17,14 @@ class LandingController extends Controller
     public function index()
     {
         $programs = Program::all();
-        return view('landing.home', compact('programs'));
+
+        $contentPath = storage_path('app/landing_content.json');
+        $landingContent = [];
+        if (file_exists($contentPath)) {
+            $landingContent = json_decode(file_get_contents($contentPath), true) ?? [];
+        }
+
+        return view('landing.home', compact('programs', 'landingContent'));
     }
 
     /**
