@@ -5,7 +5,29 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>@yield('title', 'PMBM MIN 3 Karanganyar')</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Roboto:wght@400;500;700&family=Work+Sans:wght@400;700&display=swap" rel="stylesheet">
+
   @yield('styles')
+  <style>
+   /* Map Figma-exported font-family aliases (e.g. "PlusJakartaSans-Bold") to the real webfont + weight loaded above */
+   @font-face { font-family: "PlusJakartaSans-Regular"; src: local("Plus Jakarta Sans"); font-weight: 400; }
+   @font-face { font-family: "PlusJakartaSans-SemiBold"; src: local("Plus Jakarta Sans SemiBold"); font-weight: 600; }
+   @font-face { font-family: "PlusJakartaSans-Bold"; src: local("Plus Jakarta Sans Bold"); font-weight: 700; }
+   @font-face { font-family: "PlusJakartaSans-ExtraBold"; src: local("Plus Jakarta Sans ExtraBold"); font-weight: 800; }
+   @font-face { font-family: "Roboto-Regular"; src: local("Roboto"); font-weight: 400; }
+   @font-face { font-family: "Roboto-Medium"; src: local("Roboto Medium"); font-weight: 500; }
+   @font-face { font-family: "Roboto-Bold"; src: local("Roboto Bold"); font-weight: 700; }
+   @font-face { font-family: "WorkSans-Regular"; src: local("Work Sans"); font-weight: 400; }
+   @font-face { font-family: "WorkSans-Bold"; src: local("Work Sans Bold"); font-weight: 700; }
+   @font-face { font-family: "HankenGrotesk-Regular"; src: local("Hanken Grotesk"); font-weight: 400; }
+   @font-face { font-family: "HankenGrotesk-SemiBold"; src: local("Hanken Grotesk SemiBold"); font-weight: 600; }
+   @font-face { font-family: "HankenGrotesk-Bold"; src: local("Hanken Grotesk Bold"); font-weight: 700; }
+
+   body { font-family: "Plus Jakarta Sans", "Work Sans", "Roboto", sans-serif; }
+  </style>
   <style>
    a,
    button,
@@ -55,12 +77,14 @@
   </div>
 
   <!-- Floating Action Button (FAB) -->
+  @unless(Request::routeIs('landing.kontak'))
   <button id="pmbmChatFab" class="pmbm-chat-fab" onclick="toggleChatbox()">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="display: block;">
       <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
     </svg>
     <span>Tanya Asisten PMBM</span>
   </button>
+  @endunless
 
   <style>
     /* Floating Chatbox Widget */

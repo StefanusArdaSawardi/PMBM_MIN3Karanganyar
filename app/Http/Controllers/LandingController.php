@@ -74,11 +74,11 @@ class LandingController extends Controller
     public function checkStatus(Request $request)
     {
         $request->validate([
-            'registration_number' => 'required|string',
+            'nisn' => 'required|string',
             'nama_murid' => 'required|string',
         ]);
 
-        $regNo = trim($request->input('registration_number'));
+        $nisn = trim($request->input('nisn'));
         $namaMurid = trim($request->input('nama_murid'));
 
         // Run waitlist cleanup
@@ -86,20 +86,14 @@ class LandingController extends Controller
             ->where('updated_at', '<', now()->subWeek())
             ->update(['status_kelulusan' => 'tidak_lulus']);
 
-        // Extract numeric ID from input e.g. "PMB-2026-001" or "001" or "1" -> 1
-        $id = null;
-        if (preg_match('/(\d+)$/', $regNo, $matches)) {
-            $id = intval($matches[1]);
-        }
-
-        $pendaftaran = Pendaftaran::where('id_pendaftaran', $id)
-            ->whereHas('calonMurid', function ($query) use ($namaMurid) {
-                $query->where('nama_murid', 'like', '%' . $namaMurid . '%');
+        $pendaftaran = Pendaftaran::whereHas('calonMurid', function ($query) use ($nisn, $namaMurid) {
+                $query->where('nisn', $nisn)
+                    ->where('nama_murid', 'like', '%' . $namaMurid . '%');
             })
             ->first();
 
         if (!$pendaftaran) {
-            return back()->with('error', 'Nomor Pendaftaran atau Nama Calon Murid tidak ditemukan.');
+            return back()->with('error', 'NISN atau Nama Calon Murid tidak ditemukan.');
         }
 
         // Store verification in session so they can edit their registration details securely

@@ -1,735 +1,162 @@
-.cek-kelulusan,
-.cek-kelulusan * {
+.cek-kelulusan-page,
+.cek-kelulusan-page * {
   box-sizing: border-box;
 }
-.cek-kelulusan {
+.cek-kelulusan-page {
   background: #e5e2e1;
-  height: 1402px;
   position: relative;
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+/* ===== Hero Section ===== */
+.cek-hero-section {
+  position: relative;
+  min-height: 380px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: 110px 24px 48px;
+}
+.cek-hero-bg {
+  position: absolute;
+  inset: 0;
   overflow: hidden;
 }
-.rectangle-22 {
-  background: rgba(15, 118, 67, 0.9);
-  border-radius: 20px;
-  width: 981px;
-  height: 40px;
+.cek-hero-bg img {
   position: absolute;
-  left: 230px;
-  top: 534px;
-}
-.rectangle-2 {
-  background: #d9d9d9;
-  width: 1440px;
-  height: 456px;
-  position: absolute;
-  left: 0px;
-  top: 0px;
-}
-.pmbm-min-3-karanganyar {
-  color: #000000;
-  text-align: left;
-  font-family: "PlusJakartaSans-Bold", sans-serif;
-  font-size: 20px;
-  line-height: 24px;
-  letter-spacing: -0.4px;
-  font-weight: 700;
-  position: absolute;
-  left: 223px;
-  top: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-.whats-app-image-2026-06-17-at-23-30-06-removebg-preview-1 {
-  width: 58px;
-  height: 58px;
-  position: absolute;
-  left: 160px;
-  top: 29px;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  aspect-ratio: 1;
 }
-.home {
-  color: #000000;
-  text-align: left;
-  font-family: "PlusJakartaSans-Bold", sans-serif;
-  font-size: 15px;
-  line-height: 24px;
-  letter-spacing: -0.4px;
-  font-weight: 700;
+.cek-hero-bg::after {
+  content: "";
   position: absolute;
-  left: 601px;
-  top: 46px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
 }
-.program {
-  color: #000000;
-  text-align: left;
-  font-family: "PlusJakartaSans-Bold", sans-serif;
-  font-size: 15px;
-  line-height: 24px;
-  letter-spacing: -0.4px;
-  font-weight: 700;
-  position: absolute;
-  left: 678px;
-  top: 46px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-.kelulusan {
-  color: #298752;
-  text-align: left;
-  font-family: "PlusJakartaSans-Bold", sans-serif;
-  font-size: 15px;
-  line-height: 24px;
-  letter-spacing: -0.4px;
-  font-weight: 700;
-  position: absolute;
-  left: 776px;
-  top: 46px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-.kontak {
-  color: #000000;
-  text-align: left;
-  font-family: "PlusJakartaSans-Bold", sans-serif;
-  font-size: 15px;
-  line-height: 24px;
-  letter-spacing: -0.4px;
-  font-weight: 700;
-  position: absolute;
-  left: 888px;
-  top: 46px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-.rectangle-3 {
-  background: rgba(15, 118, 67, 0);
-  border-style: solid;
-  border-color: #0f7643;
-  border-width: 1px;
-  width: 107px;
-  height: 36px;
-  position: absolute;
-  left: 1022px;
-  top: 40px;
-}
-.guide-pmbm {
-  color: rgba(15, 118, 67, 0.8);
-  text-align: left;
-  font-family: "PlusJakartaSans-Bold", sans-serif;
-  font-size: 15px;
-  line-height: 24px;
-  letter-spacing: -0.4px;
-  font-weight: 700;
-  position: absolute;
-  left: 1029px;
-  top: 46px;
-  width: 90px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-.rectangle-4 {
-  background: #064e3b;
-  border-style: solid;
-  border-color: #0f7643;
-  border-width: 1px;
-  width: 107px;
-  height: 36px;
-  position: absolute;
-  left: 1142px;
-  top: 40px;
-}
-.daftar {
-  color: rgba(255, 255, 255, 0.8);
+.cek-hero-content {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
   text-align: center;
-  font-family: "PlusJakartaSans-Bold", sans-serif;
-  font-size: 15px;
-  line-height: 24px;
-  letter-spacing: -0.4px;
-  font-weight: 700;
-  position: absolute;
-  left: 1172px;
-  top: 46px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
-.cek-status-kelulusan {
-  color: rgba(255, 255, 255, 0.8);
-  text-align: center;
+.cek-hero-title {
+  color: rgba(255, 255, 255, 0.9);
   font-family: "PlusJakartaSans-Bold", sans-serif;
-  font-size: 30px;
-  line-height: 24px;
-  letter-spacing: -0.4px;
+  font-size: clamp(22px, 4vw, 30px);
   font-weight: 700;
-  position: absolute;
-  left: 571px;
-  top: 212px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.04);
+  letter-spacing: -0.4px;
+  margin: 0 0 16px;
 }
-.halaman-resmi-pengumuman-hasil-seleksi-penerimaan-peserta-didik-baru-pmbm-min-3-karanganyar {
+.cek-hero-subtitle {
   color: #ffffff;
-  text-align: center;
   font-family: "Roboto-Regular", sans-serif;
-  font-size: 20px;
-  line-height: 24px;
-  letter-spacing: -0.4px;
-  font-weight: 400;
-  position: absolute;
-  left: 427px;
-  top: 260px;
-  width: 592px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.04);
-}
-.rectangle-16 {
-  background: #064e3b;
-  border-style: solid;
-  border-color: #000000;
-  border-width: 1px;
-  width: 1440px;
-  height: 364px;
-  position: absolute;
-  left: 0px;
-  top: 1038px;
-}
-.container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  position: absolute;
-  right: 539px;
-  left: 742px;
-  top: 1111px;
-}
-.heading-5 {
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  align-self: stretch;
-  flex-shrink: 0;
-  position: relative;
-}
-.informasi {
-  color: #4ae176;
-  text-align: left;
-  font-family: "WorkSans-Regular", sans-serif;
   font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ===== Form Card ===== */
+.cek-form-section {
+  max-width: 600px;
+  margin: -40px auto 64px;
+  padding: 0 24px;
   position: relative;
-  align-self: stretch;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
+  z-index: 2;
 }
-.list {
-  opacity: 0.8;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  align-self: stretch;
-  flex-shrink: 0;
-  position: relative;
-}
-.item {
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  align-self: stretch;
-  flex-shrink: 0;
-  position: relative;
-}
-.syarat-daftar {
-  color: #f8f9ff;
-  text-align: left;
-  font-family: "WorkSans-Regular", sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-  position: relative;
-  align-self: stretch;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-.biaya-pendidikan {
-  color: #f8f9ff;
-  text-align: left;
-  font-family: "WorkSans-Regular", sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-  position: relative;
-  align-self: stretch;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-.brosur-digital {
-  color: #f8f9ff;
-  text-align: left;
-  font-family: "WorkSans-Regular", sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-  position: relative;
-  align-self: stretch;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-.panduan-siswa {
-  color: #f8f9ff;
-  text-align: left;
-  font-family: "WorkSans-Regular", sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-  position: relative;
-  align-self: stretch;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-.sroyo-kec-jaten-kabupaten-karanganyar-jawa-tengah-57731 {
-  color: #f8f9ff;
-  text-align: left;
-  font-family: "WorkSans-Regular", sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-  position: absolute;
-  left: 1030px;
-  top: 1151px;
-  width: 266px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-._0812-2667-6554 {
-  color: #f8f9ff;
-  text-align: left;
-  font-family: "WorkSans-Regular", sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-  position: absolute;
-  left: 1030px;
-  top: 1201px;
-  width: 147px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-.min-3-kra-gmail-com {
-  color: #f8f9ff;
-  text-align: left;
-  font-family: "WorkSans-Regular", sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-  position: absolute;
-  left: 1030px;
-  top: 1235px;
-  width: 171px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-.hubungi-kami {
-  color: #4ae176;
-  text-align: left;
-  font-family: "WorkSans-Regular", sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-  position: absolute;
-  left: 991px;
-  top: 1111px;
-  width: 159px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-.container2 {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  position: absolute;
-  right: 921px;
-  left: 169px;
-  top: 1111px;
-}
-.heading-4 {
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  align-self: stretch;
-  flex-shrink: 0;
-  position: relative;
-}
-.pmbm-school {
-  color: #7ed99c;
-  text-align: left;
-  font-family: "PlusJakartaSans-Regular", sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-  position: relative;
-  align-self: stretch;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-.container3 {
-  opacity: 0.7;
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  align-self: stretch;
-  flex-shrink: 0;
-  position: relative;
-}
-.lembaga-pendidikan-unggulan-yang-berkomitmen-melahirkan-generasi-cerdas-berintegritas-tinggi-berakhlak-mulia-dan-siap-bersaing-di-kancah-global {
-  color: #f8f9ff;
-  text-align: left;
-  font-family: "WorkSans-Regular", sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-  position: relative;
-  align-self: stretch;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-.container4 {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  align-items: flex-start;
-  justify-content: flex-start;
-  position: absolute;
-  right: 730px;
-  left: 551px;
-  top: 1111px;
-}
-.jelajah {
-  color: #4ae176;
-  text-align: left;
-  font-family: "WorkSans-Regular", sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-  position: relative;
-  align-self: stretch;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-.beranda {
-  color: #f8f9ff;
-  text-align: left;
-  font-family: "WorkSans-Regular", sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-  position: relative;
-  align-self: stretch;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-.program-studi {
-  color: #f8f9ff;
-  text-align: left;
-  font-family: "WorkSans-Regular", sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-  position: relative;
-  align-self: stretch;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-.alur-pmb {
-  color: #f8f9ff;
-  text-align: left;
-  font-family: "WorkSans-Regular", sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-  position: relative;
-  align-self: stretch;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-.cek-kelulusan2 {
-  color: #f8f9ff;
-  text-align: left;
-  font-family: "WorkSans-Regular", sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-  position: relative;
-  align-self: stretch;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-._2026-pmbm-school-all-rights-reserved {
-  color: #f8f9ff;
-  text-align: center;
-  font-family: "WorkSans-Regular", sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 400;
-  opacity: 0.5;
-  position: absolute;
-  left: calc(50% - 551px);
-  top: 1316px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.container5 {
-  opacity: 0.6;
-  display: flex;
-  flex-direction: row;
-  gap: 4px;
-  align-items: center;
-  justify-content: flex-start;
-  position: absolute;
-  left: 1058px;
-  top: 1316px;
-}
-.text {
-  color: #f8f9ff;
-  text-align: center;
-  font-family: "WorkSans-Regular", sans-serif;
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 400;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.container6 {
-  display: flex;
-  flex-direction: column;
-  gap: 0px;
-  align-items: center;
-  justify-content: flex-start;
-  flex-shrink: 0;
-  height: auto;
-  position: relative;
-  overflow: visible;
-}
-.pin-duotone-line {
-  width: 24px;
-  height: 24px;
-  position: absolute;
-  left: 986px;
-  top: 1159px;
-  overflow: visible;
-}
-.phone-fill {
-  width: 24px;
-  height: 24px;
-  position: absolute;
-  left: 986px;
-  top: 1206px;
-  overflow: visible;
-}
-.message {
-  width: 24px;
-  height: 24px;
-  position: absolute;
-  left: 987px;
-  top: 1245px;
-  overflow: visible;
-}
-.rectangle-19 {
+.cek-form-card {
   background: #ffffff;
-  width: 980px;
-  height: 350px;
-  position: absolute;
-  left: 231px;
-  top: 560px;
-  box-shadow: 0px 4px 4px 0px rgba(255, 255, 255, 0.8);
+  border-radius: 16px;
+  box-shadow: 0px 4px 4px 0px rgba(255, 255, 255, 0.8), 0px 10px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
-.cek-kelulusan3 {
+.cek-form-card-accent {
+  height: 8px;
+  background: rgba(15, 118, 67, 0.9);
+}
+.cek-form-card-body {
+  padding: 40px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+.cek-form-title {
   color: #0f7643;
-  text-align: center;
   font-family: "Roboto-Medium", sans-serif;
-  font-size: 24px;
-  line-height: 24px;
-  letter-spacing: -0.4px;
+  font-size: 22px;
   font-weight: 500;
-  position: absolute;
-  left: 629px;
-  top: 592px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.rectangle-21 {
-  background: rgba(255, 255, 255, 0.8);
-  border-style: solid;
-  border-color: #1c1b1b;
-  border-width: 1px;
-  width: 248px;
-  height: 54px;
-  position: absolute;
-  left: 599px;
-  top: 653px;
-}
-.nomor-pendaftaran-nis {
-  color: rgba(63, 73, 64, 0.58);
+  letter-spacing: -0.4px;
+  margin: 0 0 8px;
   text-align: center;
+}
+.cek-form-field {
+  width: 100%;
+  max-width: 280px;
+}
+.cek-form-input {
+  width: 100%;
+  height: 50px;
+  padding: 0 18px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.8);
   font-family: "PlusJakartaSans-Regular", sans-serif;
   font-size: 15px;
-  line-height: 24px;
-  letter-spacing: -0.4px;
-  font-weight: 400;
-  position: absolute;
-  left: 640px;
-  top: 668px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  color: #1c1b1b;
+  outline: none;
+  transition: border-color 0.2s ease;
 }
-.rectangle-23 {
-  background: rgba(255, 255, 255, 0.8);
-  border-style: solid;
-  border-color: #000000;
-  border-width: 1px;
-  width: 248px;
-  height: 54px;
-  position: absolute;
-  left: 599px;
-  top: 736px;
-}
-.nama-siswa {
+.cek-form-input::placeholder {
   color: rgba(63, 73, 64, 0.58);
-  text-align: center;
+}
+.cek-form-input:focus {
+  border-color: #0f7643;
+}
+.cek-form-submit {
+  margin-top: 8px;
+  background: #005b31;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 40px;
+  font-family: "WorkSans-Bold", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -4px rgba(0, 0, 0, 0.1);
+  transition: background 0.2s ease;
+}
+.cek-form-submit:hover {
+  background: #064e3b;
+}
+
+.cek-flash-message {
+  max-width: 480px;
+  margin: 0 auto 24px;
+  padding: 12px 16px;
+  border-radius: 8px;
   font-family: "PlusJakartaSans-Regular", sans-serif;
-  font-size: 15px;
-  line-height: 24px;
-  letter-spacing: -0.4px;
-  font-weight: 400;
-  position: absolute;
-  left: 681px;
-  top: 751px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.button {
-  background: #005b31;
-  border-radius: 12px;
-  padding: 16px 32px 16px 32px;
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  align-items: center;
-  justify-content: center;
-  height: 40px;
-  position: absolute;
-  right: 671px;
-  left: 681px;
-  top: calc(50% - -126px);
-}
-.button-shadow {
-  background: rgba(255, 255, 255, 0);
-  border-radius: 12px;
-  flex-shrink: 0;
-  position: absolute;
-  right: 0px;
-  left: 0px;
-  bottom: 0px;
-  top: 0px;
-  box-shadow: 0px 4px 6px -4px rgba(0, 0, 0, 0.1),
-    0px 10px 15px -3px rgba(0, 0, 0, 0.1);
-}
-.cek {
-  color: #ffffff;
+  font-size: 13px;
   text-align: center;
-  font-family: "WorkSans-Bold", sans-serif;
-  font-size: 15px;
-  line-height: 24px;
-  font-weight: 700;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
-.button2 {
-  background: #005b31;
-  border-radius: 12px;
-  padding: 16px 32px 16px 32px;
-  display: flex;
-  flex-direction: row;
-  gap: 8px;
-  align-items: center;
-  justify-content: center;
-  height: 40px;
-  position: absolute;
-  right: 57px;
-  left: 1130px;
-  top: calc(50% - 55px);
+.cek-flash-error {
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  color: #b91c1c;
 }
-.tanya-asisten-pmbm {
-  color: #ffffff;
-  text-align: center;
-  font-family: "WorkSans-Bold", sans-serif;
-  font-size: 15px;
-  line-height: 24px;
-  font-weight: 700;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.cek-flash-success {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
-.comment {
-  width: 24px;
-  height: 24px;
-  position: absolute;
-  left: 1143px;
-  top: 654px;
-  overflow: visible;
+
+@media (max-width: 600px) {
+  .cek-form-card-body {
+    padding: 32px 24px;
+  }
 }

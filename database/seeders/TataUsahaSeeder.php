@@ -13,14 +13,16 @@ class TataUsahaSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\PengurusTataUsaha::create([
-            'nama_pengurus' => 'Admin Tata Usaha',
-            'email' => 'tata.usaha@min3karanganyar.sch.id',
-            'no_hp' => '081234567890',
-            'password' => Hash::make('TataUsaha@2026'),
-            'password_plain' => 'TataUsaha@2026',
-            'role' => 'super admin',
-        ]);
+        \App\Models\PengurusTataUsaha::firstOrCreate(
+            ['email' => 'tata.usaha@min3karanganyar.sch.id'],
+            [
+                'nama_pengurus' => 'Admin Tata Usaha',
+                'no_hp' => '081234567890',
+                'password' => Hash::make('TataUsaha@2026'),
+                'password_plain' => 'TataUsaha@2026',
+                'role' => 'super admin',
+            ]
+        );
 
         // Seed default FAQs
         $defaultFaqs = [
@@ -31,7 +33,7 @@ class TataUsahaSeeder extends Seeder
         ];
 
         foreach ($defaultFaqs as $faq) {
-            \App\Models\Faq::create($faq);
+            \App\Models\Faq::firstOrCreate(['question' => $faq['question']], $faq);
         }
 
         $this->command->info('✅ Akun Tata Usaha (Super Admin) & FAQ default berhasil dibuat!');

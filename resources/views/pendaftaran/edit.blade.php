@@ -313,7 +313,7 @@
         Catatan Penolakan dari Tata Usaha
       </h3>
       <p style="font-size: 14px; font-weight: bold; background: #ffffff; padding: 12px; border-radius: 8px; border-left: 4px solid #ef4444; margin-top: 8px; color: #374151;">
-        "{{ $pendaftaran->alasan_ditolak }}"
+        "{{ $pendaftaran->alasan_penolakan }}"
       </p>
       <p style="font-size: 12px; margin-top: 12px; color: #7f1d1d;">
         Silakan perbaiki data yang belum sesuai dan/atau unggah berkas baru yang diminta pada bagian dokumen di bawah.

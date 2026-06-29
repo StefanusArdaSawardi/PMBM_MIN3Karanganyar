@@ -13,7 +13,9 @@ return new class extends Migration
     public function up(): void
     {
         // Clear existing programs
+        Schema::disableForeignKeyConstraints();
         DB::table('programs')->truncate();
+        Schema::enableForeignKeyConstraints();
 
         // Insert new 3 programs
         DB::table('programs')->insert([
@@ -49,6 +51,8 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::disableForeignKeyConstraints();
         DB::table('programs')->truncate();
+        Schema::enableForeignKeyConstraints();
     }
 };

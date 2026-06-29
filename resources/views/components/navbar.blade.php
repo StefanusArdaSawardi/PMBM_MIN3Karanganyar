@@ -3,182 +3,169 @@
   $isProgramActive = Request::routeIs('landing.program-khusus') || Request::routeIs('landing.program-unggulan') || Request::routeIs('landing.program-fullday');
   $isKelulusanActive = Request::routeIs('landing.cek-kelulusan') || Request::routeIs('student.status.check') || Request::routeIs('landing.hasil-kelulusan');
   $isKontakActive = Request::routeIs('landing.kontak');
+  $isOnDark = in_array($activeFolder, ['home', 'program-khusus', 'program-unggulan', 'program-fullday', 'cek-kelulusan', 'hasil-kelulusan', 'kontak']);
 @endphp
 
 <!-- Navbar Component -->
-<div class="rectangle-2"></div>
-<div class="pmbm-min-3-karanganyar">PMBM MIN 3 KARANGANYAR</div>
-<img
-  class="whats-app-image-2026-06-17-at-23-30-06-removebg-preview-1"
-  src="{{ asset('assets/landing/' . $activeFolder . '/whats-app-image-2026-06-17-at-23-30-06-removebg-preview-10.png') }}"
-  alt="Logo MIN 3 Karanganyar"
-/>
-<a href="{{ route('home') }}" class="home {{ $isHomeActive ? 'active' : '' }}" style="cursor: pointer;">Home</a>
-<a href="{{ route('landing.program-khusus') }}" class="program {{ $isProgramActive ? 'active' : '' }}" style="cursor: pointer;">Program</a>
-<a href="{{ route('landing.cek-kelulusan') }}" class="kelulusan {{ $isKelulusanActive ? 'active' : '' }}" style="cursor: pointer;">Kelulusan</a>
-<a href="{{ route('landing.kontak') }}" class="kontak {{ $isKontakActive ? 'active' : '' }}" style="cursor: pointer;">Kontak</a>
+<nav class="site-navbar {{ $isOnDark ? 'site-navbar-on-dark' : '' }}">
+  <a href="{{ route('home') }}" class="navbar-brand">
+    <img
+      class="navbar-logo"
+      src="{{ asset('assets/landing/' . $activeFolder . '/whats-app-image-2026-06-17-at-23-30-06-removebg-preview-10.png') }}"
+      alt="Logo MIN 3 Karanganyar"
+    />
+    <span class="navbar-brand-text">PMBM MIN 3 KARANGANYAR</span>
+  </a>
 
-<!-- Guide PMBM Button -->
-<a href="{{ route('landing.guide') }}" class="rectangle-3" style="cursor: pointer;"></a>
-<a href="{{ route('landing.guide') }}" class="guide-pmbm" style="cursor: pointer;">Guide PMBM</a>
+  <div class="navbar-links">
+    <a href="{{ route('home') }}" class="navbar-link {{ $isHomeActive ? 'active' : '' }}">Home</a>
+    <a href="{{ route('landing.program-khusus') }}" class="navbar-link {{ $isProgramActive ? 'active' : '' }}">Program</a>
+    <a href="{{ route('landing.cek-kelulusan') }}" class="navbar-link {{ $isKelulusanActive ? 'active' : '' }}">Kelulusan</a>
+    <a href="{{ route('landing.kontak') }}" class="navbar-link {{ $isKontakActive ? 'active' : '' }}">Kontak</a>
+  </div>
 
-<!-- Daftar Button -->
-<a href="{{ route('student.register') }}" class="rectangle-4" style="cursor: pointer;"></a>
-<a href="{{ route('student.register') }}" class="daftar" style="cursor: pointer;">Daftar</a>
+  <div class="navbar-actions">
+    <a href="{{ route('landing.guide') }}" class="navbar-btn navbar-btn-outline">Guide PMBM</a>
+    <a href="{{ route('student.register') }}" class="navbar-btn navbar-btn-solid">Daftar</a>
+  </div>
+</nav>
 
 <style>
-  /* Unified navbar styling matching the Home page format */
-  .rectangle-2 {
-    background: rgba(196, 196, 196, 0.35) !important;
-    width: 1440px !important;
-    position: absolute !important;
-    left: 0px !important;
-    top: 0px !important;
-    z-index: 999 !important;
+  .site-navbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    background: rgba(196, 196, 196, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 16px 40px;
+    flex-wrap: wrap;
   }
-  
-  .pmbm-min-3-karanganyar {
-    color: #298752 !important; /* Theme green */
-    text-align: left !important;
-    font-family: "PlusJakartaSans-ExtraBold", sans-serif !important;
-    font-size: 20px !important;
-    line-height: 24px !important;
-    letter-spacing: -0.4px !important;
-    font-weight: 800 !important;
-    position: absolute !important;
-    left: 253px !important;
-    top: 50px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    z-index: 1000 !important;
+  .site-navbar-on-dark {
+    background: transparent;
   }
-  
-  .whats-app-image-2026-06-17-at-23-30-06-removebg-preview-1 {
-    width: 58px !important;
-    height: 58px !important;
-    position: absolute !important;
-    left: 190px !important;
-    top: 29px !important;
-    object-fit: cover !important;
-    aspect-ratio: 1 !important;
-    z-index: 1000 !important;
+  .site-navbar-on-dark .navbar-brand-text {
+    color: #ffffff;
   }
-  
-  /* Menu Items Common Styles */
-  .home, .program, .kelulusan, .kontak {
-    text-align: left !important;
-    font-family: "PlusJakartaSans-Bold", sans-serif !important;
-    font-size: 15px !important;
-    line-height: 24px !important;
-    letter-spacing: -0.4px !important;
-    font-weight: 700 !important;
-    position: absolute !important;
-    top: 46px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    transition: all 0.25s ease-in-out !important;
-    cursor: pointer !important;
-    z-index: 1000 !important;
-    pointer-events: auto !important;
+  .site-navbar-on-dark .navbar-link {
+    color: rgba(255, 255, 255, 0.85);
   }
-  
-  .home { left: 601px !important; }
-  .program { left: 678px !important; }
-  .kelulusan { left: 776px !important; }
-  .kontak { left: 888px !important; }
-  
-  /* Active states & Colors */
-  .home {
-    color: {{ $isHomeActive ? '#298752' : '#000000' }} !important;
+  .site-navbar-on-dark .navbar-link.active {
+    color: #ffffff;
+    text-decoration: underline;
   }
-  .program {
-    color: {{ $isProgramActive ? '#298752' : '#000000' }} !important;
+  .site-navbar-on-dark .navbar-link:hover {
+    color: #ffffff;
   }
-  .kelulusan {
-    color: {{ $isKelulusanActive ? '#298752' : '#000000' }} !important;
+  .navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
   }
-  .kontak {
-    color: {{ $isKontakActive ? '#298752' : '#000000' }} !important;
+  .navbar-logo {
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    aspect-ratio: 1;
+    flex-shrink: 0;
   }
-  
-  /* Hover effects */
-  .home:hover, .program:hover, .kelulusan:hover, .kontak:hover {
-    color: #298752 !important; /* Theme green */
-    transform: translateY(-1px) !important;
+  .navbar-brand-text {
+    color: #298752;
+    font-family: "PlusJakartaSans-ExtraBold", sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: -0.4px;
+    white-space: nowrap;
   }
-  
-  /* Buttons Positioning and Styles */
-  .rectangle-3 {
-    background: rgba(15, 118, 67, 0) !important;
-    border: 1px solid #0f7643 !important;
-    width: 107px !important;
-    height: 36px !important;
-    position: absolute !important;
-    left: 1022px !important;
-    top: 40px !important;
-    border-radius: 4px !important;
-    transition: all 0.25s ease-in-out !important;
-    z-index: 1000 !important;
+  .navbar-links {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    flex-wrap: wrap;
   }
-  .rectangle-3:hover {
-    background: rgba(41, 135, 82, 0.15) !important;
-    border-color: #298752 !important;
+  .navbar-link {
+    color: #000000;
+    font-family: "PlusJakartaSans-Bold", sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    text-decoration: none;
+    transition: color 0.25s ease-in-out, transform 0.25s ease-in-out;
+    white-space: nowrap;
   }
-  
-  .guide-pmbm {
-    color: rgba(15, 118, 67, 0.8) !important;
-    text-align: left !important;
-    font-family: "PlusJakartaSans-Bold", sans-serif !important;
-    font-size: 15px !important;
-    line-height: 24px !important;
-    letter-spacing: -0.4px !important;
-    font-weight: 700 !important;
-    position: absolute !important;
-    left: 1029px !important;
-    top: 46px !important;
-    width: 90px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    pointer-events: none !important; /* Let clicks pass through to the rectangle-3 link */
-    z-index: 1001 !important;
+  .navbar-link.active {
+    color: #298752;
   }
-  
-  .rectangle-4 {
-    background: #064e3b !important;
-    border: 1px solid #0f7643 !important;
-    width: 107px !important;
-    height: 36px !important;
-    position: absolute !important;
-    left: 1142px !important;
-    top: 40px !important;
-    border-radius: 4px !important;
-    transition: all 0.25s ease-in-out !important;
-    z-index: 1000 !important;
+  .navbar-link:hover {
+    color: #298752;
+    transform: translateY(-1px);
   }
-  .rectangle-4:hover {
-    background: #064e3b !important;
-    border-color: #064e3b !important;
+  .navbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
   }
-  
-  .daftar {
-    color: rgba(255, 255, 255, 0.8) !important;
-    text-align: center !important;
-    font-family: "PlusJakartaSans-Bold", sans-serif !important;
-    font-size: 15px !important;
-    line-height: 24px !important;
-    letter-spacing: -0.4px !important;
-    font-weight: 700 !important;
-    position: absolute !important;
-    left: 1172px !important;
-    top: 46px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    pointer-events: none !important; /* Let clicks pass through to the rectangle-4 link */
-    z-index: 1001 !important;
+  .navbar-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    padding: 0 18px;
+    border-radius: 4px;
+    font-family: "PlusJakartaSans-Bold", sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.25s ease-in-out;
+  }
+  .navbar-btn-outline {
+    background: rgba(15, 118, 67, 0);
+    border: 1px solid #0f7643;
+    color: #ffffff;
+  }
+  .navbar-btn-outline:hover {
+    background: rgba(41, 135, 82, 0.15);
+    border-color: #298752;
+    color: #ffffff;
+  }
+  .navbar-btn-solid {
+    background: #064e3b;
+    border: 1px solid #0f7643;
+    color: #ffffff;
+  }
+  .navbar-btn-solid:hover {
+    background: #056a4c;
+    border-color: #056a4c;
+    color: #ffffff;
+  }
+
+  @media (max-width: 1024px) {
+    .site-navbar {
+      padding: 12px 20px;
+    }
+    .navbar-links {
+      gap: 16px;
+      order: 3;
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .navbar-brand-text {
+      display: none;
+    }
+    .navbar-btn {
+      padding: 0 12px;
+      font-size: 13px;
+    }
   }
 </style>
-
