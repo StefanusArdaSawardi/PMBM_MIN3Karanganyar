@@ -16,6 +16,7 @@ class HasilWawancaraDanUjian extends Model
         'nilai_calistung',
         'nilai_tasmi',
         'nilai_mandiri',
+        'rating_ortu',
         'nilai_akhir',
         'catatan_otomatis',
         'catatan_manual',

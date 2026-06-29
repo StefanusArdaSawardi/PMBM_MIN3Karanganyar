@@ -279,18 +279,6 @@ class LandingController extends Controller
         $request->validate([
             // Student Data
             'nama_murid' => ['required', 'string', 'min:3', 'max:255', 'regex:/^[a-zA-Z\s\.\,]+$/'],
-            'nisn' => ['required', 'string', 'size:10', 'regex:/^[0-9]{10}$/'],
-            'id_program' => 'required|exists:programs,id_program',
-            'tempat_lahir' => ['required', 'string', 'min:3', 'max:100', 'regex:/^[a-zA-Z\s]+$/'],
-            'tanggal_lahir' => 'required|date|before:today',
-            'alamat' => 'required|string|min:10',
-            
-            // Father Data
-            'nama_ayah' => ['required', 'string', 'min:3', 'max:255', 'regex:/^[a-zA-Z\s\.\,]+$/'],
-            'pekerjaan_ayah' => 'nullable|string|min:3|max:100',
-            'nomor_telpon_ayah' => ['nullable', 'string', 'regex:/^(08|62)[0-9]{8,13}$/'],
-            'email_ayah' => 'nullable|email|max:100',
-
             'nik' => ['required', 'string', 'size:16', 'regex:/^[0-9]{16}$/'],
             'jenis_kelamin' => ['required', 'in:L,P'],
             'nisn' => ['required', 'string', 'size:10', 'regex:/^[0-9]{10}$/'],
@@ -298,13 +286,13 @@ class LandingController extends Controller
             'tempat_lahir' => ['required', 'string', 'min:3', 'max:100', 'regex:/^[a-zA-Z\s]+$/'],
             'tanggal_lahir' => 'required|date|before:today',
             'alamat' => 'required|string|min:10',
-            
+
             // Father Data
             'nama_ayah' => ['required', 'string', 'min:3', 'max:255', 'regex:/^[a-zA-Z\s\.\,]+$/'],
             'pekerjaan_ayah' => 'nullable|string|min:3|max:100',
             'nomor_telpon_ayah' => ['nullable', 'string', 'regex:/^(08|62)[0-9]{8,13}$/'],
             'email_ayah' => 'nullable|email|max:100',
- 
+
             // Mother Data
             'nama_ibu' => ['required', 'string', 'min:3', 'max:255', 'regex:/^[a-zA-Z\s\.\,]+$/'],
             'pekerjaan_ibu' => 'nullable|string|min:3|max:100',

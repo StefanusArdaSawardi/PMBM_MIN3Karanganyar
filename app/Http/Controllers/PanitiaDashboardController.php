@@ -78,7 +78,8 @@ class PanitiaDashboardController extends Controller
         $hasil->nilai_calistung = $request->nilai_calistung;
         $hasil->nilai_tasmi = $request->nilai_tasmi;
         $hasil->nilai_mandiri = $request->nilai_mandiri;
-        
+        $hasil->rating_ortu = $request->rating_ortu;
+
         // Calculate average for nilai_ujian (legacy compatibility)
         $hasil->nilai_ujian = round(
             ($request->nilai_hafalan + $request->nilai_wawancara + $request->nilai_calistung + $request->nilai_tasmi + $request->nilai_mandiri) / 5
