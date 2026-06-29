@@ -5,187 +5,129 @@
 @section('styles')
   <link rel="stylesheet" href="{{ asset('assets/admin/applicants/vars.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/admin/applicants/style.css') }}">
-  <style>
-    /* Make the desktop container scrollable */
-    .desktop-17 {
-        height: auto !important;
-        min-height: 100vh !important;
-        overflow: visible !important;
-        padding-bottom: 120px !important;
-    }
-    /* Scoping overlay form controls */
-    .filter-select {
-      width: 100%;
-      height: 100%;
-      padding: 0 40px 0 15px;
-      font-family: inherit;
-      font-size: 12px;
-      font-weight: bold;
-      color: #374151;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      background: #ffffff;
-      cursor: pointer;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      appearance: none;
-      outline: none;
-    }
-    .filter-select:focus {
-      border-color: #298752;
-    }
-  </style>
 @endsection
 
 @section('content')
-  <div class="desktop-17">
+  <div class="relative min-h-screen flow-root">
     <!-- Admin Sidebar Included -->
     @include('components.sidebar-admin', ['activeFolder' => 'applicants'])
 
-    <!-- Content Wrapper for alignments -->
-    <div style="position: absolute; left: 340px; top: 138px; right: 40px; display: flex; flex-direction: column; gap: 24px; z-index: 10;">
-      
+    <!-- Content Wrapper -->
+    <div class="absolute left-[340px] top-[138px] right-10 flex flex-col gap-6 z-10 max-[1024px]:left-5 max-[1024px]:right-5 max-[1024px]:top-[240px]">
+
       <!-- Section Header Description -->
-      <div class="section-header-description" style="position: relative !important; left: auto !important; top: auto !important; right: auto !important; width: 100% !important; margin: 0 !important; height: auto !important;">
-        <div class="heading-2">
-          <div class="daftar-pmbm">Daftar PMBM</div>
-        </div>
-        <div class="container" style="border: none; padding: 0;">
-          <div class="manage-and-monitor-university-applicants-for-the-current-academic-year">
-            Kelola dan pantau seluruh pendaftar calon siswa baru
-            <br />
-            MIN 3 Karanganyar periode aktif.
-          </div>
+      <div class="flex flex-col gap-1">
+        <div class="text-[#121c2a] text-[26px] font-bold" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Daftar PMBM</div>
+        <div class="text-[#3f4940] text-[14px]" style="font-family: 'WorkSans-Regular', sans-serif;">
+          Kelola dan pantau seluruh pendaftar calon siswa baru
+          <br class="max-[640px]:hidden">
+          MIN 3 Karanganyar periode aktif.
         </div>
       </div>
 
       <!-- Filters Section -->
-      <form action="{{ route('scores.index') }}" method="GET" style="display: flex; flex-direction: row; gap: 16px; width: 100%; align-items: stretch; margin: 0; position: relative;">
-        <!-- Year Filter -->
-        <div class="year-filter" style="flex: 1; position: relative; top: auto; left: auto; right: auto; width: auto; margin: 0;">
-          <div class="label">
-            <div class="tahun-pendaftaran">TAHUN PENDAFTARAN</div>
-          </div>
-          <div class="container" style="border: none; padding: 0; position: relative; width: 100%; height: 42px;">
-            <select name="tahun" class="filter-select" onchange="this.form.submit()">
-              <option value="2026" {{ request('tahun') == '2026' ? 'selected' : '' }}>2026 / 2027</option>
-              <option value="2025" {{ request('tahun') == '2025' ? 'selected' : '' }}>2025 / 2026</option>
-            </select>
-            <img class="container3" src="{{ asset('assets/admin/applicants/container3.svg') }}" style="pointer-events: none;" />
-          </div>
-        </div>
-        
-        <!-- Program Filter -->
-        <div class="program-filter" style="flex: 1; position: relative; top: auto; left: auto; right: auto; width: auto; margin: 0;">
-          <div class="label">
-            <div class="program-studi-jalur">PROGRAM / JALUR</div>
-          </div>
-          <div class="container" style="border: none; padding: 0; position: relative; width: 100%; height: 42px;">
-            <select name="program" class="filter-select" onchange="this.form.submit()">
-              <option value="">Semua Program</option>
-              @foreach($programs as $prog)
-                <option value="{{ $prog->id_program }}" {{ request('program') == $prog->id_program ? 'selected' : '' }}>
-                  {{ $prog->nama_program }}
-                </option>
-              @endforeach
-            </select>
-            <img class="container5" src="{{ asset('assets/admin/applicants/container9.svg') }}" style="pointer-events: none;" />
-          </div>
+      <form action="{{ route('scores.index') }}" method="GET" class="flex flex-row gap-4 items-stretch max-[768px]:flex-wrap">
+        <div class="flex-1 min-w-[150px] bg-[#eff4ff] border border-[#becabe] rounded-xl p-4 flex flex-col gap-2">
+          <label class="text-[#3f4940] text-[12px] font-medium" style="font-family: 'WorkSans-Medium', sans-serif;">TAHUN PENDAFTARAN</label>
+          <select name="tahun" onchange="this.form.submit()" class="w-full text-[12px] font-bold text-gray-700 border border-gray-300 rounded-lg bg-white px-4 py-2.5 cursor-pointer outline-none focus:border-[#298752]">
+            <option value="2026" {{ request('tahun') == '2026' ? 'selected' : '' }}>2026 / 2027</option>
+            <option value="2025" {{ request('tahun') == '2025' ? 'selected' : '' }}>2025 / 2026</option>
+          </select>
         </div>
 
-        <!-- Status Filter -->
-        <div class="status-filter" style="flex: 1; position: relative; top: auto; left: auto; right: auto; width: auto; margin: 0;">
-          <div class="label">
-            <div class="status">STATUS</div>
-          </div>
-          <div class="container" style="border: none; padding: 0; position: relative; width: 100%; height: 42px;">
-            <select name="status" class="filter-select" onchange="this.form.submit()">
-              <option value="">Semua Status</option>
-              <option value="Pending" {{ request('status') == 'Pending' ? 'selected' : '' }}>Baru / Perubahan Data</option>
-              <option value="Berkas Diterima" {{ request('status') == 'Berkas Diterima' ? 'selected' : '' }}>Berkas Diterima</option>
-              <option value="Berkas Ditolak" {{ request('status') == 'Berkas Ditolak' ? 'selected' : '' }}>Berkas Ditolak</option>
-              <option value="Berkas Onsite Diterima" {{ request('status') == 'Berkas Onsite Diterima' ? 'selected' : '' }}>Berkas Onsite Diterima</option>
-              <option value="Lulus" {{ request('status') == 'Lulus' ? 'selected' : '' }}>Lulus</option>
-              <option value="Tidak Lulus" {{ request('status') == 'Tidak Lulus' ? 'selected' : '' }}>Tidak Lulus</option>
-              <option value="Cadangan" {{ request('status') == 'Cadangan' ? 'selected' : '' }}>Cadangan</option>
-              <option value="Diterima" {{ request('status') == 'Diterima' ? 'selected' : '' }}>Diterima (Daftar Ulang)</option>
-              <option value="Mengundurkan Diri" {{ request('status') == 'Mengundurkan Diri' ? 'selected' : '' }}>Mengundurkan Diri</option>
-            </select>
-            <img class="container4" src="{{ asset('assets/admin/applicants/container6.svg') }}" style="pointer-events: none;" />
-          </div>
+        <div class="flex-1 min-w-[150px] bg-[#eff4ff] border border-[#becabe] rounded-xl p-4 flex flex-col gap-2">
+          <label class="text-[#3f4940] text-[12px] font-medium" style="font-family: 'WorkSans-Medium', sans-serif;">PROGRAM / JALUR</label>
+          <select name="program" onchange="this.form.submit()" class="w-full text-[12px] font-bold text-gray-700 border border-gray-300 rounded-lg bg-white px-4 py-2.5 cursor-pointer outline-none focus:border-[#298752]">
+            <option value="">Semua Program</option>
+            @foreach($programs as $prog)
+              <option value="{{ $prog->id_program }}" {{ request('program') == $prog->id_program ? 'selected' : '' }}>
+                {{ $prog->nama_program }}
+              </option>
+            @endforeach
+          </select>
         </div>
 
-        <!-- Limit Display Filter -->
-        <div class="year-filter" style="flex: 1; position: relative; top: auto; left: auto; right: auto; width: auto; margin: 0;">
-          <div class="label">
-            <div class="status">BATAS TAMPILAN</div>
-          </div>
-          <div class="container" style="border: none; padding: 0; position: relative; width: 100%; height: 42px;">
-            <select name="limit" class="filter-select" onchange="this.form.submit()">
-              <option value="5" {{ (isset($limit) && $limit == 5) ? 'selected' : '' }}>5 Data</option>
-              <option value="10" {{ (isset($limit) && $limit == 10) ? 'selected' : '' }}>10 Data</option>
-              <option value="20" {{ (isset($limit) && $limit == 20) ? 'selected' : '' }}>20 Data</option>
-              <option value="30" {{ (isset($limit) && $limit == 30) ? 'selected' : '' }}>30 Data</option>
-            </select>
-            <img class="container4" src="{{ asset('assets/admin/applicants/container6.svg') }}" style="pointer-events: none;" />
-          </div>
+        <div class="flex-1 min-w-[150px] bg-[#eff4ff] border border-[#becabe] rounded-xl p-4 flex flex-col gap-2">
+          <label class="text-[#3f4940] text-[12px] font-medium" style="font-family: 'WorkSans-Medium', sans-serif;">STATUS</label>
+          <select name="status" onchange="this.form.submit()" class="w-full text-[12px] font-bold text-gray-700 border border-gray-300 rounded-lg bg-white px-4 py-2.5 cursor-pointer outline-none focus:border-[#298752]">
+            <option value="">Semua Status</option>
+            <option value="Pending" {{ request('status') == 'Pending' ? 'selected' : '' }}>Baru / Perubahan Data</option>
+            <option value="Berkas Diterima" {{ request('status') == 'Berkas Diterima' ? 'selected' : '' }}>Berkas Diterima</option>
+            <option value="Berkas Ditolak" {{ request('status') == 'Berkas Ditolak' ? 'selected' : '' }}>Berkas Ditolak</option>
+            <option value="Berkas Onsite Diterima" {{ request('status') == 'Berkas Onsite Diterima' ? 'selected' : '' }}>Berkas Onsite Diterima</option>
+            <option value="Lulus" {{ request('status') == 'Lulus' ? 'selected' : '' }}>Lulus</option>
+            <option value="Tidak Lulus" {{ request('status') == 'Tidak Lulus' ? 'selected' : '' }}>Tidak Lulus</option>
+            <option value="Cadangan" {{ request('status') == 'Cadangan' ? 'selected' : '' }}>Cadangan</option>
+            <option value="Diterima" {{ request('status') == 'Diterima' ? 'selected' : '' }}>Diterima (Daftar Ulang)</option>
+            <option value="Mengundurkan Diri" {{ request('status') == 'Mengundurkan Diri' ? 'selected' : '' }}>Mengundurkan Diri</option>
+          </select>
+        </div>
+
+        <div class="flex-1 min-w-[150px] bg-[#eff4ff] border border-[#becabe] rounded-xl p-4 flex flex-col gap-2">
+          <label class="text-[#3f4940] text-[12px] font-medium" style="font-family: 'WorkSans-Medium', sans-serif;">BATAS TAMPILAN</label>
+          <select name="limit" onchange="this.form.submit()" class="w-full text-[12px] font-bold text-gray-700 border border-gray-300 rounded-lg bg-white px-4 py-2.5 cursor-pointer outline-none focus:border-[#298752]">
+            <option value="5" {{ (isset($limit) && $limit == 5) ? 'selected' : '' }}>5 Data</option>
+            <option value="10" {{ (isset($limit) && $limit == 10) ? 'selected' : '' }}>10 Data</option>
+            <option value="20" {{ (isset($limit) && $limit == 20) ? 'selected' : '' }}>20 Data</option>
+            <option value="30" {{ (isset($limit) && $limit == 30) ? 'selected' : '' }}>30 Data</option>
+          </select>
         </div>
       </form>
 
       <!-- Header List Toolbar -->
-      <div class="section-actions-tools" style="position: relative !important; left: auto !important; top: auto !important; right: auto !important; width: 100% !important; margin: 0 !important; display: flex !important; flex-direction: row !important; justify-content: space-between !important; align-items: center !important;">
-        <div class="heading-3-recent-applicants">Recent Applicants</div>
-        <div class="container6">
-          <div class="button" onclick="alert('Eksport data dalam proses pengembangan')" style="cursor: pointer;">
-            <img class="container7" src="{{ asset('assets/admin/applicants/container11.svg') }}" />
-            <div class="text2">Export PDF</div>
-          </div>
-          <div class="button2" onclick="alert('Eksport data dalam proses pengembangan')" style="cursor: pointer;">
-            <img class="container8" src="{{ asset('assets/admin/applicants/container12.svg') }}" />
-            <div class="text2">Export Excel</div>
-          </div>
+      <div class="flex flex-row justify-between items-center max-[640px]:flex-col max-[640px]:items-start max-[640px]:gap-3">
+        <div class="text-[#121c2a] text-[20px] font-semibold" style="font-family: 'PlusJakartaSans-SemiBold', sans-serif;">Recent Applicants</div>
+        <div class="flex flex-row gap-2">
+          <button type="button" onclick="alert('Eksport data dalam proses pengembangan')" class="bg-[#e6eeff] border border-[#becabe] rounded-lg px-4 py-2 flex items-center gap-2 cursor-pointer">
+            <img class="w-4 h-4" src="{{ asset('assets/admin/applicants/container11.svg') }}" />
+            <span class="text-[#3f4940] text-[14px] font-semibold tracking-[0.7px]">Export PDF</span>
+          </button>
+          <button type="button" onclick="alert('Eksport data dalam proses pengembangan')" class="bg-[#e6eeff] border border-[#becabe] rounded-lg px-4 py-2 flex items-center gap-2 cursor-pointer">
+            <img class="w-4 h-4" src="{{ asset('assets/admin/applicants/container12.svg') }}" />
+            <span class="text-[#3f4940] text-[14px] font-semibold tracking-[0.7px]">Export Excel</span>
+          </button>
         </div>
       </div>
 
-      <!-- Applicants List Loop -->
-      <div class="section-applicant-list-responsive-cards-for-mobile-table-like-for-desktop" style="position: relative !important; left: auto !important; top: auto !important; right: auto !important; width: 100% !important; margin: 0 !important; height: auto !important; min-height: 400px; display: flex; flex-direction: column; gap: 15px; overflow: visible;">
+      <!-- Applicants List -->
+      <div class="flex flex-col gap-4 min-h-[400px]">
         @forelse($pendaftarans as $item)
-          <div class="applicant-card-1" style="position: relative; margin-bottom: 5px; height: 110px; width: 100%; background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: border-color 0.2s;" onmouseover="this.style.borderColor='#7ed99c'" onmouseout="this.style.borderColor='#e5e7eb'">
-            <!-- Program Info (Left Column) -->
-            <div style="position: absolute; left: 0; top: 0; width: 180px; height: 100%; border-right: 1px solid #e5e7eb; display: flex; flex-direction: column; justify-content: center; padding-left: 20px;">
-              <div style="color: #6b7280; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 4px;">PROGRAM</div>
-              <div style="font-size: 12px; font-weight: bold; color: #111827;">{{ $item->program->nama_program }}</div>
+          <div class="relative bg-white border border-gray-200 rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.05)] transition-colors hover:border-[#7ed99c] flex flex-row max-[768px]:flex-col">
+            <!-- Program Info -->
+            <div class="w-[180px] shrink-0 border-r border-gray-200 flex flex-col justify-center px-5 py-4 max-[768px]:w-full max-[768px]:border-r-0 max-[768px]:border-b">
+              <div class="text-gray-500 text-[9px] font-bold tracking-[0.5px] uppercase mb-1">PROGRAM</div>
+              <div class="text-[12px] font-bold text-gray-900">{{ $item->program->nama_program }}</div>
             </div>
-            
-            <!-- Details (Right Column Flexbox) -->
-            <div style="position: absolute; left: 190px; top: 0; right: 0; height: 100%; display: flex; flex-direction: row; align-items: center; justify-content: space-between; padding-right: 20px;">
-              <!-- Avatar & Name Info -->
-              <div style="display: flex; align-items: center; gap: 12px; width: 220px;">
-                <div style="background: #298752; color: #ffffff; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px;">
+
+            <!-- Details -->
+            <div class="flex-1 flex flex-row items-center justify-between gap-4 px-5 py-4 flex-wrap max-[768px]:flex-col max-[768px]:items-start max-[768px]:gap-3">
+              <!-- Avatar & Name -->
+              <div class="flex items-center gap-3 w-[220px] max-[768px]:w-full">
+                <div class="bg-[#298752] text-white w-11 h-11 rounded-full flex items-center justify-center font-bold text-[16px] shrink-0">
                   {{ strtoupper(substr($item->calonMurid->nama_murid, 0, 2)) }}
                 </div>
-                <div style="display: flex; flex-direction: column; justify-content: center; overflow: hidden;">
-                  <div style="font-size: 14px; font-weight: bold; color: #111827; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">{{ $item->calonMurid->nama_murid }}</div>
-                  <div style="font-size: 11px; color: #6b7280; margin-top: 2px;">No Reg: PMB-2026-{{ str_pad($item->id_pendaftaran, 3, '0', STR_PAD_LEFT) }}</div>
+                <div class="flex flex-col justify-center overflow-hidden">
+                  <div class="text-[14px] font-bold text-gray-900 text-ellipsis overflow-hidden whitespace-nowrap">{{ $item->calonMurid->nama_murid }}</div>
+                  <div class="text-[11px] text-gray-500 mt-0.5">No Reg: PMB-2026-{{ str_pad($item->id_pendaftaran, 3, '0', STR_PAD_LEFT) }}</div>
                 </div>
               </div>
-              
-              <!-- Phone Number -->
-              <div style="font-size: 13px; color: #374151; font-weight: 500; min-width: 120px;">
+
+              <!-- Phone -->
+              <div class="text-[13px] text-gray-700 font-medium min-w-[120px]">
                 {{ $item->calonMurid->ibu->nomor_telpon ?? 'No Telpon' }}
               </div>
-              
-              <!-- Email Address -->
-              <div style="font-size: 13px; color: #6b7280; min-width: 180px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+
+              <!-- Email -->
+              <div class="text-[13px] text-gray-500 min-w-[180px] max-w-[220px] text-ellipsis overflow-hidden whitespace-nowrap">
                 {{ $item->calonMurid->email ?? $item->calonMurid->ibu->email }}
               </div>
-              
+
               <!-- Status Badge -->
               @php
                 $badgeBg = '#fffbeb';
                 $badgeBorder = '#fde68a';
                 $badgeText = '#d97706';
-                
+
                 if (in_array($item->status, ['Lulus', 'Diterima', 'Berkas Diterima', 'Berkas Onsite Diterima', 'Diterima di Program Pilihan'])) {
                     $badgeBg = '#ecfdf5';
                     $badgeBorder = '#a7f3d0';
@@ -200,49 +142,43 @@
                     $badgeText = '#c2410c';
                 }
               @endphp
-              <div style="background: {{ $badgeBg }}; border: 1px solid {{ $badgeBorder }}; border-radius: 9999px; padding: 6px 12px; display: flex; align-items: center; justify-content: center; min-width: 120px; height: 28px; flex-shrink: 0;">
-                <div style="color: {{ $badgeText }}; font-size: 9px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; text-align: center;">
+              <div class="rounded-full px-3 py-1.5 flex items-center justify-center min-w-[120px] h-7 shrink-0" style="background: {{ $badgeBg }}; border: 1px solid {{ $badgeBorder }};">
+                <div class="text-[9px] font-extrabold tracking-[0.5px] uppercase text-center" style="color: {{ $badgeText }};">
                   {{ $item->status === 'Pending' ? 'BARU / PENDING' : $item->status }}
                 </div>
               </div>
-              
-              <!-- Detail Action Button -->
-              <div style="display: flex; align-items: center;">
-                <a href="{{ route('tata_usaha.detail', $item->id_pendaftaran) }}" style="display: flex; align-items: center; justify-content: center; text-decoration: none; width: 70px; height: 32px; background: #298752; border-radius: 6px; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#064e3b'" onmouseout="this.style.backgroundColor='#298752'">
-                  <span style="font-size: 11px; font-weight: bold; color: #ffffff;">Detail</span>
-                </a>
-              </div>
+
+              <!-- Detail Button -->
+              <a href="{{ route('tata_usaha.detail', $item->id_pendaftaran) }}" class="flex items-center justify-center no-underline w-[70px] h-8 bg-[#298752] rounded-md transition-colors hover:bg-[#064e3b]">
+                <span class="text-[11px] font-bold text-white">Detail</span>
+              </a>
             </div>
           </div>
         @empty
-          <div style="text-align: center; color: #6b7280; padding: 40px; font-size: 14px;">
+          <div class="text-center text-gray-500 py-10 text-[14px]">
             Tidak ada calon pendaftar yang cocok dengan filter yang dipilih.
           </div>
         @endforelse
       </div>
 
-      <!-- Pagination Section -->
-      <div class="section-pagination" style="position: relative !important; left: auto !important; top: auto !important; right: auto !important; width: 100% !important; margin-top: 20px !important; display: flex; flex-direction: column; align-items: center; gap: 16px;">
-        <div class="container14">
-          <div class="text8">
-            <span>
-              <span class="text-8-span">Showing</span>
-              <span class="text-8-span2">1 to {{ count($pendaftarans) }}</span>
-              <span class="text-8-span">of</span>
-              <span class="text-8-span2">{{ count($pendaftarans) }}</span>
-              <span class="text-8-span">results</span>
-            </span>
-          </div>
+      <!-- Pagination -->
+      <div class="flex flex-col items-center gap-4 py-6">
+        <div class="text-[16px]">
+          <span class="text-[#3f4940]">Showing</span>
+          <span class="text-[#121c2a] font-semibold">1 to {{ count($pendaftarans) }}</span>
+          <span class="text-[#3f4940]">of</span>
+          <span class="text-[#121c2a] font-semibold">{{ count($pendaftarans) }}</span>
+          <span class="text-[#3f4940]">results</span>
         </div>
-        <div class="container15">
-          <div class="button4">
-            <img class="container16" src="{{ asset('assets/admin/applicants/container51.svg') }}" />
+        <div class="flex items-center gap-1">
+          <div class="rounded-lg w-8 h-8 flex items-center justify-center">
+            <img class="w-auto" src="{{ asset('assets/admin/applicants/container51.svg') }}" />
           </div>
-          <div class="button5">
-            <div class="text9">1</div>
+          <div class="bg-[#005b31] rounded-lg w-8 h-8 flex items-center justify-center">
+            <div class="text-white text-[16px]">1</div>
           </div>
-          <div class="button4">
-            <img class="container18" src="{{ asset('assets/admin/applicants/container53.svg') }}" />
+          <div class="rounded-lg w-8 h-8 flex items-center justify-center">
+            <img class="w-auto" src="{{ asset('assets/admin/applicants/container53.svg') }}" />
           </div>
         </div>
       </div>
