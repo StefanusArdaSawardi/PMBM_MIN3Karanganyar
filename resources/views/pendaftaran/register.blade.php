@@ -47,8 +47,8 @@
       content: '';
       position: absolute;
       top: 20px;
-      left: 22px;
-      right: 22px;
+      left: 12.5%;
+      right: 12.5%;
       height: 4px;
       background: #e5e7eb;
       z-index: 1;
@@ -57,8 +57,8 @@
     .stepper-progress {
       position: absolute;
       top: 20px;
-      left: 22px;
-      right: 22px;
+      left: 12.5%;
+      right: 12.5%;
       height: 4px;
       background: #298752;
       z-index: 1;
