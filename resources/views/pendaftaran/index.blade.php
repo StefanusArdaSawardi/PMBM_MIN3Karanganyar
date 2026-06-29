@@ -51,15 +51,15 @@
           <label class="text-[#3f4940] text-[12px] font-medium" style="font-family: 'WorkSans-Medium', sans-serif;">STATUS</label>
           <select name="status" onchange="this.form.submit()" class="w-full text-[12px] font-bold text-gray-700 border border-gray-300 rounded-lg bg-white px-4 py-2.5 cursor-pointer outline-none focus:border-[#298752]">
             <option value="">Semua Status</option>
-            <option value="Pending" {{ request('status') == 'Pending' ? 'selected' : '' }}>Baru / Perubahan Data</option>
-            <option value="Berkas Diterima" {{ request('status') == 'Berkas Diterima' ? 'selected' : '' }}>Berkas Diterima</option>
-            <option value="Berkas Ditolak" {{ request('status') == 'Berkas Ditolak' ? 'selected' : '' }}>Berkas Ditolak</option>
-            <option value="Berkas Onsite Diterima" {{ request('status') == 'Berkas Onsite Diterima' ? 'selected' : '' }}>Berkas Onsite Diterima</option>
-            <option value="Lulus" {{ request('status') == 'Lulus' ? 'selected' : '' }}>Lulus</option>
-            <option value="Tidak Lulus" {{ request('status') == 'Tidak Lulus' ? 'selected' : '' }}>Tidak Lulus</option>
-            <option value="Cadangan" {{ request('status') == 'Cadangan' ? 'selected' : '' }}>Cadangan</option>
-            <option value="Diterima" {{ request('status') == 'Diterima' ? 'selected' : '' }}>Diterima (Daftar Ulang)</option>
-            <option value="Mengundurkan Diri" {{ request('status') == 'Mengundurkan Diri' ? 'selected' : '' }}>Mengundurkan Diri</option>
+            <option value="menunggu_verifikasi" {{ request('status') == 'menunggu_verifikasi' ? 'selected' : '' }}>Baru / Menunggu Verifikasi</option>
+            <option value="terverifikasi" {{ request('status') == 'terverifikasi' ? 'selected' : '' }}>Berkas Diterima</option>
+            <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Berkas Ditolak</option>
+            <option value="terverifikasi_onsite" {{ request('status') == 'terverifikasi_onsite' ? 'selected' : '' }}>Berkas Onsite Diterima</option>
+            <option value="lulus" {{ request('status') == 'lulus' ? 'selected' : '' }}>Lulus</option>
+            <option value="tidak_lulus" {{ request('status') == 'tidak_lulus' ? 'selected' : '' }}>Tidak Lulus</option>
+            <option value="cadangan" {{ request('status') == 'cadangan' ? 'selected' : '' }}>Cadangan</option>
+            <option value="terkonfirmasi" {{ request('status') == 'terkonfirmasi' ? 'selected' : '' }}>Diterima (Daftar Ulang)</option>
+            <option value="mengundurkan_diri" {{ request('status') == 'mengundurkan_diri' ? 'selected' : '' }}>Mengundurkan Diri</option>
           </select>
         </div>
 
@@ -128,15 +128,15 @@
                 $badgeBorder = '#fde68a';
                 $badgeText = '#d97706';
 
-                if (in_array($item->status, ['Lulus', 'Diterima', 'Berkas Diterima', 'Berkas Onsite Diterima', 'Diterima di Program Pilihan'])) {
+                if (in_array($item->status_label, ['Lulus', 'Diterima (Daftar Ulang)', 'Berkas Diterima', 'Berkas Onsite Diterima'])) {
                     $badgeBg = '#ecfdf5';
                     $badgeBorder = '#a7f3d0';
                     $badgeText = '#047857';
-                } elseif (in_array($item->status, ['Tidak Lulus', 'Berkas Ditolak', 'Mengundurkan Diri', 'Ditolak'])) {
+                } elseif (in_array($item->status_label, ['Tidak Lulus', 'Berkas Ditolak', 'Mengundurkan Diri'])) {
                     $badgeBg = '#fef2f2';
                     $badgeBorder = '#fca5a5';
                     $badgeText = '#b91c1c';
-                } elseif ($item->status === 'Pindahkan ke Program Reguler') {
+                } elseif ($item->status_label === 'Cadangan') {
                     $badgeBg = '#fff7ed';
                     $badgeBorder = '#ffedd5';
                     $badgeText = '#c2410c';
@@ -144,7 +144,7 @@
               @endphp
               <div class="rounded-full px-3 py-1.5 flex items-center justify-center min-w-[120px] h-7 shrink-0" style="background: {{ $badgeBg }}; border: 1px solid {{ $badgeBorder }};">
                 <div class="text-[9px] font-extrabold tracking-[0.5px] uppercase text-center" style="color: {{ $badgeText }};">
-                  {{ $item->status === 'Pending' ? 'BARU / PENDING' : $item->status }}
+                  {{ strtoupper($item->status_label) }}
                 </div>
               </div>
 

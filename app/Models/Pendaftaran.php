@@ -43,6 +43,38 @@ class Pendaftaran extends Model
         return $this->status_kelulusan === 'cadangan';
     }
 
+    public function getStatusLabelAttribute()
+    {
+        if ($this->status_verifikasi === 'ditolak') {
+            return 'Berkas Ditolak';
+        }
+        if ($this->status_verifikasi === 'menunggu_verifikasi') {
+            return 'Baru / Menunggu Verifikasi';
+        }
+        if ($this->status_verifikasi === 'terverifikasi') {
+            return 'Berkas Diterima';
+        }
+        if ($this->status_verifikasi === 'terverifikasi_onsite' && is_null($this->status_kelulusan)) {
+            return 'Berkas Onsite Diterima';
+        }
+        if ($this->status_kelulusan === 'lulus') {
+            if ($this->status_konfirmasi === 'terkonfirmasi') {
+                return 'Diterima (Daftar Ulang)';
+            }
+            if ($this->status_konfirmasi === 'mengundurkan_diri') {
+                return 'Mengundurkan Diri';
+            }
+            return 'Lulus';
+        }
+        if ($this->status_kelulusan === 'cadangan') {
+            return 'Cadangan';
+        }
+        if ($this->status_kelulusan === 'tidak_lulus') {
+            return 'Tidak Lulus';
+        }
+        return 'Pending';
+    }
+
     public function calonMurid()
     {
         return $this->belongsTo(CalonMurid::class, 'id_murid', 'id_murid');
