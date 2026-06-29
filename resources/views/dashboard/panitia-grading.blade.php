@@ -124,8 +124,8 @@
           <!-- 7. Rating Dukungan Orang Tua -->
           <div class="flex flex-col gap-1">
             <label for="rating_ortu" class="text-[#121c2a] text-[14px] font-semibold tracking-[0.7px]" style="font-family: 'WorkSans-SemiBold', sans-serif;">6. Rating Dukungan Orang Tua (Skala 1 - 10)</label>
-            <input type="number" name="rating_ortu" id="rating_ortu" min="1" max="10"
-                   value="{{ $student->hasil->rating_ortu ?? '8' }}" placeholder="Rating angka 1 s/d 10"
+            <input type="number" name="rating_ortu" id="rating_ortu" required min="1" max="10"
+                   value="{{ $student->hasil->rating_ortu ?? '' }}" placeholder="Rating angka 1 s/d 10"
                    class="w-full px-[17px] py-3 text-[14px] text-gray-800 border border-[#becabe] rounded-lg bg-[#f8f9ff] outline-none focus:border-[#298752]">
             <div class="text-[#6f7a70] text-[12px] italic" style="font-family: 'WorkSans-Regular', sans-serif;">* 10 (Sangat Mendukung), 1 (Tidak Mendukung)</div>
           </div>
