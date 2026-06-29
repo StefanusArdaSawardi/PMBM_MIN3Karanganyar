@@ -50,3 +50,14 @@
   </div>
 </div>
 @endif
+
+<style>
+  .footer-shared-component,
+  .footer-shared-component2 {
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    width: 100% !important;
+  }
+</style>

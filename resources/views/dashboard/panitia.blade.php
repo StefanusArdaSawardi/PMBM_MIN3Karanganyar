@@ -5,158 +5,102 @@
 @section('styles')
   <link rel="stylesheet" href="{{ asset('assets/panitia/queue/vars.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/panitia/queue/style.css') }}">
-  <style>
-    .queue-container {
-      position: absolute;
-      left: 280px;
-      top: 220px;
-      right: 40px;
-      background: #ffffff;
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-      padding: 24px;
-      font-family: sans-serif;
-    }
-    .queue-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-    }
-    .queue-table th {
-      text-align: left;
-      padding: 12px;
-      border-bottom: 2px solid #f3f4f6;
-      color: #4b5563;
-      font-weight: bold;
-      text-transform: uppercase;
-      font-size: 11px;
-    }
-    .queue-table td {
-      padding: 15px 12px;
-      border-bottom: 1px solid #f3f4f6;
-      color: #1f2937;
-    }
-    .queue-table tr:hover {
-      background: #f9fafb;
-    }
-    .btn-grade {
-      background: #298752;
-      color: #ffffff;
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-weight: bold;
-      text-decoration: none;
-      font-size: 12px;
-    }
-    .btn-grade:hover {
-      background: #064e3b;
-    }
-    .badge {
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: 10px;
-      font-weight: bold;
-    }
-    .badge-pending { background: #fffbeb; color: #d97706; }
-    .badge-lunas { background: #ecfdf5; color: #047857; }
-  </style>
 @endsection
 
 @section('content')
-  <div class="desktop-22">
-    <!-- Header Page Description -->
-    <div class="heading-3">
-      <div class="antrean-uji-wawancara">Antrean Uji Wawancara</div>
-    </div>
-    <div class="container">
-      <div class="daftar-calon-siswa-yang-berstatus-pending-dan-siap-diuji-hari-ini-pastikan-kelengkapan-berkas-sebelum-memulai-sesi">
-        Daftar calon siswa yang berstatus pending dan siap diuji hari ini.
-        Pastikan kelengkapan berkas sebelum memulai sesi.
-      </div>
-    </div>
-
+  <div class="relative min-h-screen bg-white flow-root">
     <!-- Panitia Sidebar/Topbar Included -->
     @include('components.sidebar-panitia', ['activeFolder' => 'queue'])
 
-    <!-- Stats Summary bento list -->
-    <div class="dashboard-stats-summary-bento-piece">
-      <div class="overlay-border-overlay-blur">
-        <div class="overlay">
-          <img class="container2" src="{{ asset('assets/panitia/queue/container1.svg') }}" />
-        </div>
-        <div class="container3">
-          <div class="container4"><div class="text2">TELAH DIUJI</div></div>
-          <div class="container4"><div class="text3">{{ $telahDiujiCount }} Siswa</div></div>
+    <div class="relative mt-[156px] mx-[146px] mr-10 flex flex-col gap-6 pb-10 max-[1024px]:mx-6 max-[1024px]:mt-[140px]">
+      <!-- Header Page Description -->
+      <div class="flex flex-col gap-1 max-w-[576px]">
+        <div class="text-[#121c2a] text-[30px] font-bold tracking-[-0.75px]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Antrean Uji Wawancara</div>
+        <div class="text-[#3f4940] text-[16px]" style="font-family: 'WorkSans-Regular', sans-serif;">
+          Daftar calon siswa yang berstatus pending dan siap diuji hari ini. Pastikan kelengkapan berkas sebelum memulai sesi.
         </div>
       </div>
-    </div>
 
-    <div class="overlay-border-overlay-blur2">
-      <div class="overlay2">
-        <img class="container5" src="{{ asset('assets/panitia/queue/container5.svg') }}" />
-      </div>
-      <div class="container3">
-        <div class="container4"><div class="text2">ANTREAN HARI INI</div></div>
-        <div class="container4"><div class="text3">{{ $antreanCount }} Siswa</div></div>
-      </div>
-    </div>
+      <!-- Stats Summary -->
+      <div class="flex flex-row gap-6 max-[900px]:flex-col">
+        <div class="flex-1 min-w-[200px] bg-white/80 backdrop-blur-[4px] border border-[#005b31] border-l-4 rounded-2xl p-6 flex items-center gap-4">
+          <div class="bg-[#0f7643]/20 rounded-xl w-12 h-12 flex items-center justify-center shrink-0">
+            <img class="w-[18px] h-[18px]" src="{{ asset('assets/panitia/queue/container1.svg') }}" alt="">
+          </div>
+          <div class="flex flex-col">
+            <div class="text-[#3f4940] text-[12px] font-medium tracking-[0.6px] uppercase" style="font-family: 'WorkSans-Medium', sans-serif;">TELAH DIUJI</div>
+            <div class="text-[#121c2a] text-[24px] font-bold" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">{{ $telahDiujiCount }} Siswa</div>
+          </div>
+        </div>
 
-    <div class="overlay-border-overlay-blur3">
-      <div class="overlay3">
-        <img class="container6" src="{{ asset('assets/panitia/queue/container9.svg') }}" />
-      </div>
-      <div class="container3">
-        <div class="container4"><div class="text2">RATA-RATA WAKTU</div></div>
-        <div class="container4"><div class="text3">15 Menit</div></div>
-      </div>
-    </div>
+        <div class="flex-1 min-w-[200px] bg-white/80 backdrop-blur-[4px] border border-[#006e2f] border-l-4 rounded-2xl p-6 flex items-center gap-4">
+          <div class="bg-[#6bff8f]/20 rounded-xl w-12 h-12 flex items-center justify-center shrink-0">
+            <img class="w-5 h-5" src="{{ asset('assets/panitia/queue/container5.svg') }}" alt="">
+          </div>
+          <div class="flex flex-col">
+            <div class="text-[#3f4940] text-[12px] font-medium tracking-[0.6px] uppercase" style="font-family: 'WorkSans-Medium', sans-serif;">ANTREAN HARI INI</div>
+            <div class="text-[#121c2a] text-[24px] font-bold" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">{{ $antreanCount }} Siswa</div>
+          </div>
+        </div>
 
-    <!-- Active Queue List Container -->
-    <div class="queue-container">
-      <table class="queue-table">
-        <thead>
-          <tr>
-            <th>No. Reg</th>
-            <th>Nama Calon Siswa</th>
-            <th>NISN</th>
-            <th>Program</th>
-            <th>Status</th>
-            <th>Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          @forelse($queue as $item)
+        <div class="flex-1 min-w-[200px] bg-white/80 backdrop-blur-[4px] border border-[#185946] border-l-4 rounded-2xl p-6 flex items-center gap-4">
+          <div class="bg-[#b0f0d6]/40 rounded-xl w-12 h-12 flex items-center justify-center shrink-0">
+            <img class="w-[18px] h-[21px]" src="{{ asset('assets/panitia/queue/container9.svg') }}" alt="">
+          </div>
+          <div class="flex flex-col">
+            <div class="text-[#3f4940] text-[12px] font-medium tracking-[0.6px] uppercase" style="font-family: 'WorkSans-Medium', sans-serif;">RATA-RATA WAKTU</div>
+            <div class="text-[#121c2a] text-[24px] font-bold" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">15 Menit</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Queue List -->
+      <div class="bg-white rounded-2xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] p-6 mb-10 overflow-x-auto">
+        <table class="w-full border-collapse text-[13px] min-w-[700px]">
+          <thead>
             <tr>
-              <td style="font-weight: bold;">PMB-2026-{{ str_pad($item->id_murid, 3, '0', STR_PAD_LEFT) }}</td>
-              <td style="font-weight: bold; color: #0f7643;">{{ $item->nama_murid }}</td>
-              <td>{{ $item->nisn }}</td>
-              <td>{{ $item->pendaftaran->program->nama_program ?? 'Umum' }}</td>
-              <td>
-                @if(isset($item->hasil) && $item->hasil->nilai_wawancara !== null)
-                  <span class="badge badge-lunas">Selesai Uji (Score: {{ $item->hasil->nilai_wawancara }})</span>
-                @else
-                  <span class="badge badge-pending">Menunggu Uji</span>
-                @endif
-              </td>
-              <td>
-                <a href="{{ route('panitia.detail', $item->id_murid) }}" class="btn-grade">
+              <th class="text-left p-3 border-b-2 border-gray-100 text-gray-600 font-bold uppercase text-[11px]">No. Reg</th>
+              <th class="text-left p-3 border-b-2 border-gray-100 text-gray-600 font-bold uppercase text-[11px]">Nama Calon Siswa</th>
+              <th class="text-left p-3 border-b-2 border-gray-100 text-gray-600 font-bold uppercase text-[11px]">NISN</th>
+              <th class="text-left p-3 border-b-2 border-gray-100 text-gray-600 font-bold uppercase text-[11px]">Program</th>
+              <th class="text-left p-3 border-b-2 border-gray-100 text-gray-600 font-bold uppercase text-[11px]">Status</th>
+              <th class="text-left p-3 border-b-2 border-gray-100 text-gray-600 font-bold uppercase text-[11px]">Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            @forelse($queue as $item)
+              <tr class="hover:bg-gray-50">
+                <td class="p-[15px_12px] border-b border-gray-100 text-gray-800 font-bold">PMB-2026-{{ str_pad($item->id_murid, 3, '0', STR_PAD_LEFT) }}</td>
+                <td class="p-[15px_12px] border-b border-gray-100 font-bold text-[#0f7643]">{{ $item->nama_murid }}</td>
+                <td class="p-[15px_12px] border-b border-gray-100 text-gray-800">{{ $item->nisn }}</td>
+                <td class="p-[15px_12px] border-b border-gray-100 text-gray-800">{{ $item->pendaftaran->program->nama_program ?? 'Umum' }}</td>
+                <td class="p-[15px_12px] border-b border-gray-100">
                   @if(isset($item->hasil) && $item->hasil->nilai_wawancara !== null)
-                    Ubah Nilai
+                    <span class="px-2 py-1 rounded-full text-[10px] font-bold bg-[#ecfdf5] text-[#047857]">Selesai Uji (Score: {{ $item->hasil->nilai_wawancara }})</span>
                   @else
-                    Mulai Uji
+                    <span class="px-2 py-1 rounded-full text-[10px] font-bold bg-[#fffbeb] text-[#d97706]">Menunggu Uji</span>
                   @endif
-                </a>
-              </td>
-            </tr>
-          @empty
-            <tr>
-              <td colspan="6" style="text-align: center; color: #6b7280; padding: 30px;">
-                Tidak ada calon siswa dalam antrean uji hari ini.
-              </td>
-            </tr>
-          @endforelse
-        </tbody>
-      </table>
+                </td>
+                <td class="p-[15px_12px] border-b border-gray-100">
+                  <a href="{{ route('panitia.detail', $item->id_murid) }}" class="inline-block bg-[#298752] text-white px-4 py-2 rounded-md font-bold no-underline text-[12px] hover:bg-[#064e3b]">
+                    @if(isset($item->hasil) && $item->hasil->nilai_wawancara !== null)
+                      Ubah Nilai
+                    @else
+                      Mulai Uji
+                    @endif
+                  </a>
+                </td>
+              </tr>
+            @empty
+              <tr>
+                <td colspan="6" class="text-center text-gray-500 py-8">
+                  Tidak ada calon siswa dalam antrean uji hari ini.
+                </td>
+              </tr>
+            @endforelse
+          </tbody>
+        </table>
+      </div>
     </div>
 
     <!-- Footer Component Included -->

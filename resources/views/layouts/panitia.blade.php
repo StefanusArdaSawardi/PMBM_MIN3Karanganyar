@@ -5,33 +5,9 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>@yield('title', 'Penguji PMBM')</title>
+  @vite(['resources/css/app.css'])
   @yield('styles')
   <style>
-   a,
-   button,
-   input,
-   select,
-   h1,
-   h2,
-   h3,
-   h4,
-   h5,
-   * {
-       box-sizing: border-box;
-       margin: 0;
-       padding: 0;
-       border: none;
-       text-decoration: none;
-       background: none;
-       -webkit-font-smoothing: antialiased;
-   }
-   
-   menu, ol, ul {
-       list-style-type: none;
-       margin: 0;
-       padding: 0;
-   }
-
    /* Custom Dynamic Background for Dashboard with Cache Buster & Gradient Fallback */
    body {
        background-image: @if(file_exists(public_path('uploads/background/dashboard_bg.jpg'))) 
