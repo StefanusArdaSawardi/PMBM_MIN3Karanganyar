@@ -8,14 +8,12 @@
   <style>
     .register-container {
       max-width: 800px;
-      margin: 0 auto;
-      position: absolute;
-      left: calc(50% - 400px);
-      top: 150px;
+      margin: 150px auto 60px;
       background: #ffffff;
       border-radius: 20px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.05);
       padding: 40px;
+      position: relative;
       z-index: 20;
     }
 
@@ -296,7 +294,7 @@
 @endsection
 
 @section('content')
-  <div class="dashboard-pmbm-min-3-kra">
+  <div class="dashboard-pmbm-min-3-kra" style="height: auto; min-height: 100vh; overflow: visible;">
     <!-- Landing Navbar Included -->
     @include('components.navbar', ['activeFolder' => 'home'])
 

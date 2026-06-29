@@ -3,7 +3,7 @@
   $isProgramActive = Request::routeIs('landing.program-khusus') || Request::routeIs('landing.program-unggulan') || Request::routeIs('landing.program-fullday');
   $isKelulusanActive = Request::routeIs('landing.cek-kelulusan') || Request::routeIs('student.status.check') || Request::routeIs('landing.hasil-kelulusan');
   $isKontakActive = Request::routeIs('landing.kontak');
-  $isOnDark = in_array($activeFolder, ['home', 'program-khusus', 'program-unggulan', 'program-fullday', 'cek-kelulusan', 'hasil-kelulusan', 'kontak']);
+  $isOnDark = Request::routeIs('home', 'landing.program-khusus', 'landing.program-unggulan', 'landing.program-fullday', 'landing.cek-kelulusan', 'student.status.check', 'landing.kontak');
 @endphp
 
 <!-- Navbar Component -->
