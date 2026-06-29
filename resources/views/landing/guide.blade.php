@@ -2,226 +2,148 @@
 
 @section('title', 'Panduan Pendaftaran PMBM - MIN 3 Karanganyar')
 
-@section('styles')
-  <link rel="stylesheet" href="{{ asset('assets/landing/guide/vars.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/landing/guide/style.css') }}">
-@endsection
-
 @section('content')
-  <div class="dashboard-pmbm-min-3-kra">
+  <div class="relative bg-[#e5e2e1]" style="font-family: 'PlusJakartaSans-Regular', sans-serif;">
     <!-- Header/Navbar Shared Component -->
     @include('components.navbar', ['activeFolder' => 'guide'])
 
-    <!-- Main Guide Header -->
-    <div class="heading-2">
-      <div class="pendaftaran">Pendaftaran</div>
-    </div>
+    <!-- Hero + Countdown -->
+    <section class="relative bg-[#d9d9d9] px-6 pt-[120px] pb-16 flex flex-col items-center gap-6 text-center">
+      <h1 class="text-white font-bold tracking-[-0.48px] leading-[1.2] m-0" style="font-family: 'HankenGrotesk-Bold', sans-serif; font-size: clamp(28px, 5vw, 48px);">Pendaftaran</h1>
 
-    <!-- Guide Stats / Phase Info -->
-    <div class="countdown">
-      <div class="overlay-border-shadow-overlay-blur">
-        <div class="container7">
-          <div class="_103">45</div>
+      <div class="grid grid-cols-4 gap-4 max-w-[448px] w-full max-[480px]:grid-cols-2">
+        <div class="bg-white/10 backdrop-blur-[10px] border border-white/20 rounded-2xl shadow-[0px_4px_20px_0px_rgba(0,0,0,0.04)] px-4 py-4 flex flex-col items-center gap-0">
+          <div class="text-white text-[32px] font-bold" style="font-family: 'HankenGrotesk-Bold', sans-serif;">45</div>
+          <div class="text-white/60 text-[14px] font-semibold tracking-[0.7px]" style="font-family: 'HankenGrotesk-SemiBold', sans-serif;">HARI</div>
         </div>
-        <div class="container8">
-          <div class="text2">HARI</div>
+        <div class="bg-white/10 backdrop-blur-[10px] border border-white/20 rounded-2xl shadow-[0px_4px_20px_0px_rgba(0,0,0,0.04)] px-4 py-4 flex flex-col items-center gap-0">
+          <div class="text-white text-[32px] font-bold" style="font-family: 'HankenGrotesk-Bold', sans-serif;">02</div>
+          <div class="text-white/60 text-[14px] font-semibold tracking-[0.7px]" style="font-family: 'HankenGrotesk-SemiBold', sans-serif;">JAM</div>
         </div>
-      </div>
-      <div class="overlay-border-shadow-overlay-blur2">
-        <div class="container7">
-          <div class="_10">02</div>
+        <div class="bg-white/10 backdrop-blur-[10px] border border-white/20 rounded-2xl shadow-[0px_4px_20px_0px_rgba(0,0,0,0.04)] px-4 py-4 flex flex-col items-center gap-0">
+          <div class="text-white text-[32px] font-bold" style="font-family: 'HankenGrotesk-Bold', sans-serif;">59</div>
+          <div class="text-white/60 text-[14px] font-semibold tracking-[0.7px]" style="font-family: 'HankenGrotesk-SemiBold', sans-serif;">MENIT</div>
         </div>
-        <div class="container8">
-          <div class="text2">JAM</div>
-        </div>
-      </div>
-      <div class="overlay-border-shadow-overlay-blur3">
-        <div class="container7">
-          <div class="_48">59</div>
-        </div>
-        <div class="container8">
-          <div class="text2">MENIT</div>
+        <div class="bg-white/10 backdrop-blur-[10px] border border-white/20 rounded-2xl shadow-[0px_4px_20px_0px_rgba(0,0,0,0.04)] px-4 py-4 flex flex-col items-center gap-0">
+          <div class="text-white text-[32px] font-bold" style="font-family: 'HankenGrotesk-Bold', sans-serif;">47</div>
+          <div class="text-white/60 text-[14px] font-semibold tracking-[0.7px]" style="font-family: 'HankenGrotesk-SemiBold', sans-serif;">DETIK</div>
         </div>
       </div>
-      <div class="overlay-border-shadow-overlay-blur4">
-        <div class="container7">
-          <div class="_50">47</div>
+    </section>
+
+    <!-- Guide Items Grid -->
+    <section class="max-w-[1170px] mx-auto px-6 -mt-10 mb-16 relative z-[2] grid grid-cols-3 gap-7 max-[1024px]:grid-cols-2 max-[640px]:grid-cols-1">
+      <div class="bg-white rounded-2xl shadow-[0px_4px_20px_0px_rgba(0,0,0,0.15)] backdrop-blur-[10px] p-7 flex flex-col gap-3 cursor-pointer transition-transform duration-200 hover:-translate-y-1" onclick="openRequirementsOverlay()">
+        <img class="w-9 h-9" src="{{ asset('assets/landing/guide/overlay0.svg') }}" alt="Icon" />
+        <div class="text-[#1c1b1b] text-[24px] font-semibold" style="font-family: 'HankenGrotesk-SemiBold', sans-serif;">Syarat Pendaftaran</div>
+        <div class="text-[#3e4a3c] text-[16px]" style="font-family: 'WorkSans-Regular', sans-serif;">Lengkapi berkas administrasi utama Anda.</div>
+        <div class="text-[#006b24] text-[14px] font-semibold tracking-[0.7px] mt-2" style="font-family: 'HankenGrotesk-SemiBold', sans-serif;">View</div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-[0px_4px_20px_0px_rgba(0,0,0,0.15)] backdrop-blur-[10px] p-7 flex flex-col gap-3 cursor-pointer transition-transform duration-200 hover:-translate-y-1" onclick="openRundownOverlay()">
+        <img class="w-9 h-9" src="{{ asset('assets/landing/guide/overlay1.svg') }}" alt="Icon" />
+        <div class="text-[#1c1b1b] text-[24px] font-semibold" style="font-family: 'HankenGrotesk-SemiBold', sans-serif;">Jadwal Pendaftaran</div>
+        <div class="text-[#3e4a3c] text-[16px]" style="font-family: 'WorkSans-Regular', sans-serif;">Lengkapi berkas administrasi utama Anda.</div>
+        <div class="text-[#006b24] text-[14px] font-semibold tracking-[0.7px] mt-2" style="font-family: 'HankenGrotesk-SemiBold', sans-serif;">View</div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-[0px_4px_20px_0px_rgba(0,0,0,0.15)] backdrop-blur-[10px] p-7 flex flex-col gap-3 cursor-pointer transition-transform duration-200 hover:-translate-y-1" onclick="window.location.href='{{ route('student.register') }}'">
+        <img class="w-9 h-9" src="{{ asset('assets/landing/guide/overlay2.svg') }}" alt="Icon" />
+        <div class="text-[#1c1b1b] text-[24px] font-semibold" style="font-family: 'HankenGrotesk-SemiBold', sans-serif;">Pendaftaran PMBM</div>
+        <div class="text-[#3e4a3c] text-[16px]" style="font-family: 'WorkSans-Regular', sans-serif;">Lengkapi berkas administrasi utama Anda.</div>
+        <div class="text-[#006b24] text-[14px] font-semibold tracking-[0.7px] mt-2" style="font-family: 'HankenGrotesk-SemiBold', sans-serif;">View</div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-[0px_4px_20px_0px_rgba(0,0,0,0.15)] backdrop-blur-[10px] p-7 flex flex-col gap-3 cursor-pointer transition-transform duration-200 hover:-translate-y-1" onclick="window.location.href='{{ route('landing.program-khusus') }}'">
+        <img class="w-9 h-9" src="{{ asset('assets/landing/guide/overlay3.svg') }}" alt="Icon" />
+        <div class="text-[#1c1b1b] text-[24px] font-semibold" style="font-family: 'HankenGrotesk-SemiBold', sans-serif;">Program</div>
+        <div class="text-[#3e4a3c] text-[16px]" style="font-family: 'WorkSans-Regular', sans-serif;">Lengkapi berkas administrasi utama Anda.</div>
+        <div class="text-[#006b24] text-[14px] font-semibold tracking-[0.7px] mt-2" style="font-family: 'HankenGrotesk-SemiBold', sans-serif;">View</div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-[0px_4px_20px_0px_rgba(0,0,0,0.15)] backdrop-blur-[10px] p-7 flex flex-col gap-3 cursor-pointer transition-transform duration-200 hover:-translate-y-1" onclick="window.location.href='{{ route('landing.cek-kelulusan') }}'">
+        <img class="w-9 h-9" src="{{ asset('assets/landing/guide/overlay4.svg') }}" alt="Icon" />
+        <div class="text-[#1c1b1b] text-[24px] font-semibold" style="font-family: 'HankenGrotesk-SemiBold', sans-serif;">Kelulusan</div>
+        <div class="text-[#3e4a3c] text-[16px]" style="font-family: 'WorkSans-Regular', sans-serif;">Lengkapi berkas administrasi utama Anda.</div>
+        <div class="text-[#006b24] text-[14px] font-semibold tracking-[0.7px] mt-2" style="font-family: 'HankenGrotesk-SemiBold', sans-serif;">View</div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-[0px_4px_20px_0px_rgba(0,0,0,0.15)] backdrop-blur-[10px] p-7 flex flex-col gap-3 cursor-pointer transition-transform duration-200 hover:-translate-y-1" onclick="window.location.href='{{ route('landing.kontak') }}'">
+        <img class="w-9 h-9" src="{{ asset('assets/landing/guide/overlay5.svg') }}" alt="Icon" />
+        <div class="text-[#1c1b1b] text-[24px] font-semibold" style="font-family: 'HankenGrotesk-SemiBold', sans-serif;">Kontak</div>
+        <div class="text-[#3e4a3c] text-[16px]" style="font-family: 'WorkSans-Regular', sans-serif;">Lengkapi berkas administrasi utama Anda.</div>
+        <div class="text-[#006b24] text-[14px] font-semibold tracking-[0.7px] mt-2" style="font-family: 'HankenGrotesk-SemiBold', sans-serif;">View</div>
+      </div>
+    </section>
+
+    <!-- Requirements Modal Overlay -->
+    <div id="requirementsOverlay" style="display: none;" class="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/50">
+      <div class="bg-white rounded-2xl w-full max-w-[820px] max-h-[85vh] overflow-y-auto relative">
+        <div class="sticky top-0 bg-[#006b24] rounded-t-2xl px-8 py-6 flex items-center justify-between z-10">
+          <div class="text-white text-[20px] font-semibold" style="font-family: 'HankenGrotesk-SemiBold', sans-serif;">Syarat &amp; Ketentuan Pendaftaran</div>
+          <button type="button" onclick="closeRequirementsOverlay()" class="w-9 h-9 rounded-full bg-white/20 hover:bg-white/40 text-white text-[24px] flex items-center justify-center cursor-pointer border border-white/30 transition-colors duration-200 leading-none">&times;</button>
         </div>
-        <div class="container8">
-          <div class="text2">DETIK</div>
-        </div>
-      </div>
-    </div>
 
-    <!-- Guide Items List -->
-    <div class="group-3" style="cursor: pointer;" onclick="openRequirementsOverlay()">
-      <div class="rectangle-42"></div>
-      <div class="container9">
-        <div class="text3">Lengkapi berkas administrasi utama Anda.</div>
-      </div>
-      <img class="overlay" src="{{ asset('assets/landing/guide/overlay0.svg') }}" alt="Icon" />
-      <div class="view" style="cursor: pointer;">View</div>
-      <div class="syarat-pendaftaran" style="cursor: pointer;">Syarat Pendaftaran</div>
-    </div>
+        <div class="p-8 flex flex-col gap-0">
+          <div class="bg-[#d9d9d9] border border-[#bdcab8] rounded-t-xl px-6 py-4 text-[#1c1b1b] text-[20px] font-semibold" style="font-family: 'HankenGrotesk-SemiBold', sans-serif;">Persyaratan Wajib Umum</div>
+          <div class="bg-[#d9d9d9]/80 border border-[#bdcab8] px-6 py-4 text-[#1c1b1b] text-[16px]" style="font-family: 'HankenGrotesk-Regular', sans-serif;">Umur minimal 6 Tahun per Juli 2025</div>
+          <div class="bg-[#d9d9d9] border border-[#bdcab8] rounded-b-xl px-6 py-4 text-[#1c1b1b] text-[16px]" style="font-family: 'HankenGrotesk-Regular', sans-serif;">Memiliki email Aktif</div>
 
-    <div class="group-4" style="cursor: pointer;" onclick="openRundownOverlay()">
-      <div class="rectangle-43"></div>
-      <div class="container10">
-        <div class="text3">Lengkapi berkas administrasi utama Anda.</div>
-      </div>
-      <img class="overlay2" src="{{ asset('assets/landing/guide/overlay1.svg') }}" alt="Icon" />
-      <div class="view2" style="cursor: pointer;">View</div>
-      <div class="jadwal-pendaftaran" style="cursor: pointer;">Jadwal Pendaftaran</div>
-    </div>
+          <div class="bg-[#d9d9d9] border border-[#bdcab8] rounded-t-xl px-6 py-4 mt-6 text-[#1c1b1b] text-[20px] font-semibold" style="font-family: 'HankenGrotesk-SemiBold', sans-serif;">Persyaratan Wajib Umum</div>
+          <div class="bg-[#d9d9d9]/80 border border-[#bdcab8] px-6 py-4 text-black text-[16px]" style="font-family: 'HankenGrotesk-Regular', sans-serif;">Pas Foto Berwarna (JPG, PNG dan JPEG)</div>
+          <div class="bg-[#d9d9d9] border border-[#bdcab8] px-6 py-4 text-black text-[16px]" style="font-family: 'HankenGrotesk-Regular', sans-serif;">Kartu Keluarga Asli (PDF)</div>
+          <div class="bg-[#d9d9d9]/80 border border-[#bdcab8] px-6 py-4 text-black text-[16px]" style="font-family: 'HankenGrotesk-Regular', sans-serif;">Akta Kelahiran Asli (PDF)</div>
+          <div class="bg-[#d9d9d9] border border-[#bdcab8] px-6 py-4 text-black text-[16px]" style="font-family: 'HankenGrotesk-Regular', sans-serif;">Kartu Identitas Anak (PDF)</div>
+          <div class="bg-[#d9d9d9]/80 border border-[#bdcab8] rounded-b-xl px-6 py-4 text-black text-[16px]" style="font-family: 'HankenGrotesk-Regular', sans-serif;">NISN (Dari TK asal)</div>
 
-    <div class="group-5" style="cursor: pointer;" onclick="window.location.href='{{ route('student.register') }}'">
-      <div class="rectangle-44"></div>
-      <div class="container11">
-        <div class="text3">Lengkapi berkas administrasi utama Anda.</div>
-      </div>
-      <img class="overlay3" src="{{ asset('assets/landing/guide/overlay2.svg') }}" alt="Icon" />
-      <div class="view3" style="cursor: pointer;">View</div>
-      <div class="pendaftaran-pmbm" style="cursor: pointer;">Pendaftaran PMBM</div>
-    </div>
-
-    <div class="group-6" style="cursor: pointer;" onclick="window.location.href='{{ route('landing.program-khusus') }}'">
-      <div class="rectangle-45"></div>
-      <div class="container12">
-        <div class="text3">Lengkapi berkas administrasi utama Anda.</div>
-      </div>
-      <img class="overlay4" src="{{ asset('assets/landing/guide/overlay3.svg') }}" alt="Icon" />
-      <div class="view4" style="cursor: pointer;">View</div>
-      <div class="program2" style="cursor: pointer;">Program</div>
-    </div>
-
-    <div class="group-7" style="cursor: pointer;" onclick="window.location.href='{{ route('landing.cek-kelulusan') }}'">
-      <div class="rectangle-46"></div>
-      <div class="container13">
-        <div class="text3">Lengkapi berkas administrasi utama Anda.</div>
-      </div>
-      <img class="overlay5" src="{{ asset('assets/landing/guide/overlay4.svg') }}" alt="Icon" />
-      <div class="view5" style="cursor: pointer;">View</div>
-      <div class="kelulusan2" style="cursor: pointer;">Kelulusan</div>
-    </div>
-
-    <div class="group-8" style="cursor: pointer;" onclick="window.location.href='{{ route('landing.kontak') }}'">
-      <div class="rectangle-47"></div>
-      <div class="container14">
-        <div class="text3">Lengkapi berkas administrasi utama Anda.</div>
-      </div>
-      <img class="overlay6" src="{{ asset('assets/landing/guide/overlay5.svg') }}" alt="Icon" />
-      <div class="view6" style="cursor: pointer;">View</div>
-      <div class="kontak2" style="cursor: pointer;">Kontak</div>
-    </div>
-
-    <!-- Requirements Modal Overlay Content -->
-    <div id="requirementsOverlay" style="display: none; position: absolute; inset: 0; z-index: 10000;">
-      <div class="rectangle-92"></div>
-      <div class="rectangle-93"></div>
-      <a href="{{ route('student.register') }}" class="daftar2" style="color: #ffffff; font-weight: bold; z-index: 10002;">Daftar</a>
-      
-      <!-- Custom exit button in top right of header -->
-      <button type="button" onclick="closeRequirementsOverlay()" style="position: absolute; left: 1160px; top: 245px; width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.2); color: #ffffff; font-size: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.3); z-index: 10003; line-height: 1; transition: background 0.2s; font-family: sans-serif;" onmouseover="this.style.background='rgba(255,255,255,0.4)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">&times;</button>
-
-      <div class="rectangle-94" style="cursor: pointer;" onclick="closeRequirementsOverlay()"></div>
-      <a href="javascript:void(0);" onclick="closeRequirementsOverlay()" class="tutup" style="z-index: 10002; cursor: pointer;">Tutup</a>
-      
-      <div class="rectangle-95"></div>
-      <div class="rectangle-96"></div>
-      <div class="persyaratan-tambahan-opsional">Persyaratan Tambahan (Opsional)</div>
-      <div class="piagam-penghargaan-juara-1-2-3-minimal-tingkat-kecamatan-jika-memiliki-pdf">
-        Piagam Penghargaan Juara 1/2/3 minimal tingkat Kecamatan (Jika memiliki) (PDF)
-      </div>
-      
-      <div class="rectangle-97"></div>
-      <div class="rectangle-98"></div>
-      <div class="rectangle-99"></div>
-      <div class="rectangle-100"></div>
-      <div class="persyaratan-wajib-umum">Persyaratan Wajib Umum</div>
-      <div class="syarat-ketentuan-pendaftaran">Syarat &amp; Ketentuan Pendaftaran</div>
-      <div class="umur-minimal-6-tahun-per-juli-2025">Umur minimal 6 Tahun per Juli 2025</div>
-      <div class="memiliki-email-aktif">Memiliki email Aktif</div>
-      
-      <div class="rectangle-101"></div>
-      <div class="rectangle-102"></div>
-      <div class="rectangle-103"></div>
-      <div class="rectangle-104"></div>
-      <div class="rectangle-105"></div>
-      <div class="rectangle-106"></div>
-      
-      <div class="persyaratan-wajib-umum2">Persyaratan Wajib Umum</div>
-      <div class="pas-foto-berwarna-jpg-png-dan-jpeg">
-        <ul class="pas-foto-berwarna-jpg-png-dan-jpeg-span">
-          <li>Pas Foto Berwarna (JPG, PNG dan JPEG)</li>
-        </ul>
-      </div>
-      <div class="kartu-keluarga-asli-pdf">
-        <ul class="kartu-keluarga-asli-pdf-span">
-          <li>Kartu Keluarga Asli (PDF)</li>
-        </ul>
-      </div>
-      <div class="nisn-dari-tk-asal">
-        <ul class="nisn-dari-tk-asal-span">
-          <li>NISN (Dari TK asal)</li>
-        </ul>
-      </div>
-      <div class="kartu-identitas-anak-pdf">
-        <ul class="kartu-identitas-anak-pdf-span">
-          <li>Kartu Identitas Anak (PDF)</li>
-        </ul>
-      </div>
-      <div class="akta-kelahiran-asli-pdf">
-        <ul class="akta-kelahiran-asli-pdf-span">
-          <li>Akta Kelahiran Asli (PDF)</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Rundown Modal Overlay Content -->
-    <div id="rundownOverlay" style="display: none; position: absolute; inset: 0; z-index: 10000;">
-      <div class="rectangle-92"></div>
-      
-      <!-- Custom exit button in top right of header -->
-      <button type="button" onclick="closeRundownOverlay()" style="position: absolute; left: 1160px; top: 245px; width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.2); color: #ffffff; font-size: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid rgba(255,255,255,0.3); z-index: 10003; line-height: 1; transition: background 0.2s; font-family: sans-serif;" onmouseover="this.style.background='rgba(255,255,255,0.4)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">&times;</button>
-
-      <div class="rectangle-94" style="cursor: pointer;" onclick="closeRundownOverlay()"></div>
-      <a href="javascript:void(0);" onclick="closeRundownOverlay()" class="tutup" style="z-index: 10002; cursor: pointer;">Tutup</a>
-      
-      <div class="rectangle-97"></div>
-      <div class="syarat-ketentuan-pendaftaran">Rundown Kegiatan PMBM</div>
-
-      <!-- Rundown Timeline Content Area -->
-      <div style="position: absolute; left: 350px; top: 430px; width: 820px; max-height: 680px; overflow-y: auto; padding-right: 20px; z-index: 10002; font-family: 'WorkSans-Regular', sans-serif;">
-        @if(empty($landingContent['rundown']))
-          <div style="text-align: center; color: #6b7280; font-size: 16px; margin-top: 50px;">
-            Belum ada data jadwal rundown kegiatan.
+          <div class="mt-6">
+            <div class="text-[#1c1b1b] text-[20px] font-semibold mb-2" style="font-family: 'HankenGrotesk-SemiBold', sans-serif;">Persyaratan Tambahan (Opsional)</div>
+            <div class="text-[#1c1b1b] text-[16px]" style="font-family: 'HankenGrotesk-Regular', sans-serif;">Piagam Penghargaan Juara 1/2/3 minimal tingkat Kecamatan (Jika memiliki) (PDF)</div>
           </div>
-        @else
-          <!-- Timeline layout -->
-          <div style="position: relative; border-left: 3px solid #298752; padding-left: 30px; margin-left: 20px; display: flex; flex-direction: column; gap: 30px;">
-            @foreach($landingContent['rundown'] as $item)
-              <div style="position: relative;">
-                <!-- Dot marker -->
-                <div style="position: absolute; left: -41.5px; top: 4px; width: 20px; height: 20px; border-radius: 50%; background: #ffffff; border: 4px solid #298752; box-shadow: 0 0 0 4px rgba(41,135,82,0.15);"></div>
-                
-                <!-- Time & Date -->
-                <div style="font-size: 14px; font-weight: bold; color: #298752; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px;">
-                  {{ $item['tanggal'] }}
-                </div>
-                
-                <!-- Title -->
-                <div style="font-size: 20px; font-weight: bold; color: #1c1b1b; font-family: 'HankenGrotesk-SemiBold', sans-serif; margin-bottom: 6px;">
-                  {{ $item['kegiatan'] }}
-                </div>
-                
-                <!-- Description -->
-                <div style="font-size: 15px; color: #4b5563; line-height: 1.5;">
-                  {{ $item['keterangan'] }}
-                </div>
-              </div>
-            @endforeach
+
+          <div class="flex gap-3 mt-8 justify-end max-[480px]:flex-col">
+            <button type="button" onclick="closeRequirementsOverlay()" class="bg-[#3f4940] text-white border border-[#0f7643] rounded px-6 h-9 text-[15px] cursor-pointer" style="font-family: 'HankenGrotesk-Regular', sans-serif;">Tutup</button>
+            <a href="{{ route('student.register') }}" class="bg-[#064e3b] text-white border border-[#0f7643] rounded px-6 h-9 flex items-center justify-center text-[15px] font-bold no-underline" style="font-family: 'HankenGrotesk-Regular', sans-serif;">Daftar</a>
           </div>
-        @endif
+        </div>
+      </div>
+    </div>
+
+    <!-- Rundown Modal Overlay -->
+    <div id="rundownOverlay" style="display: none;" class="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/50">
+      <div class="bg-white rounded-2xl w-full max-w-[820px] max-h-[85vh] overflow-y-auto relative">
+        <div class="sticky top-0 bg-[#006b24] rounded-t-2xl px-8 py-6 flex items-center justify-between z-10">
+          <div class="text-white text-[20px] font-semibold" style="font-family: 'HankenGrotesk-SemiBold', sans-serif;">Rundown Kegiatan PMBM</div>
+          <button type="button" onclick="closeRundownOverlay()" class="w-9 h-9 rounded-full bg-white/20 hover:bg-white/40 text-white text-[24px] flex items-center justify-center cursor-pointer border border-white/30 transition-colors duration-200 leading-none">&times;</button>
+        </div>
+
+        <div class="p-8" style="font-family: 'WorkSans-Regular', sans-serif;">
+          @if(empty($landingContent['rundown']))
+            <div class="text-center text-gray-500 text-[16px] mt-12">
+              Belum ada data jadwal rundown kegiatan.
+            </div>
+          @else
+            <div class="relative border-l-[3px] border-[#298752] pl-7 ml-5 flex flex-col gap-7">
+              @foreach($landingContent['rundown'] as $item)
+                <div class="relative">
+                  <div class="absolute -left-[41.5px] top-1 w-5 h-5 rounded-full bg-white border-4 border-[#298752] shadow-[0_0_0_4px_rgba(41,135,82,0.15)]"></div>
+
+                  <div class="text-[14px] font-bold text-[#298752] mb-1 uppercase tracking-[0.5px]">
+                    {{ $item['tanggal'] }}
+                  </div>
+
+                  <div class="text-[20px] font-bold text-[#1c1b1b] mb-1.5" style="font-family: 'HankenGrotesk-SemiBold', sans-serif;">
+                    {{ $item['kegiatan'] }}
+                  </div>
+
+                  <div class="text-[15px] text-gray-600 leading-[1.5]">
+                    {{ $item['keterangan'] }}
+                  </div>
+                </div>
+              @endforeach
+            </div>
+          @endif
+        </div>
       </div>
     </div>
 
@@ -233,17 +155,17 @@
 @section('scripts')
   <script>
     function openRequirementsOverlay() {
-      document.getElementById('requirementsOverlay').style.display = 'block';
+      document.getElementById('requirementsOverlay').style.display = 'flex';
     }
-    
+
     function closeRequirementsOverlay() {
       document.getElementById('requirementsOverlay').style.display = 'none';
     }
 
     function openRundownOverlay() {
-      document.getElementById('rundownOverlay').style.display = 'block';
+      document.getElementById('rundownOverlay').style.display = 'flex';
     }
-    
+
     function closeRundownOverlay() {
       document.getElementById('rundownOverlay').style.display = 'none';
     }

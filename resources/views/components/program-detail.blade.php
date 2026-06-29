@@ -6,17 +6,21 @@
   ];
 @endphp
 
-<section class="program-detail-hero">
-  <div class="program-detail-hero-bg">
-    <img src="{{ asset('assets/landing/home/hero-bg.jpg') }}" alt="MIN 3 Karanganyar">
+<section class="relative overflow-hidden px-6 pt-[110px] pb-12 text-center">
+  <div class="absolute inset-0 z-0">
+    <img src="{{ asset('assets/landing/home/hero-bg.jpg') }}" alt="MIN 3 Karanganyar" class="absolute inset-0 w-full h-full object-cover">
+    <div class="absolute inset-0 bg-black/45"></div>
   </div>
-  <div class="program-detail-hero-content">
-    <h1 class="program-detail-title">Program Pendaftaran PMBM</h1>
-    <p class="program-detail-subtitle">Kurikulum yang dirancang khusus untuk mengoptimalkan potensi akademis dan karakter anak didik di era global.</p>
+  <div class="relative z-[1]">
+    <h1 class="text-white font-bold tracking-[-0.4px] mb-3" style="font-family: 'PlusJakartaSans-Bold', sans-serif; font-size: clamp(22px, 4vw, 30px);">Program Pendaftaran PMBM</h1>
+    <p class="text-white max-w-[600px] mx-auto mb-8 leading-[1.6] text-[16px]" style="font-family: 'Roboto-Regular', sans-serif;">Kurikulum yang dirancang khusus untuk mengoptimalkan potensi akademis dan karakter anak didik di era global.</p>
 
-    <div class="program-tabs">
+    <div class="flex flex-wrap justify-center gap-4">
       @foreach($tabs as $tab)
-        <a href="{{ route($tab['route']) }}" class="program-tab {{ $activeProgram === $tab['key'] ? 'active' : '' }}">
+        <a href="{{ route($tab['route']) }}"
+           class="flex items-center justify-center min-w-[191px] h-[54px] px-5 rounded-lg text-[14px] font-bold text-center border shadow-[0_2px_4px_rgba(0,0,0,0.05)] transition-all duration-300 max-[600px]:min-w-0 max-[600px]:flex-1 max-[600px]:basis-[calc(50%-8px)] max-[600px]:text-[12px] max-[600px]:h-12
+           {{ $activeProgram === $tab['key'] ? 'border-[#0f7643] bg-[#47a26a] text-white shadow-[0_4px_6px_rgba(0,0,0,0.1)]' : 'border-[#bdcab8] bg-white/90 text-black/60 hover:border-[#298752] hover:text-[#298752]' }}"
+           style="font-family: 'PlusJakartaSans-Bold', sans-serif;">
           {{ $tab['label'] }}
         </a>
       @endforeach
@@ -24,18 +28,18 @@
   </div>
 </section>
 
-<section class="program-detail-body">
-  <div class="program-detail-card">
-    <img src="{{ $image }}" alt="{{ $title }} Ilustrasi" class="program-detail-image" />
+<section class="max-w-[1100px] mx-auto px-6 py-12 pb-16">
+  <div class="grid grid-cols-[280px_1fr] gap-10 items-center bg-[#d9d9d9] border border-[#bdcab8] rounded-xl shadow-[0px_4px_4px_0px_rgba(255,255,255,0.8)] p-8 max-[800px]:grid-cols-1">
+    <img src="{{ $image }}" alt="{{ $title }} Ilustrasi" class="w-full h-[327px] object-cover rounded-lg bg-[#3f4940] max-[800px]:h-[240px]" />
 
-    <div class="program-detail-content">
-      <h2 class="program-detail-heading">{{ $title }}</h2>
-      <p class="program-detail-desc">{{ $description }}</p>
+    <div class="flex flex-col gap-4">
+      <h2 class="text-black font-bold tracking-[-0.4px] text-[25px] m-0" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">{{ $title }}</h2>
+      <p class="text-black/50 text-[16px] leading-[1.6] m-0" style="font-family: 'Roboto-Regular', sans-serif;">{{ $description }}</p>
 
-      <div class="program-feature-list">
+      <div class="flex flex-col gap-3.5 mt-2">
         @foreach($features as $feature)
-          <div class="program-feature-item">
-            <svg class="program-feature-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <div class="flex items-start gap-[13px] text-[#3f4940] text-[15px] leading-[1.5]" style="font-family: 'Roboto-Regular', sans-serif;">
+            <svg class="w-[26px] h-[26px] shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <circle cx="12" cy="12" r="10" fill="#0f7643"/>
               <path d="M8 12.5l2.5 2.5L16 9" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
@@ -46,166 +50,3 @@
     </div>
   </div>
 </section>
-
-<style>
-  .program-detail-hero {
-    position: relative;
-    overflow: hidden;
-    padding: 110px 24px 48px;
-    text-align: center;
-  }
-  .program-detail-hero-bg {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-  }
-  .program-detail-hero-bg img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .program-detail-hero-bg::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.45);
-  }
-  .program-detail-hero-content {
-    position: relative;
-    z-index: 1;
-  }
-  .program-detail-title {
-    color: #ffffff;
-    font-family: "PlusJakartaSans-Bold", sans-serif;
-    font-size: clamp(22px, 4vw, 30px);
-    font-weight: 700;
-    letter-spacing: -0.4px;
-    margin: 0 0 12px;
-  }
-  .program-detail-subtitle {
-    color: #ffffff;
-    font-family: "Roboto-Regular", sans-serif;
-    font-size: 16px;
-    max-width: 600px;
-    margin: 0 auto 32px;
-    line-height: 1.6;
-  }
-  .program-tabs {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 16px;
-  }
-  .program-tab {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 191px;
-    height: 54px;
-    padding: 0 20px;
-    border-radius: 8px;
-    font-family: "PlusJakartaSans-Bold", sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    text-decoration: none;
-    text-align: center;
-    border: 1px solid #bdcab8;
-    background: rgba(255, 255, 255, 0.9);
-    color: rgba(0, 0, 0, 0.6);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease;
-  }
-  .program-tab.active {
-    border-color: #0f7643;
-    background: #47a26a;
-    color: #ffffff;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  .program-tab:hover:not(.active) {
-    border-color: #298752;
-    color: #298752;
-  }
-
-  .program-detail-body {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 48px 24px 64px;
-  }
-  .program-detail-card {
-    display: grid;
-    grid-template-columns: 280px 1fr;
-    gap: 40px;
-    align-items: center;
-    background: #d9d9d9;
-    border: 1px solid #bdcab8;
-    border-radius: 12px;
-    box-shadow: 0px 4px 4px 0px rgba(255, 255, 255, 0.8);
-    padding: 32px;
-  }
-  .program-detail-image {
-    width: 100%;
-    height: 327px;
-    object-fit: cover;
-    border-radius: 8px;
-    background: #3f4940;
-  }
-  .program-detail-content {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  .program-detail-heading {
-    color: #000000;
-    font-family: "PlusJakartaSans-Bold", sans-serif;
-    font-size: 25px;
-    font-weight: 700;
-    letter-spacing: -0.4px;
-    margin: 0;
-  }
-  .program-detail-desc {
-    color: rgba(0, 0, 0, 0.5);
-    font-family: "Roboto-Regular", sans-serif;
-    font-size: 16px;
-    line-height: 1.6;
-    margin: 0;
-  }
-  .program-feature-list {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    margin-top: 8px;
-  }
-  .program-feature-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 13px;
-    color: #3f4940;
-    font-family: "Roboto-Regular", sans-serif;
-    font-size: 15px;
-    line-height: 1.5;
-  }
-  .program-feature-icon {
-    width: 26px;
-    height: 26px;
-    flex-shrink: 0;
-  }
-
-  @media (max-width: 800px) {
-    .program-detail-card {
-      grid-template-columns: 1fr;
-    }
-    .program-detail-image {
-      height: 240px;
-    }
-  }
-  @media (max-width: 600px) {
-    .program-tab {
-      min-width: 0;
-      flex: 1 1 calc(50% - 8px);
-      font-size: 12px;
-      height: 48px;
-    }
-  }
-</style>

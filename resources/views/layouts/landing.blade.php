@@ -10,7 +10,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Roboto:wght@400;500;700&family=Work+Sans:wght@400;700&display=swap" rel="stylesheet">
 
-  @yield('styles')
   <style>
    /* Map Figma-exported font-family aliases (e.g. "PlusJakartaSans-Bold") to the real webfont + weight loaded above */
    @font-face { font-family: "PlusJakartaSans-Regular"; src: local("Plus Jakarta Sans"); font-weight: 400; }
@@ -28,32 +27,9 @@
 
    body { font-family: "Plus Jakarta Sans", "Work Sans", "Roboto", sans-serif; }
   </style>
-  <style>
-   a,
-   button,
-   input,
-   select,
-   h1,
-   h2,
-   h3,
-   h4,
-   h5,
-   * {
-       box-sizing: border-box;
-       margin: 0;
-       padding: 0;
-       border: none;
-       text-decoration: none;
-       background: none;
-       -webkit-font-smoothing: antialiased;
-   }
-   
-   menu, ol, ul {
-       list-style-type: none;
-       margin: 0;
-       padding: 0;
-   }
-  </style>
+  @vite(['resources/css/app.css'])
+
+  @yield('styles')
 </head>
 <body>
   @yield('content')
