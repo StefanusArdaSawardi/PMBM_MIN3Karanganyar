@@ -47,8 +47,8 @@
       content: '';
       position: absolute;
       top: 20px;
-      left: 0;
-      right: 0;
+      left: 22px;
+      right: 22px;
       height: 4px;
       background: #e5e7eb;
       z-index: 1;
@@ -57,12 +57,13 @@
     .stepper-progress {
       position: absolute;
       top: 20px;
-      left: 0;
+      left: 22px;
+      right: 22px;
       height: 4px;
       background: #298752;
       z-index: 1;
-      transition: width 0.3s ease;
-      width: 0%;
+      transition: clip-path 0.3s ease;
+      clip-path: inset(0 100% 0 0);
     }
 
     .step {
@@ -668,9 +669,9 @@
       document.getElementById(`step-pane-${stepNum}`).classList.add('active');
       document.getElementById(`step-tab-${stepNum}`).classList.add('active');
 
-      // Update progress bar width
-      const progressWidth = ((stepNum - 1) / (totalSteps - 1)) * 100;
-      document.getElementById('progressBar').style.width = `${progressWidth}%`;
+      // Update progress bar fill
+      const progressPercent = ((stepNum - 1) / (totalSteps - 1)) * 100;
+      document.getElementById('progressBar').style.clipPath = `inset(0 ${100 - progressPercent}% 0 0)`;
 
       if (stepNum === 4) {
         updateSummary();
