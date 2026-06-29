@@ -5,133 +5,106 @@
 @section('styles')
   <link rel="stylesheet" href="{{ asset('assets/admin/dashboard/vars.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/admin/dashboard/style.css') }}">
-  <style>
-    /* Make the desktop container scrollable */
-    .desktop-14 {
-        height: auto !important;
-        min-height: 100vh !important;
-        overflow: visible !important;
-        padding-bottom: 120px !important;
-    }
-  </style>
 @endsection
 
 @section('content')
-  <div class="desktop-14">
+  <div class="relative min-h-screen flow-root">
     <!-- Admin Sidebar Included -->
     @include('components.sidebar-admin', ['activeFolder' => 'dashboard'])
 
     <!-- Main Content Wrapper -->
-    <div style="position: absolute; left: 340px; top: 138px; right: 40px; display: flex; flex-direction: column; gap: 24px; z-index: 10;">
-      
+    <div class="absolute left-[340px] top-[138px] right-10 flex flex-col gap-6 z-10 max-[1024px]:left-5 max-[1024px]:right-5 max-[1024px]:top-[150px]">
+
       <!-- Stats Grid Section -->
-      <div class="stats-grid" style="position: relative !important; left: auto !important; top: auto !important; right: auto !important; width: 100% !important; margin: 0 !important;">
+      <div class="flex flex-row gap-4 items-stretch max-[1024px]:flex-wrap">
         <!-- Total Peserta Card -->
-        <a href="{{ route('scores.index') }}" class="stats-grid-link">
-          <div class="total-applicants">
-            <div class="container">
-              <img class="background2" src="{{ asset('assets/admin/dashboard/background1.svg') }}" />
-              <div class="background3">
-                <div class="text2">+12%</div>
+        <a href="{{ route('scores.index') }}" class="flex-1 min-w-[200px] no-underline text-inherit">
+          <div class="bg-white border border-[#becabe] rounded-xl p-6 flex flex-col gap-1 w-full h-full transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(0,91,49,0.12)] hover:border-[#005b31]">
+            <div class="flex flex-row items-start justify-between w-full">
+              <img class="w-[38px] h-[39px]" src="{{ asset('assets/admin/dashboard/background1.svg') }}" alt="">
+              <div class="bg-[#dcfce7] rounded-full px-2 py-1">
+                <div class="text-[#15803d] text-[12px] font-semibold">+12%</div>
               </div>
             </div>
-            <div class="container2">
-              <div class="total-peserta">Total Peserta</div>
+            <div class="pt-3">
+              <div class="text-[#3f4940] text-[14px] font-semibold tracking-[0.7px]" style="font-family: 'WorkSans-SemiBold', sans-serif;">Total Peserta</div>
             </div>
-            <div class="heading-3">
-              <div class="_1-250">{{ number_format($totalPeserta) }}</div>
-            </div>
+            <div class="text-[#121c2a] text-[24px] font-bold" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">{{ number_format($totalPeserta) }}</div>
           </div>
         </a>
 
         <!-- Total Keterima Card -->
-        <a href="{{ route('scores.index', ['status' => 'Keterima']) }}" class="stats-grid-link">
-          <div class="accepted">
-            <div class="container">
-              <img class="background7" src="{{ asset('assets/admin/dashboard/background7.svg') }}" />
-              <div class="background3">
-                <div class="text2">+8%</div>
+        <a href="{{ route('scores.index', ['status' => 'Keterima']) }}" class="flex-1 min-w-[200px] no-underline text-inherit">
+          <div class="bg-white border border-[#becabe] rounded-xl p-6 flex flex-col gap-1 w-full h-full transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(0,91,49,0.12)] hover:border-[#005b31]">
+            <div class="flex flex-row items-start justify-between w-full">
+              <img class="w-9 h-10" src="{{ asset('assets/admin/dashboard/background7.svg') }}" alt="">
+              <div class="bg-[#dcfce7] rounded-full px-2 py-1">
+                <div class="text-[#15803d] text-[12px] font-semibold">+8%</div>
               </div>
             </div>
-            <div class="container2">
-              <div class="total-keterima">Total Keterima</div>
+            <div class="pt-3">
+              <div class="text-[#3f4940] text-[14px] font-semibold tracking-[0.7px]" style="font-family: 'WorkSans-SemiBold', sans-serif;">Total Keterima</div>
             </div>
-            <div class="heading-3">
-              <div class="_850">{{ number_format($totalKeterima) }}</div>
-            </div>
+            <div class="text-[#121c2a] text-[24px] font-bold" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">{{ number_format($totalKeterima) }}</div>
           </div>
         </a>
 
         <!-- Total Tidak Keterima Card -->
-        <a href="{{ route('scores.index', ['status' => 'Tidak Keterima']) }}" class="stats-grid-link">
-          <div class="rejected">
-            <div class="container">
-              <img class="background4" src="{{ asset('assets/admin/dashboard/background3.svg') }}" />
-              <div class="background5">
-                <div class="text3">+3%</div>
+        <a href="{{ route('scores.index', ['status' => 'Tidak Keterima']) }}" class="flex-1 min-w-[200px] no-underline text-inherit">
+          <div class="bg-white border border-[#becabe] rounded-xl p-6 flex flex-col gap-1 w-full h-full transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(185,28,28,0.12)] hover:border-[#b91c1c]">
+            <div class="flex flex-row items-start justify-between w-full">
+              <img class="w-9 h-[43px]" src="{{ asset('assets/admin/dashboard/background3.svg') }}" alt="">
+              <div class="bg-[#fee2e2] rounded-full px-2 py-1">
+                <div class="text-[#b91c1c] text-[12px] font-semibold">+3%</div>
               </div>
             </div>
-            <div class="container2">
-              <div class="total-tidak-keterima">Total Tidak Keterima</div>
+            <div class="pt-3">
+              <div class="text-[#3f4940] text-[14px] font-semibold tracking-[0.7px]" style="font-family: 'WorkSans-SemiBold', sans-serif;">Total Tidak Keterima</div>
             </div>
-            <div class="heading-3">
-              <div class="_400">{{ number_format($totalTidakKeterima) }}</div>
-            </div>
+            <div class="text-[#121c2a] text-[24px] font-bold" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">{{ number_format($totalTidakKeterima) }}</div>
           </div>
         </a>
 
         <!-- Rate Card -->
-        <div class="rate">
-          <div class="container">
-            <img class="background6" src="{{ asset('assets/admin/dashboard/background5.svg') }}" />
-            <div class="background3">
-              <div class="text2">+5%</div>
+        <div class="flex-1 min-w-[200px] bg-white border border-[#becabe] rounded-xl p-6 flex flex-col gap-1">
+          <div class="flex flex-row items-start justify-between w-full">
+            <img class="w-[38px] h-10" src="{{ asset('assets/admin/dashboard/background5.svg') }}" alt="">
+            <div class="bg-[#dcfce7] rounded-full px-2 py-1">
+              <div class="text-[#15803d] text-[12px] font-semibold">+5%</div>
             </div>
           </div>
-          <div class="container2">
-            <div class="tingkat-kelulusan">Tingkat Kelulusan</div>
+          <div class="pt-3">
+            <div class="text-[#3f4940] text-[14px] font-semibold tracking-[0.7px]" style="font-family: 'WorkSans-SemiBold', sans-serif;">Tingkat Kelulusan</div>
           </div>
-          <div class="heading-3">
-            <div class="_68">{{ $tingkatKelulusan }}%</div>
-          </div>
+          <div class="text-[#121c2a] text-[24px] font-bold" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">{{ $tingkatKelulusan }}%</div>
         </div>
       </div>
 
       <!-- Charts Grid Section -->
-      <div class="charts-grid" style="position: relative !important; left: auto !important; top: auto !important; right: auto !important; width: 100% !important; margin: 0 !important; display: flex; flex-direction: row; gap: 24px; align-items: stretch;">
+      <div class="flex flex-row gap-6 items-stretch max-[900px]:flex-col">
         <!-- Pendaftar Chart -->
-        <div class="pendaftar-chart">
-          <div class="heading-4">
-            <div class="jumlah-pendaftar-per-tahun">Jumlah Pendaftar Per Tahun</div>
-          </div>
-          <div class="horizontal-border">
+        <div class="flex-1 bg-white border border-[#becabe] rounded-xl p-8 flex flex-col gap-8">
+          <div class="text-[#121c2a] text-[20px] font-semibold" style="font-family: 'PlusJakartaSans-SemiBold', sans-serif;">Jumlah Pendaftar Per Tahun</div>
+          <div class="border-b border-[#becabe] h-[200px] flex flex-row gap-3 items-end pb-6 w-full">
             @foreach($charts['pendaftar'] as $year => $count)
-              <div class="container3" style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end;">
-                <!-- Dynamic height for bar charts -->
-                <div style="background: #298752; width: 30px; height: {{ ($count / max(max(array_values($charts['pendaftar'])), 1)) * 100 }}px; border-radius: 4px; margin-bottom: 8px;"></div>
-                <div class="container4">
-                  <div class="text4">{{ $year }}</div>
-                </div>
-                <div style="font-size: 10px; font-weight: bold; color: #6b7280; margin-top: 4px;">{{ $count }}</div>
+              <div class="flex flex-col gap-2 items-center">
+                <div class="bg-[#005b31] w-10 rounded-t" style="height: {{ ($count / max(max(array_values($charts['pendaftar'])), 1)) * 100 }}px;"></div>
+                <div class="text-[#121c2a] text-[12px] font-medium" style="font-family: 'WorkSans-Medium', sans-serif;">{{ $year }}</div>
+                <div class="text-[10px] font-bold text-gray-500">{{ $count }}</div>
               </div>
             @endforeach
           </div>
         </div>
 
         <!-- Keterima Chart -->
-        <div class="keterima-chart">
-          <div class="heading-4">
-            <div class="jumlah-keterima-per-tahun">Jumlah Keterima Per Tahun</div>
-          </div>
-          <div class="horizontal-border">
+        <div class="flex-1 bg-white border border-[#becabe] rounded-xl p-8 flex flex-col gap-8">
+          <div class="text-[#121c2a] text-[20px] font-semibold" style="font-family: 'PlusJakartaSans-SemiBold', sans-serif;">Jumlah Keterima Per Tahun</div>
+          <div class="border-b border-[#becabe] h-[200px] flex flex-row gap-3 items-end pb-6 w-full">
             @foreach($charts['keterima'] as $year => $count)
-              <div class="container3" style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end;">
-                <!-- Dynamic height for bar charts -->
-                <div style="background: #064e3b; width: 30px; height: {{ ($count / max(max(array_values($charts['keterima'])), 1)) * 100 }}px; border-radius: 4px; margin-bottom: 8px;"></div>
-                <div class="container4">
-                  <div class="text4">{{ $year }}</div>
-                </div>
-                <div style="font-size: 10px; font-weight: bold; color: #6b7280; margin-top: 4px;">{{ $count }}</div>
+              <div class="flex flex-col gap-2 items-center">
+                <div class="bg-[#064e3b] w-10 rounded-t" style="height: {{ ($count / max(max(array_values($charts['keterima'])), 1)) * 100 }}px;"></div>
+                <div class="text-[#121c2a] text-[12px] font-medium" style="font-family: 'WorkSans-Medium', sans-serif;">{{ $year }}</div>
+                <div class="text-[10px] font-bold text-gray-500">{{ $count }}</div>
               </div>
             @endforeach
           </div>
