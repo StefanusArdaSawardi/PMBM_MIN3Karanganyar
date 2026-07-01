@@ -132,9 +132,9 @@
             <form action="#" method="POST" onsubmit="event.preventDefault(); alert('Akun Admin TU baru berhasil disimpan!'); window.location.reload();">
                 <div class="modal-body px-4 pt-3 pb-4">
                     <div class="mb-3">
-                        <label class="form-label small fw-semibold text-secondary mb-1">Nama Lengkap Staff</label>
+                        <!-- <label class="form-label small fw-semibold text-secondary mb-1">Nama Lengkap Staff</label>
                         <input type="text" class="form-control" placeholder="Contoh: Siti Aminah, S.Kom" required>
-                    </div>
+                    </div> -->
                     <div class="mb-3">
                         <label class="form-label small fw-semibold text-secondary mb-1">Username Login</label>
                         <input type="text" class="form-control" placeholder="Contoh: amina_tu" required>
@@ -162,10 +162,10 @@
             </div>
             <form action="#" method="POST" onsubmit="event.preventDefault(); alert('Akun Panitia Penguji berhasil dibuat dengan auto alokasi 5 anak!'); window.location.reload();">
                 <div class="modal-body px-4 pt-3 pb-4">
-                    <div class="mb-3">
+                    <!-- <div class="mb-3">
                         <label class="form-label small fw-semibold text-secondary mb-1">Nama Lengkap Penguji</label>
                         <input type="text" class="form-control" placeholder="Contoh: Prof. Supriyadi" required>
-                    </div>
+                    </div> -->
                     <div class="mb-3">
                         <label class="form-label small fw-semibold text-secondary mb-1">Username Login</label>
                         <input type="text" class="form-control" placeholder="Contoh: supriyadi_penguji" required>
