@@ -1,4 +1,4 @@
-@extends('layouts.super-adminantrean')
+@extends('layouts.super-admin')
 
 @section('title', 'Screening')
 
