@@ -101,6 +101,9 @@
 
             <x-form.input type="date" name="tanggal_lahir" label="Tanggal Lahir" required value="{{ old('tanggal_lahir') }}" />
 
+            <x-form.input type="email" name="email" label="Email Calon Murid / Kontak" required
+                value="{{ old('email') }}" placeholder="siswa@gmail.com" />
+
             <x-form.textarea name="alamat" label="Alamat Lengkap Rumah" required full-width
                 rows="3" minlength="10" placeholder="Dusun, RT/RW, Kelurahan, Kecamatan, Kabupaten">{{ old('alamat') }}</x-form.textarea>
           </div>
@@ -130,7 +133,6 @@
             <x-form.input type="tel" name="nomor_telpon_ayah" label="No. Telpon/WhatsApp Ayah"
                 pattern="(08|62)[0-9]{8,13}" title="Format Indonesia: 08xxx atau 62xxx, 10-15 digit"
                 value="{{ old('nomor_telpon_ayah') }}" placeholder="08xxxxxxxxxx" inputmode="tel" />
-            <x-form.input type="email" name="email_ayah" label="Email Ayah" value="{{ old('email_ayah') }}" placeholder="ayah@gmail.com" />
 
             <!-- Ibu -->
             <div class="flex flex-col gap-2 col-span-2 max-[640px]:col-span-1 mt-5">
@@ -144,8 +146,6 @@
             <x-form.input type="tel" name="nomor_telpon_ibu" label="No. Telpon/WhatsApp Ibu"
                 pattern="(08|62)[0-9]{8,13}" title="Format Indonesia: 08xxx atau 62xxx, 10-15 digit"
                 value="{{ old('nomor_telpon_ibu') }}" placeholder="08xxxxxxxxxx" inputmode="tel" />
-            <x-form.input type="email" name="email_ibu" label="Email Kontak Wali" required
-                value="{{ old('email_ibu') }}" placeholder="kontak_wali@gmail.com" />
           </div>
 
           <div class="flex justify-between mt-10 border-t border-gray-100 pt-5">
@@ -165,6 +165,7 @@
             <x-form.file-upload name="kartu_keluarga" label="Kartu Keluarga (KK)" accept=".pdf,image/*" />
             <x-form.file-upload name="akta_kelahiran" label="Akta Kelahiran" accept=".pdf,image/*" />
             <x-form.file-upload name="kartu_identitas_anak" label="Kartu Identitas Anak (KIA)" accept=".pdf,image/*" />
+            <x-form.file-upload name="piagram_kejuaraan" label="Piagam Kejuaraan (Opsional)" accept=".pdf,image/*" />
           </div>
 
           <div class="flex justify-between mt-10 border-t border-gray-100 pt-5">
@@ -211,7 +212,7 @@
                 <p id="sum-parents" class="text-gray-800 font-bold mt-1">-</p>
               </div>
               <div>
-                <label class="text-gray-400 font-medium">Email Kontak Wali</label>
+                <label class="text-gray-400 font-medium">Email Kontak</label>
                 <p id="sum-email" class="text-gray-800 font-bold mt-1">-</p>
               </div>
             </div>
@@ -379,7 +380,7 @@
       const ibu = document.getElementById('nama_ibu').value || '-';
       document.getElementById('sum-parents').innerText = `${ayah} / ${ibu}`;
 
-      document.getElementById('sum-email').innerText = document.getElementById('email_ibu').value || '-';
+      document.getElementById('sum-email').innerText = document.getElementById('email').value || '-';
     }
 
     document.getElementById('registerForm').addEventListener('submit', function(e) {

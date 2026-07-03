@@ -103,6 +103,9 @@
 
             <x-form.input type="date" name="tanggal_lahir" label="Tanggal Lahir" required value="{{ old('tanggal_lahir', $student->tanggal_lahir) }}" />
 
+            <x-form.input type="email" name="email" label="Email Calon Murid / Kontak" required
+                value="{{ old('email', $student->email) }}" placeholder="siswa@gmail.com" />
+
             <x-form.textarea name="alamat" label="Alamat Lengkap Rumah" required full-width
                 rows="3" placeholder="Dusun, RT/RW, Kelurahan, Kecamatan, Kabupaten">{{ old('alamat', $student->alamat) }}</x-form.textarea>
           </div>
@@ -130,7 +133,6 @@
                 value="{{ old('pekerjaan_ayah', $ayah->pekerjaan) }}" placeholder="Contoh: Wiraswasta, PNS" />
             <x-form.input name="nomor_telpon_ayah" label="No. Telpon/WhatsApp Ayah"
                 value="{{ old('nomor_telpon_ayah', $ayah->nomor_telpon) }}" placeholder="08xxxxxxxxxx" />
-            <x-form.input type="email" name="email_ayah" label="Email Ayah" value="{{ old('email_ayah', $ayah->email) }}" placeholder="ayah@gmail.com" />
 
             <!-- Ibu -->
             <div class="flex flex-col gap-2 col-span-2 max-[640px]:col-span-1 mt-5">
@@ -142,8 +144,6 @@
                 value="{{ old('pekerjaan_ibu', $ibu->pekerjaan) }}" placeholder="Contoh: Ibu Rumah Tangga" />
             <x-form.input name="nomor_telpon_ibu" label="No. Telpon/WhatsApp Ibu"
                 value="{{ old('nomor_telpon_ibu', $ibu->nomor_telpon) }}" placeholder="08xxxxxxxxxx" />
-            <x-form.input type="email" name="email_ibu" label="Email Kontak Wali" required
-                value="{{ old('email_ibu', $ibu->email) }}" placeholder="kontak_wali@gmail.com" />
           </div>
 
           <div class="flex justify-between mt-10 border-t border-gray-100 pt-5">
@@ -168,6 +168,8 @@
                 :current-file="$student->akta_kelahiran" current-file-label="Lihat Akta Kelahiran" />
             <x-form.file-upload name="kartu_identitas_anak" label="Kartu Identitas Anak (KIA)" accept=".pdf,image/*"
                 :current-file="$student->kartu_identitas_anak" current-file-label="Lihat KIA" />
+            <x-form.file-upload name="piagram_kejuaraan" label="Piagam Kejuaraan (Opsional)" accept=".pdf,image/*"
+                :current-file="$student->piagram_kejuaraan ?? null" current-file-label="Lihat Piagam Kejuaraan" />
           </div>
 
           <div class="flex justify-between mt-10 border-t border-gray-100 pt-5">
@@ -214,7 +216,7 @@
                 <p id="sum-parents" class="text-gray-800 font-bold mt-1">-</p>
               </div>
               <div>
-                <label class="text-gray-400 font-medium">Email Kontak Wali</label>
+                <label class="text-gray-400 font-medium">Email Kontak</label>
                 <p id="sum-email" class="text-gray-800 font-bold mt-1">-</p>
               </div>
             </div>
@@ -329,7 +331,7 @@
       const ibu = document.getElementById('nama_ibu').value || '-';
       document.getElementById('sum-parents').innerText = `${ayah} / ${ibu}`;
 
-      document.getElementById('sum-email').innerText = document.getElementById('email_ibu').value || '-';
+      document.getElementById('sum-email').innerText = document.getElementById('email').value || '-';
     }
 
     document.getElementById('registerForm').addEventListener('submit', function(e) {

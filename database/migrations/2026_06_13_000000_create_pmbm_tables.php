@@ -24,15 +24,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // 2. kejuaraans
-        Schema::create('kejuaraans', function (Blueprint $table) {
-            $table->id('id_kejuaraan');
-            $table->string('nama_kejuaraan');
-            $table->date('tanggal_kejuaraan')->nullable();
-            $table->string('tingkat_kejuaraan')->nullable();
-            $table->string('piagram_kejuaraan')->nullable(); // Certificate document path
-            $table->timestamps();
-        });
+
 
         // 3. ayah_calon_murids
         Schema::create('ayah_calon_murids', function (Blueprint $table) {
@@ -71,7 +63,7 @@ return new class extends Migration
             
             $table->foreignId('id_ayah')->constrained('ayah_calon_murids', 'id_ayah')->onDelete('cascade');
             $table->foreignId('id_ibu')->constrained('ibu_calon_murids', 'id_ibu')->onDelete('cascade');
-            $table->foreignId('id_kejuaraan')->nullable()->constrained('kejuaraans', 'id_kejuaraan')->onDelete('set null');
+            $table->string('piagram_kejuaraan')->nullable();
             $table->timestamps();
         });
 
@@ -166,7 +158,6 @@ return new class extends Migration
         Schema::dropIfExists('calon_murids');
         Schema::dropIfExists('ibu_calon_murids');
         Schema::dropIfExists('ayah_calon_murids');
-        Schema::dropIfExists('kejuaraans');
         Schema::dropIfExists('programs');
     }
 };

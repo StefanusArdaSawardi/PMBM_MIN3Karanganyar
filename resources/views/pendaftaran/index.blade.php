@@ -119,7 +119,7 @@
 
               <!-- Email -->
               <div class="text-[13px] text-gray-500 min-w-[180px] max-w-[220px] text-ellipsis overflow-hidden whitespace-nowrap">
-                {{ $item->calonMurid->email ?? $item->calonMurid->ibu->email }}
+                {{ $item->calonMurid->email }}
               </div>
 
               <!-- Status Badge -->
@@ -132,6 +132,10 @@
                     $badgeBg = '#ecfdf5';
                     $badgeBorder = '#a7f3d0';
                     $badgeText = '#047857';
+                } elseif ($item->status_label === 'Siap Seleksi') {
+                    $badgeBg = '#eff6ff';
+                    $badgeBorder = '#bfdbfe';
+                    $badgeText = '#1d4ed8';
                 } elseif (in_array($item->status_label, ['Tidak Lulus', 'Berkas Ditolak', 'Mengundurkan Diri'])) {
                     $badgeBg = '#fef2f2';
                     $badgeBorder = '#fca5a5';

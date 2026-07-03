@@ -1,21 +1,3 @@
 <?php
-
-namespace App\Models;
-
-use Illuminate\Database\Eloquent\Model;
-
-class ChatMessage extends Model
-{
-    protected $table = 'chat_messages';
-
-    protected $fillable = [
-        'session_id',
-        'sender',
-        'message',
-        'is_read',
-    ];
-
-    protected $casts = [
-        'is_read' => 'boolean',
-    ];
-}
+// FILE DIHAPUS - Tabel chat_messages sudah di-drop
+// Hapus file ini secara manual dari project

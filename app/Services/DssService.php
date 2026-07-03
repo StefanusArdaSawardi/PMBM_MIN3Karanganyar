@@ -27,10 +27,10 @@ class DssService
                     'mandiri' => 15
                 ],
                 'predikats' => [
-                    ['min' => 85, 'max' => 100, 'label' => 'Sangat Cakap'],
-                    ['min' => 70, 'max' => 84, 'label' => 'Cakap'],
-                    ['min' => 60, 'max' => 69, 'label' => 'Cukup Cakap'],
-                    ['min' => 1, 'max' => 59, 'label' => 'Butuh Perhatian']
+                    ['min' => 9, 'max' => 10, 'label' => 'Sangat Cakap'],
+                    ['min' => 7, 'max' => 8, 'label' => 'Cakap'],
+                    ['min' => 6, 'max' => 6, 'label' => 'Cukup Cakap'],
+                    ['min' => 1, 'max' => 5, 'label' => 'Butuh Perhatian']
                 ]
             ];
             
@@ -54,10 +54,10 @@ class DssService
                     'mandiri' => 15
                 ],
                 'predikats' => $config['predikats'] ?? [
-                    ['min' => 85, 'max' => 100, 'label' => 'Sangat Cakap'],
-                    ['min' => 70, 'max' => 84, 'label' => 'Cakap'],
-                    ['min' => 60, 'max' => 69, 'label' => 'Cukup Cakap'],
-                    ['min' => 1, 'max' => 59, 'label' => 'Butuh Perhatian']
+                    ['min' => 9, 'max' => 10, 'label' => 'Sangat Cakap'],
+                    ['min' => 7, 'max' => 8, 'label' => 'Cakap'],
+                    ['min' => 6, 'max' => 6, 'label' => 'Cukup Cakap'],
+                    ['min' => 1, 'max' => 5, 'label' => 'Butuh Perhatian']
                 ]
             ];
         }
@@ -167,7 +167,7 @@ class DssService
                 if ($pendaftaran) {
                     if ($rank <= $quota) {
                         $pendaftaran->peringkat_cadangan = null;
-                    } elseif ($result->nilai_akhir >= 60.0) {
+                    } elseif ($result->nilai_akhir >= 6.0) {
                         $pendaftaran->peringkat_cadangan = $cadanganRank++;
                     } else {
                         $pendaftaran->peringkat_cadangan = null;
@@ -198,7 +198,7 @@ class DssService
             
         if ($rank <= $quota) {
             return 'Diterima di Program Pilihan';
-        } elseif ($result->nilai_akhir >= 60.0) {
+        } elseif ($result->nilai_akhir >= 6.0) {
             return 'Pindahkan ke Program Reguler';
         } else {
             return 'Ditolak';

@@ -55,6 +55,9 @@ class Pendaftaran extends Model
             return 'Berkas Diterima';
         }
         if ($this->status_verifikasi === 'terverifikasi_onsite' && is_null($this->status_kelulusan)) {
+            if ($this->calonMurid && $this->calonMurid->hasil()->exists()) {
+                return 'Siap Seleksi';
+            }
             return 'Berkas Onsite Diterima';
         }
         if ($this->status_kelulusan === 'lulus') {

@@ -62,7 +62,7 @@ class PendaftaranSeeder extends Seeder
                 'kartu_identitas_anak' => $isComplete ? '/documents/kie_' . $i . '.pdf' : null,
                 'id_ayah' => $ayah->id_ayah,
                 'id_ibu' => $ibu->id_ibu,
-                'id_kejuaraan' => null,
+                'piagram_kejuaraan' => null,
             ]);
 
             // Tentukan kombinasi status pendaftaran realistis

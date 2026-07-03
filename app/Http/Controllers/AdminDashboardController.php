@@ -348,6 +348,10 @@ class AdminDashboardController extends Controller
      */
     public function accounts()
     {
+        if (auth()->guard('tata_usaha')->user()->role !== 'super admin') {
+            abort(403, 'Anda tidak memiliki hak akses untuk mengelola akun.');
+        }
+
         $accounts = [];
 
         foreach (PengurusTataUsaha::all() as $tu) {
@@ -378,6 +382,10 @@ class AdminDashboardController extends Controller
      */
     public function createAccount()
     {
+        if (auth()->guard('tata_usaha')->user()->role !== 'super admin') {
+            abort(403, 'Anda tidak memiliki hak akses untuk mengelola akun.');
+        }
+
         return view('pengguna.create');
     }
 
@@ -386,6 +394,10 @@ class AdminDashboardController extends Controller
      */
     public function editAccountPage($role, $id)
     {
+        if (auth()->guard('tata_usaha')->user()->role !== 'super admin') {
+            abort(403, 'Anda tidak memiliki hak akses untuk mengelola akun.');
+        }
+
         if ($role === 'tata_usaha') {
             $account = PengurusTataUsaha::findOrFail($id);
             $accountData = [
@@ -414,11 +426,15 @@ class AdminDashboardController extends Controller
      */
     public function storeAccount(Request $request)
     {
+        if (auth()->guard('tata_usaha')->user()->role !== 'super admin') {
+            abort(403, 'Anda tidak memiliki hak akses untuk mengelola akun.');
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'password' => 'required|min:8',
-            'role' => 'required|in:tata_usaha,super_admin,panitia',
+            'role' => 'required|in:tata_usaha,panitia',
         ]);
 
         $role = $request->role;
@@ -458,6 +474,10 @@ class AdminDashboardController extends Controller
      */
     public function updateAccount(Request $request, $role, $id)
     {
+        if (auth()->guard('tata_usaha')->user()->role !== 'super admin') {
+            abort(403, 'Anda tidak memiliki hak akses untuk mengelola akun.');
+        }
+
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
@@ -566,6 +586,10 @@ class AdminDashboardController extends Controller
      */
     public function deleteAccount($role, $id)
     {
+        if (auth()->guard('tata_usaha')->user()->role !== 'super admin') {
+            abort(403, 'Anda tidak memiliki hak akses untuk mengelola akun.');
+        }
+
         if ($role === 'tata_usaha') {
             $user = PengurusTataUsaha::findOrFail($id);
             // Protect current logged-in user from self-deletion
@@ -727,14 +751,14 @@ class AdminDashboardController extends Controller
     {
         $request->validate([
             // Predikats
-            'pred_sangat_cakap_min' => 'required|integer|min:0|max:100',
-            'pred_sangat_cakap_max' => 'required|integer|min:0|max:100',
-            'pred_cakap_min' => 'required|integer|min:0|max:100',
-            'pred_cakap_max' => 'required|integer|min:0|max:100',
-            'pred_cukup_cakap_min' => 'required|integer|min:0|max:100',
-            'pred_cukup_cakap_max' => 'required|integer|min:0|max:100',
-            'pred_perhatian_min' => 'required|integer|min:0|max:100',
-            'pred_perhatian_max' => 'required|integer|min:0|max:100',
+            'pred_sangat_cakap_min' => 'required|integer|min:0|max:10',
+            'pred_sangat_cakap_max' => 'required|integer|min:0|max:10',
+            'pred_cakap_min' => 'required|integer|min:0|max:10',
+            'pred_cakap_max' => 'required|integer|min:0|max:10',
+            'pred_cukup_cakap_min' => 'required|integer|min:0|max:10',
+            'pred_cukup_cakap_max' => 'required|integer|min:0|max:10',
+            'pred_perhatian_min' => 'required|integer|min:0|max:10',
+            'pred_perhatian_max' => 'required|integer|min:0|max:10',
         ]);
 
         // Store in DB
@@ -987,5 +1011,30 @@ class AdminDashboardController extends Controller
         $contact->delete();
  
         return redirect()->route('tata_usaha.content')->with('success_contact', 'Kontak/Media Sosial berhasil dihapus.');
+    }
+
+    /**
+     * Change program study for applicant.
+     */
+    public function changeProgram(Request $request, $id)
+    {
+        $request->validate([
+            'id_program' => 'required|exists:programs,id_program',
+        ]);
+
+        $pendaftaran = Pendaftaran::findOrFail($id);
+        $pendaftaran->id_program = $request->id_program;
+        $pendaftaran->save();
+
+        $student = $pendaftaran->calonMurid;
+        if ($student && $student->hasil) {
+            $student->hasil->id_program = $request->id_program;
+            $student->hasil->save();
+        }
+
+        // Trigger recalculation of rankings/DSS
+        \App\Services\DssService::recalculateAll();
+
+        return back()->with('success', 'Program kelas pilihan calon murid berhasil diubah dan sistem DSS telah disesuaikan.');
     }
 }

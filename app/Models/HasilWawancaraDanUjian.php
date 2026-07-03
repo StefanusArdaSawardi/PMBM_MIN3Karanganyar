@@ -21,6 +21,7 @@ class HasilWawancaraDanUjian extends Model
         'catatan_otomatis',
         'catatan_manual',
         'catatan',
+        'inputted_by',
         'id_murid',
         'id_ayah',
         'id_ibu',

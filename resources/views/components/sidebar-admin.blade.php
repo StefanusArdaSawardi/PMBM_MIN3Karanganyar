@@ -27,7 +27,9 @@
   <a href="{{ route('tata_usaha.dashboard') }}" class="dashboard">Dashboard</a>
   <a href="{{ route('tata_usaha.content') }}" class="screening">Kelola Konten</a>
   <a href="{{ route('scores.index') }}" class="applicant-list">Pendaftaran</a>
-  <a href="{{ route('tata_usaha.accounts') }}" class="account-management">Kelola Akun</a>
+  @if(auth()->guard('tata_usaha')->user()->role === 'super admin')
+    <a href="{{ route('tata_usaha.accounts') }}" class="account-management">Kelola Akun</a>
+  @endif
 
   <!-- Logout Form -->
   <form id="logout-form" action="{{ route('tata_usaha.logout') }}" method="POST" style="display: none;">

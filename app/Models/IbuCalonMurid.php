@@ -14,7 +14,6 @@ class IbuCalonMurid extends Model
         'pekerjaan',
         'alamat',
         'nomor_telpon',
-        'email',
     ];
 
     public function calonMurids()

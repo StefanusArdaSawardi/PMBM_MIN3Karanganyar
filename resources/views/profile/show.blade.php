@@ -276,7 +276,7 @@
           </div>
           <div class="detail-row">
             <div class="detail-label">Email Kontak</div>
-            <div class="detail-value">{{ $student->ibu->email }}</div>
+            <div class="detail-value">{{ $student->email ?? '-' }}</div>
           </div>
         </div>
 
@@ -480,6 +480,29 @@
                         $recomColor = $recom === 'Diterima di Program Pilihan' ? '#047857' : ($recom === 'Pindahkan ke Program Reguler' ? '#c2410c' : '#b91c1c');
                       @endphp
                       <div>Saran Sistem DSS: <strong style="color: {{ $recomColor }}">{{ $recom }}</strong></div>
+                    </div>
+                    
+                    @if($student->hasil->inputted_by)
+                      <div style="border-top: 1px solid #f1f5f9; padding-top: 8px; margin-top: 8px; font-size: 12px; color: #4b5563;">
+                        Diuput oleh: <strong>{{ $student->hasil->inputted_by }}</strong>
+                      </div>
+                    @endif
+
+                    <div style="border-top: 1px solid #f1f5f9; padding-top: 10px; margin-top: 10px;">
+                      <form action="{{ route('tata_usaha.change_program', $pendaftaran->id_pendaftaran) }}" method="POST" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        @csrf
+                        <label for="change_id_program" style="font-size: 12px; color: #374151; font-weight: 600;">Ubah Program Pilihan:</label>
+                        <select name="id_program" id="change_id_program" style="padding: 4px 8px; border: 1px solid #becabe; border-radius: 6px; font-family: inherit; font-size: 12px; outline: none; background: #ffffff;">
+                          @foreach(\App\Models\Program::all() as $prog)
+                            <option value="{{ $prog->id_program }}" {{ $pendaftaran->id_program == $prog->id_program ? 'selected' : '' }}>
+                              {{ $prog->nama_program }}
+                            </option>
+                          @endforeach
+                        </select>
+                        <button type="submit" style="background: #005b31; color: white; padding: 4px 10px; border: none; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer;">
+                          Ubah Jalur
+                        </button>
+                      </form>
                     </div>
                   </div>
                 @else

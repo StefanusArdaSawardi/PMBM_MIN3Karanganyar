@@ -140,7 +140,6 @@
             <div class="options">
               <select name="role" id="role-select" required>
                 <option value="tata_usaha" {{ old('role') == 'tata_usaha' ? 'selected' : '' }}>Tata Usaha / Admin</option>
-                <option value="super_admin" {{ old('role') == 'super_admin' ? 'selected' : '' }}>Super Admin</option>
                 <option value="panitia" {{ old('role') == 'panitia' ? 'selected' : '' }}>Panitia Penguji</option>
               </select>
               <img class="container7" src="{{ asset('assets/admin/users/container11.svg') }}" />

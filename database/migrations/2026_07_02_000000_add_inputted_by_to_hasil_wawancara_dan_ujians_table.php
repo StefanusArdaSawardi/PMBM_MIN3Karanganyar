@@ -11,7 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Parent email fields removed as per request
+        Schema::table('hasil_wawancara_dan_ujians', function (Blueprint $table) {
+            $table->string('inputted_by')->nullable()->after('catatan_manual');
+        });
     }
 
     /**
@@ -19,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Parent email fields removed as per request
+        Schema::table('hasil_wawancara_dan_ujians', function (Blueprint $table) {
+            $table->dropColumn('inputted_by');
+        });
     }
 };

@@ -25,6 +25,11 @@ Route::get('/kelulusan', [LandingController::class, 'cekKelulusan'])->name('land
 Route::post('/kelulusan/cek', [LandingController::class, 'checkStatus'])->name('student.status.check');
 Route::get('/api/faqs', [LandingController::class, 'getFaqsJson'])->name('landing.faqs.json');
 
+// Document Preview (accessible by both Admin and Panitia)
+Route::get('/document/preview/{type}/{filename}', [AdminDashboardController::class, 'previewDocument'])
+    ->middleware('auth:tata_usaha,panitia')
+    ->name('document.preview');
+
 // 2. Authentication Login Portal
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
@@ -37,9 +42,7 @@ Route::middleware('auth:tata_usaha')->prefix('tata-usaha')->group(function () {
     Route::get('/applicants', [AdminDashboardController::class, 'applicants'])->name('scores.index');
     Route::get('/applicants/{id}', [AdminDashboardController::class, 'detail'])->name('tata_usaha.detail');
     Route::post('/applicants/{id}/status', [AdminDashboardController::class, 'updateStatus'])->name('tata_usaha.status');
-
-    // Document Preview
-    Route::get('/document/preview/{type}/{filename}', [AdminDashboardController::class, 'previewDocument'])->name('document.preview');
+    Route::post('/applicants/{id}/change-program', [AdminDashboardController::class, 'changeProgram'])->name('tata_usaha.change_program');
 
     // Content Management (CMS)
     Route::get('/content', [AdminDashboardController::class, 'showContent'])->name('tata_usaha.content');

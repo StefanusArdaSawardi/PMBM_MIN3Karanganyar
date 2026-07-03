@@ -167,19 +167,21 @@ class LandingController extends Controller
             'tempat_lahir' => ['required', 'string', 'min:3', 'max:100', 'regex:/^[a-zA-Z\s]+$/'],
             'tanggal_lahir' => 'required|date|before:today',
             'alamat' => 'required|string|min:10',
-            
+            'email' => 'required|email|max:100',
+
             // Father Data
             'nama_ayah' => ['required', 'string', 'min:3', 'max:255', 'regex:/^[a-zA-Z\s\.\,]+$/'],
             'pekerjaan_ayah' => 'nullable|string|min:3|max:100',
             'nomor_telpon_ayah' => ['nullable', 'string', 'regex:/^(08|62)[0-9]{8,13}$/'],
-            'email_ayah' => 'nullable|email|max:100',
- 
+
             // Mother Data
             'nama_ibu' => ['required', 'string', 'min:3', 'max:255', 'regex:/^[a-zA-Z\s\.\,]+$/'],
             'pekerjaan_ibu' => 'nullable|string|min:3|max:100',
             'nomor_telpon_ibu' => ['nullable', 'string', 'regex:/^(08|62)[0-9]{8,13}$/'],
-            'email_ibu' => 'required|email|max:100',
- 
+
+            // Kejuaraan
+            'piagram_kejuaraan' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+
             // Files (all nullable on edit)
             'pas_foto' => 'nullable|file|image|max:5120',
             'kartu_keluarga' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
@@ -214,7 +216,6 @@ class LandingController extends Controller
             'pekerjaan' => $request->pekerjaan_ayah,
             'alamat' => $request->alamat,
             'nomor_telpon' => $request->nomor_telpon_ayah,
-            'email' => $request->email_ayah,
         ]);
  
         // Update Mother
@@ -223,9 +224,21 @@ class LandingController extends Controller
             'pekerjaan' => $request->pekerjaan_ibu,
             'alamat' => $request->alamat,
             'nomor_telpon' => $request->nomor_telpon_ibu,
-            'email' => $request->email_ibu,
         ]);
  
+        // Handle piagam kejuaraan upload
+        $piagamPath = $student->piagram_kejuaraan;
+        if ($request->hasFile('piagram_kejuaraan')) {
+            // Delete old piagam if exists
+            if ($student->piagram_kejuaraan && file_exists(public_path($student->piagram_kejuaraan))) {
+                @unlink(public_path($student->piagram_kejuaraan));
+            }
+            $file = $request->file('piagram_kejuaraan');
+            $filename = time() . '_piagram_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/documents'), $filename);
+            $piagamPath = '/uploads/documents/' . $filename;
+        }
+
         // Handle file uploads
         $files = [];
         $documentFields = ['pas_foto', 'kartu_keluarga', 'akta_kelahiran', 'kartu_identitas_anak'];
@@ -254,11 +267,12 @@ class LandingController extends Controller
             'tempat_lahir' => $request->tempat_lahir,
             'tanggal_lahir' => $request->tanggal_lahir,
             'alamat' => $request->alamat,
-            'email' => $request->email_ibu,
+            'email' => $request->email,
             'pas_foto' => $files['pas_foto'],
             'kartu_keluarga' => $files['kartu_keluarga'],
             'akta_kelahiran' => $files['akta_kelahiran'],
             'kartu_identitas_anak' => $files['kartu_identitas_anak'],
+            'piagram_kejuaraan' => $piagamPath,
         ]);
  
         // Update Pendaftaran status to Pending (Baru / Perubahan Data) and clear rejection reason
@@ -286,19 +300,21 @@ class LandingController extends Controller
             'tempat_lahir' => ['required', 'string', 'min:3', 'max:100', 'regex:/^[a-zA-Z\s]+$/'],
             'tanggal_lahir' => 'required|date|before:today',
             'alamat' => 'required|string|min:10',
+            'email' => 'required|email|max:100',
 
             // Father Data
             'nama_ayah' => ['required', 'string', 'min:3', 'max:255', 'regex:/^[a-zA-Z\s\.\,]+$/'],
             'pekerjaan_ayah' => 'nullable|string|min:3|max:100',
             'nomor_telpon_ayah' => ['nullable', 'string', 'regex:/^(08|62)[0-9]{8,13}$/'],
-            'email_ayah' => 'nullable|email|max:100',
 
             // Mother Data
             'nama_ibu' => ['required', 'string', 'min:3', 'max:255', 'regex:/^[a-zA-Z\s\.\,]+$/'],
             'pekerjaan_ibu' => 'nullable|string|min:3|max:100',
             'nomor_telpon_ibu' => ['nullable', 'string', 'regex:/^(08|62)[0-9]{8,13}$/'],
-            'email_ibu' => 'required|email|max:100',
  
+            // Kejuaraan
+            'piagram_kejuaraan' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+
             // Files
             'pas_foto' => 'nullable|file|image|max:5120',
             'kartu_keluarga' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
@@ -330,7 +346,6 @@ class LandingController extends Controller
             'pekerjaan' => $request->pekerjaan_ayah,
             'alamat' => $request->alamat,
             'nomor_telpon' => $request->nomor_telpon_ayah,
-            'email' => $request->email_ayah,
         ]);
  
         // Create Mother
@@ -339,9 +354,17 @@ class LandingController extends Controller
             'pekerjaan' => $request->pekerjaan_ibu,
             'alamat' => $request->alamat,
             'nomor_telpon' => $request->nomor_telpon_ibu,
-            'email' => $request->email_ibu,
         ]);
  
+        // Handle piagam kejuaraan upload
+        $piagamPath = null;
+        if ($request->hasFile('piagram_kejuaraan')) {
+            $file = $request->file('piagram_kejuaraan');
+            $filename = time() . '_piagram_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/documents'), $filename);
+            $piagamPath = '/uploads/documents/' . $filename;
+        }
+
         // Upload documents helper
         $files = [];
         $documentFields = ['pas_foto', 'kartu_keluarga', 'akta_kelahiran', 'kartu_identitas_anak'];
@@ -366,9 +389,10 @@ class LandingController extends Controller
             'tempat_lahir' => $request->tempat_lahir,
             'tanggal_lahir' => $request->tanggal_lahir,
             'alamat' => $request->alamat,
-            'email' => $request->email_ibu, // default to contact email
+            'email' => $request->email,
             'id_ayah' => $ayah->id_ayah,
             'id_ibu' => $ibu->id_ibu,
+            'piagram_kejuaraan' => $piagamPath,
             'pas_foto' => $files['pas_foto'],
             'kartu_keluarga' => $files['kartu_keluarga'],
             'akta_kelahiran' => $files['akta_kelahiran'],

@@ -24,7 +24,7 @@ class CalonMurid extends Model
         'pas_foto',
         'id_ayah',
         'id_ibu',
-        'id_kejuaraan',
+        'piagram_kejuaraan',
     ];
 
     public function ayah()
@@ -37,10 +37,7 @@ class CalonMurid extends Model
         return $this->belongsTo(IbuCalonMurid::class, 'id_ibu', 'id_ibu');
     }
 
-    public function kejuaraan()
-    {
-        return $this->belongsTo(Kejuaraan::class, 'id_kejuaraan', 'id_kejuaraan');
-    }
+
 
     public function pendaftaran()
     {

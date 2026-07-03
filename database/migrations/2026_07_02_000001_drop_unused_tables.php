@@ -1,17 +1,19 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
     /**
      * Run the migrations.
+     * Drop unused tables: chat_messages, school_contracts, school_programs
      */
     public function up(): void
     {
-        // Parent email fields removed as per request
+        Schema::dropIfExists('chat_messages');
+        Schema::dropIfExists('school_contracts');
+        Schema::dropIfExists('school_programs');
     }
 
     /**
@@ -19,6 +21,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Parent email fields removed as per request
+        // These tables are intentionally removed and should not be recreated.
     }
 };
