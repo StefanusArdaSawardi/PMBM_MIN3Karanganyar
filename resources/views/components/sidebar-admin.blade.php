@@ -1,113 +1,67 @@
 <!-- Admin Sidebar Component -->
-<div class="rectangle-2"></div>
+<nav class="absolute top-0 left-0 right-0 h-[116px] bg-white flex items-center px-8 z-20 max-[1024px]:h-24 max-[1024px]:px-4">
+  <!-- Mobile Hamburger Toggle -->
+  <button id="adminSidebarToggle" onclick="document.body.classList.toggle('admin-sidebar-open')" class="hidden max-[1024px]:block mr-3 bg-none border-none cursor-pointer text-[#005b31] p-2" aria-label="Toggle menu">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+  </button>
 
-<!-- Mobile Hamburger Toggle -->
-<button id="adminSidebarToggle" onclick="document.body.classList.toggle('admin-sidebar-open')" class="admin-sidebar-toggle" aria-label="Toggle menu">
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
-</button>
+  <img
+    class="w-[58px] h-[58px] object-cover aspect-square shrink-0 max-[1024px]:w-[42px] max-[1024px]:h-[42px]"
+    src="{{ asset('assets/admin/' . $activeFolder . '/whats-app-image-2026-06-17-at-23-30-06-removebg-preview-10.png') }}"
+    alt="Admin Logo"
+  />
+  <div class="text-black text-[20px] font-bold tracking-[-0.4px] ml-3 max-[1024px]:text-[15px]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Super Admin</div>
+  <div class="text-black text-[20px] font-bold tracking-[-0.4px] ml-9 max-[1024px]:hidden" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Page/Dashboard</div>
 
-<div class="admin-portal">Admin Portal</div>
-<img
-  class="whats-app-image-2026-06-17-at-23-30-06-removebg-preview-1"
-  src="{{ asset('assets/admin/' . $activeFolder . '/whats-app-image-2026-06-17-at-23-30-06-removebg-preview-10.png') }}"
-  alt="Admin Logo"
-/>
-<div class="page-dashboard">Page/Dashboard</div>
+  <div class="ml-auto flex items-center gap-4">
+    <div class="flex-col items-end max-[1024px]:hidden">
+      <div class="text-black text-[20px] font-bold tracking-[-0.4px]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Super Admin</div>
+      <div class="text-black/40 text-[15px] font-medium tracking-[-0.4px]" style="font-family: 'Roboto-Medium', sans-serif;">Super Admin</div>
+    </div>
+    <div class="bg-[#005b31] rounded-full w-[60px] h-[60px] flex items-center justify-center shrink-0 max-[1024px]:w-12 max-[1024px]:h-12">
+      <span class="text-white text-[16px] font-semibold" style="font-family: 'WorkSans-SemiBold', sans-serif;">AU</span>
+    </div>
+  </div>
+</nav>
 
 <!-- Mobile Sidebar Backdrop -->
-<div id="adminSidebarBackdrop" onclick="document.body.classList.remove('admin-sidebar-open')" class="admin-sidebar-backdrop"></div>
+<div id="adminSidebarBackdrop" onclick="document.body.classList.remove('admin-sidebar-open')" class="hidden fixed inset-0 bg-black/40 z-[150] admin-sidebar-backdrop"></div>
 
-<div class="admin-sidebar-panel">
-  <div class="rectangle-129"></div>
-  <div class="rectangle-130"></div>
-  <div class="rectangle-131"></div>
-  <div class="rectangle-132"></div>
-  <div class="rectangle-133"></div>
-
-  <a href="{{ route('tata_usaha.dashboard') }}" class="dashboard">Dashboard</a>
-  <a href="{{ route('tata_usaha.content') }}" class="screening">Kelola Konten</a>
-  <a href="{{ route('scores.index') }}" class="applicant-list">Pendaftaran</a>
+<aside class="absolute top-[116px] left-0 w-[355px] bottom-0 bg-[#f8f9ff] flex flex-col z-10 max-[1024px]:fixed max-[1024px]:top-0 max-[1024px]:h-screen max-[1024px]:-translate-x-full max-[1024px]:transition-transform max-[1024px]:duration-300 max-[1024px]:z-[160] admin-sidebar-panel">
+  <a href="{{ route('tata_usaha.dashboard') }}" class="bg-[#005b31] h-[93px] flex items-center px-9 no-underline">
+    <span class="text-white text-[20px] font-bold tracking-[-0.4px]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Dashboard</span>
+  </a>
+  <a href="{{ route('scores.index') }}" class="bg-white h-[93px] flex items-center px-9 no-underline hover:bg-gray-50">
+    <span class="text-[#005b31] text-[20px] font-bold tracking-[-0.4px]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Pendaftaran System</span>
+  </a>
+  <a href="{{ route('tata_usaha.content') }}" class="bg-white h-[93px] flex items-center justify-between px-9 no-underline hover:bg-gray-50">
+    <span class="text-[#005b31] text-[20px] font-bold tracking-[-0.4px]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Pengaturan</span>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#005b31" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
+  </a>
+  <a href="{{ route('tata_usaha.content') }}#dss" class="bg-white h-[93px] flex items-center px-9 no-underline hover:bg-gray-50">
+    <span class="text-[#005b31] text-[20px] font-bold tracking-[-0.4px]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">DSS</span>
+  </a>
   @if(auth()->guard('tata_usaha')->user()->role === 'super admin')
-    <a href="{{ route('tata_usaha.accounts') }}" class="account-management">Kelola Akun</a>
+    <a href="{{ route('tata_usaha.accounts') }}" class="bg-white h-[93px] flex items-center px-9 no-underline hover:bg-gray-50">
+      <span class="text-[#005b31] text-[20px] font-bold tracking-[-0.4px]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Account Management</span>
+    </a>
   @endif
 
+  <div class="flex-1 bg-[#f8f9ff]"></div>
+
   <!-- Logout Form -->
-  <form id="logout-form" action="{{ route('tata_usaha.logout') }}" method="POST" style="display: none;">
+  <form id="logout-form" action="{{ route('tata_usaha.logout') }}" method="POST" class="hidden">
     @csrf
   </form>
-  <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="logout">Keluar</a>
-</div>
-
-<!-- Profile Section Top Right -->
-<div class="admin-profile-box" style="position: absolute; right: 40px; top: 0; height: 116px; display: flex; align-items: center; gap: 16px; z-index: 100;">
-  <div class="admin-profile-text" style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; gap: 2px;">
-    <div style="color: #000000; font-family: 'PlusJakartaSans-Bold', sans-serif; font-size: 16px; font-weight: 700; line-height: 1.2;">Admin Portal</div>
-    <div style="color: rgba(0, 0, 0, 0.4); font-family: 'Roboto-Medium', sans-serif; font-size: 12px; font-weight: 500; line-height: 1.2;">Admin Tata Usaha</div>
-  </div>
-  <div style="background: #005b31; border-radius: 50%; display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0, 91, 49, 0.15);">
-    <div style="color: #ffffff; font-family: 'WorkSans-SemiBold', sans-serif; font-size: 14px; font-weight: 600;">AU</div>
-  </div>
-</div>
+  <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="px-9 py-8 no-underline">
+    <span class="text-red-600 text-[20px] font-bold tracking-[-0.4px]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Logout</span>
+  </a>
+</aside>
 
 <style>
-  .admin-sidebar-toggle {
-    display: none;
-    position: fixed;
-    left: 16px;
-    top: 58px;
-    transform: translateY(-50%);
-    z-index: 200;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #005b31;
-    padding: 8px;
-  }
-  .admin-sidebar-backdrop {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 150;
-  }
-
   @media (max-width: 1024px) {
-    .admin-sidebar-toggle {
-      display: block;
-    }
-    .admin-portal {
-      left: 110px !important;
-      font-size: 15px !important;
-    }
-    .whats-app-image-2026-06-17-at-23-30-06-removebg-preview-1 {
-      left: 56px !important;
-      width: 42px !important;
-      height: 42px !important;
-    }
-    .page-dashboard {
-      display: none !important;
-    }
-    .admin-profile-box {
-      right: 16px !important;
-    }
-    .admin-profile-text {
-      display: none !important;
-    }
-    .admin-sidebar-panel {
-      position: fixed;
-      left: 0;
-      top: 0;
-      width: 310px;
-      height: 100vh;
-      z-index: 160;
-      transform: translateX(-100%);
-      transition: transform 0.25s ease;
-    }
-    .admin-sidebar-panel .rectangle-129 {
-      height: 100vh;
-    }
     body.admin-sidebar-open .admin-sidebar-panel {
-      transform: translateX(0);
+      translate: 0 0;
     }
     body.admin-sidebar-open .admin-sidebar-backdrop {
       display: block;

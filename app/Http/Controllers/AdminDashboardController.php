@@ -16,33 +16,60 @@ class AdminDashboardController extends Controller
     /**
      * Display admin dashboard stats.
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->autoExpireWaitlists();
- 
-        $totalPeserta = Pendaftaran::count();
-        $totalTidakKeterima = Pendaftaran::where('status_kelulusan', 'tidak_lulus')
-            ->orWhere('status_verifikasi', 'ditolak')
-            ->orWhere('status_konfirmasi', 'mengundurkan_diri')
-            ->count();
-        $totalKeterima = Pendaftaran::where('status_kelulusan', 'lulus')->count();
+
+        $programs = Program::all();
+
+        $query = Pendaftaran::query();
+        if ($request->filled('tahun')) {
+            $query->whereYear('tanggal_pendaftaran', $request->tahun);
+        }
+        if ($request->filled('program')) {
+            $query->where('id_program', $request->program);
+        }
+
+        $totalPeserta = (clone $query)->count();
+        $totalTidakKeterima = (clone $query)->where(function ($q) {
+                $q->where('status_kelulusan', 'tidak_lulus')
+                  ->orWhere('status_verifikasi', 'ditolak')
+                  ->orWhere('status_konfirmasi', 'mengundurkan_diri');
+            })->count();
+        $totalKeterima = (clone $query)->where('status_kelulusan', 'lulus')->count();
         $tingkatKelulusan = ($totalPeserta > 0) ? round(($totalKeterima / $totalPeserta) * 100) : 0;
- 
+
+        $programKelasDibuka = Program::count();
+        $totalTidakKonfirmasi = (clone $query)
+            ->where('status_kelulusan', 'lulus')
+            ->where(function ($q) {
+                $q->whereNull('status_konfirmasi')
+                  ->orWhere('status_konfirmasi', 'belum_konfirmasi');
+            })->count();
+
         // Group chart counts by year dynamically
         $years = [now()->year - 2, now()->year - 1, now()->year];
         $charts = [
             'pendaftar' => [],
             'keterima' => []
         ];
-        
+
         foreach ($years as $year) {
             $charts['pendaftar'][$year] = Pendaftaran::whereYear('tanggal_pendaftaran', $year)->count();
             $charts['keterima'][$year] = Pendaftaran::whereYear('tanggal_pendaftaran', $year)
                 ->where('status_kelulusan', 'lulus')
                 ->count();
         }
- 
-        return view('dashboard.admin', compact('totalPeserta', 'totalTidakKeterima', 'totalKeterima', 'tingkatKelulusan', 'charts'));
+
+        $recentApplicants = (clone $query)->with(['calonMurid', 'program'])
+            ->orderBy('created_at', 'desc')
+            ->take(5)
+            ->get();
+
+        return view('dashboard.admin', compact(
+            'totalPeserta', 'totalTidakKeterima', 'totalKeterima', 'tingkatKelulusan',
+            'charts', 'programs', 'programKelasDibuka', 'totalTidakKonfirmasi', 'recentApplicants'
+        ));
     }
  
     /**
