@@ -25,4 +25,14 @@ class Program extends Model
     {
         return $this->hasMany(Pendaftaran::class, 'id_program', 'id_program');
     }
+
+    public function getBadgeColorAttribute()
+    {
+        return match (strtolower($this->nama_program)) {
+            'tahfidz' => ['bg' => '#ffdcc3', 'text' => '#2f1500'],
+            'sains' => ['bg' => '#1a6fba', 'text' => '#ffffff'],
+            'fullday' => ['bg' => '#ba7d1a', 'text' => '#ffffff'],
+            default => ['bg' => '#ffdcc3', 'text' => '#2f1500'],
+        };
+    }
 }

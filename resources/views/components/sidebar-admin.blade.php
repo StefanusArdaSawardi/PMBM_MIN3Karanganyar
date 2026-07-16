@@ -1,5 +1,5 @@
 <!-- Admin Sidebar Component -->
-<nav class="absolute top-0 left-0 right-0 h-[116px] bg-white flex items-center px-8 z-20 max-[1024px]:h-24 max-[1024px]:px-4">
+<nav class="fixed top-0 left-0 right-0 h-[116px] bg-white flex items-center px-8 z-20 max-[1024px]:h-24 max-[1024px]:px-4">
   <!-- Mobile Hamburger Toggle -->
   <button id="adminSidebarToggle" onclick="document.body.classList.toggle('admin-sidebar-open')" class="hidden max-[1024px]:block mr-3 bg-none border-none cursor-pointer text-[#005b31] p-2" aria-label="Toggle menu">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
@@ -27,23 +27,43 @@
 <!-- Mobile Sidebar Backdrop -->
 <div id="adminSidebarBackdrop" onclick="document.body.classList.remove('admin-sidebar-open')" class="hidden fixed inset-0 bg-black/40 z-[150] admin-sidebar-backdrop"></div>
 
-<aside class="absolute top-[116px] left-0 w-[355px] bottom-0 bg-[#f8f9ff] flex flex-col z-10 max-[1024px]:fixed max-[1024px]:top-0 max-[1024px]:h-screen max-[1024px]:-translate-x-full max-[1024px]:transition-transform max-[1024px]:duration-300 max-[1024px]:z-[160] admin-sidebar-panel">
-  <a href="{{ route('tata_usaha.dashboard') }}" class="bg-[#005b31] h-[93px] flex items-center px-9 no-underline">
-    <span class="text-white text-[20px] font-bold tracking-[-0.4px]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Dashboard</span>
+<aside class="fixed top-[116px] left-0 w-[355px] bottom-0 bg-[#f8f9ff] flex flex-col z-10 overflow-y-auto max-[1024px]:top-0 max-[1024px]:h-screen max-[1024px]:-translate-x-full max-[1024px]:transition-transform max-[1024px]:duration-300 max-[1024px]:z-[160] admin-sidebar-panel">
+  @php($activeFolder = $activeFolder ?? '')
+  <a href="{{ route('tata_usaha.dashboard') }}" class="{{ $activeFolder === 'dashboard' ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[93px] flex items-center px-9 no-underline">
+    <span class="{{ $activeFolder === 'dashboard' ? 'text-white' : 'text-[#005b31]' }} text-[20px] font-bold tracking-[-0.4px]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Dashboard</span>
   </a>
-  <a href="{{ route('scores.index') }}" class="bg-white h-[93px] flex items-center px-9 no-underline hover:bg-gray-50">
-    <span class="text-[#005b31] text-[20px] font-bold tracking-[-0.4px]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Pendaftaran System</span>
+  <a href="{{ route('scores.index') }}" class="{{ $activeFolder === 'applicants' ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[93px] flex items-center px-9 no-underline">
+    <span class="{{ $activeFolder === 'applicants' ? 'text-white' : 'text-[#005b31]' }} text-[20px] font-bold tracking-[-0.4px]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Pendaftaran System</span>
   </a>
-  <a href="{{ route('tata_usaha.content') }}" class="bg-white h-[93px] flex items-center justify-between px-9 no-underline hover:bg-gray-50">
-    <span class="text-[#005b31] text-[20px] font-bold tracking-[-0.4px]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Pengaturan</span>
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#005b31" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
-  </a>
-  <a href="{{ route('tata_usaha.content') }}#dss" class="bg-white h-[93px] flex items-center px-9 no-underline hover:bg-gray-50">
-    <span class="text-[#005b31] text-[20px] font-bold tracking-[-0.4px]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">DSS</span>
-  </a>
+  @php($pengaturanOpen = $activeFolder === 'periode' || $activeFolder === 'landing-manage')
+  <button type="button" onclick="document.getElementById('pengaturanSubmenu').classList.toggle('hidden'); this.querySelector('svg').classList.toggle('rotate-180')"
+          class="{{ $pengaturanOpen ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[93px] flex items-center justify-between px-9 w-full cursor-pointer">
+    <span class="{{ $pengaturanOpen ? 'text-white' : 'text-[#005b31]' }} text-[20px] font-bold tracking-[-0.4px]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Pengaturan</span>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{ $pengaturanOpen ? '#ffffff' : '#005b31' }}" stroke-width="2" class="transition-transform {{ $pengaturanOpen ? 'rotate-180' : '' }}"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
+  </button>
+  <div id="pengaturanSubmenu" class="{{ $pengaturanOpen ? '' : 'hidden' }} flex flex-col">
+    <a href="{{ route('tata_usaha.periode.index') }}" class="{{ $activeFolder === 'periode' ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[70px] flex items-center pl-14 pr-9 no-underline">
+      <span class="{{ $activeFolder === 'periode' ? 'text-white' : 'text-[#005b31]' }} text-[16px] font-bold">Data Periode</span>
+    </a>
+    <a href="{{ route('tata_usaha.content') }}#program" class="{{ $activeFolder === 'landing-manage' ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[70px] flex items-center pl-14 pr-9 no-underline">
+      <span class="{{ $activeFolder === 'landing-manage' ? 'text-white' : 'text-[#005b31]' }} text-[16px] font-bold">Kelola Program</span>
+    </a>
+    <a href="#" onclick="event.preventDefault(); alert('Fitur dalam proses pengembangan')" class="bg-white h-[70px] flex items-center pl-14 pr-9 no-underline hover:bg-gray-50">
+      <span class="text-[#005b31] text-[16px] font-bold">Guide Pendaftaran</span>
+    </a>
+    <a href="{{ route('tata_usaha.content') }}#kontak" class="bg-white h-[70px] flex items-center pl-14 pr-9 no-underline hover:bg-gray-50">
+      <span class="text-[#005b31] text-[16px] font-bold">Kontak</span>
+    </a>
+    <a href="{{ route('tata_usaha.content') }}#faq" class="bg-white h-[70px] flex items-center pl-14 pr-9 no-underline hover:bg-gray-50">
+      <span class="text-[#005b31] text-[16px] font-bold">Pengaturan FAQ</span>
+    </a>
+    <a href="{{ route('tata_usaha.content') }}#dss" class="bg-white h-[70px] flex items-center pl-14 pr-9 no-underline hover:bg-gray-50">
+      <span class="text-[#005b31] text-[16px] font-bold">DSS</span>
+    </a>
+  </div>
   @if(auth()->guard('tata_usaha')->user()->role === 'super admin')
-    <a href="{{ route('tata_usaha.accounts') }}" class="bg-white h-[93px] flex items-center px-9 no-underline hover:bg-gray-50">
-      <span class="text-[#005b31] text-[20px] font-bold tracking-[-0.4px]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Account Management</span>
+    <a href="{{ route('tata_usaha.accounts') }}" class="{{ $activeFolder === 'users' ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[93px] flex items-center px-9 no-underline">
+      <span class="{{ $activeFolder === 'users' ? 'text-white' : 'text-[#005b31]' }} text-[20px] font-bold tracking-[-0.4px]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Account Management</span>
     </a>
   @endif
 

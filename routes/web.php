@@ -5,6 +5,7 @@ use App\Http\Controllers\LandingController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\PanitiaDashboardController;
+use App\Http\Controllers\PeriodePendaftaranController;
 
 // 1. Public Landing Pages
 Route::get('/', [LandingController::class, 'index'])->name('home');
@@ -44,8 +45,20 @@ Route::middleware('auth:tata_usaha')->prefix('tata-usaha')->group(function () {
     Route::post('/applicants/{id}/status', [AdminDashboardController::class, 'updateStatus'])->name('tata_usaha.status');
     Route::post('/applicants/{id}/change-program', [AdminDashboardController::class, 'changeProgram'])->name('tata_usaha.change_program');
 
+    // Grup WhatsApp
+    Route::get('/grup-whatsapp', [AdminDashboardController::class, 'grupWhatsapp'])->name('tata_usaha.grup_whatsapp');
+    Route::post('/grup-whatsapp/{id}/status', [AdminDashboardController::class, 'updateGrupWhatsapp'])->name('tata_usaha.grup_whatsapp.status');
+
     // Content Management (CMS)
     Route::get('/content', [AdminDashboardController::class, 'showContent'])->name('tata_usaha.content');
+
+    // Periode Pendaftaran CRUD
+    Route::get('/periode', [PeriodePendaftaranController::class, 'index'])->name('tata_usaha.periode.index');
+    Route::get('/periode/create', [PeriodePendaftaranController::class, 'create'])->name('tata_usaha.periode.create');
+    Route::post('/periode', [PeriodePendaftaranController::class, 'store'])->name('tata_usaha.periode.store');
+    Route::get('/periode/edit/{id}', [PeriodePendaftaranController::class, 'edit'])->name('tata_usaha.periode.edit');
+    Route::post('/periode/update/{id}', [PeriodePendaftaranController::class, 'update'])->name('tata_usaha.periode.update');
+    Route::post('/periode/delete/{id}', [PeriodePendaftaranController::class, 'destroy'])->name('tata_usaha.periode.destroy');
     Route::post('/content/text', [AdminDashboardController::class, 'updateContentText'])->name('tata_usaha.content.update_text');
     Route::post('/content/settings', [AdminDashboardController::class, 'updateSettings'])->name('tata_usaha.settings.update');
     Route::post('/content/dss-config', [AdminDashboardController::class, 'updateDssConfig'])->name('tata_usaha.dss.update');

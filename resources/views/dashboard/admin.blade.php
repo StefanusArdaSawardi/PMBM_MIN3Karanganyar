@@ -21,19 +21,47 @@
           </div>
         </div>
 
-        <div class="flex-1 bg-white border border-[#bec9be] rounded-lg shadow-[0_1px_1px_rgba(0,0,0,0.05)] px-[17px] pt-[22px] pb-[17px] flex flex-col gap-2.5">
+        <div class="flex-1 bg-white border border-[#bec9be] rounded-lg shadow-[0_1px_1px_rgba(0,0,0,0.05)] px-[17px] pt-[22px] pb-[17px] flex flex-col gap-2.5 relative">
           <label class="text-[#3f4941] text-[12px] font-bold">Program</label>
-          <select name="program" onchange="this.form.submit()"
-                  class="bg-[#f1f4f3] border border-[#bec9be] rounded px-3 py-2 text-[14px] text-[#181c1c] outline-none cursor-pointer">
-            <option value="">Semua Program Kelas</option>
+          <input type="hidden" name="program" id="programFilterInput" value="{{ request('program') }}">
+          <button type="button" id="programFilterTrigger" onclick="document.getElementById('programFilterDropdown').classList.toggle('hidden')"
+                  class="bg-[#f1f4f3] border border-[#bec9be] rounded px-3 py-2 text-[14px] text-[#181c1c] outline-none cursor-pointer flex items-center justify-between gap-2">
+            <span id="programFilterLabel">
+              @php($selectedProgram = $programs->firstWhere('id_program', request('program')))
+              {{ $selectedProgram->nama_program ?? 'Semua Program Kelas' }}
+            </span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div id="programFilterDropdown" class="hidden absolute left-[17px] right-[17px] top-full mt-1 bg-white border border-[#bec9be] rounded shadow-lg z-30 overflow-hidden">
+            <button type="button" onclick="selectProgramFilter('', 'Semua Program Kelas')"
+                    class="w-full text-left px-3 py-2 text-[14px] {{ !request('program') ? 'bg-[#005b31] text-white' : 'bg-[#f1f4f3] text-[#181c1c]' }} hover:opacity-90">
+              Semua Program Kelas
+            </button>
             @foreach($programs as $prog)
-              <option value="{{ $prog->id_program }}" {{ request('program') == $prog->id_program ? 'selected' : '' }}>
+              <button type="button" onclick="selectProgramFilter('{{ $prog->id_program }}', '{{ $prog->nama_program }}')"
+                      class="w-full text-left px-3 py-2 text-[14px] {{ request('program') == $prog->id_program ? 'bg-[#005b31] text-white' : 'bg-[#f1f4f3] text-[#181c1c]' }} hover:opacity-90">
                 {{ $prog->nama_program }}
-              </option>
+              </button>
             @endforeach
-          </select>
+          </div>
         </div>
       </form>
+
+      <script>
+        function selectProgramFilter(id, label) {
+          document.getElementById('programFilterInput').value = id;
+          document.getElementById('programFilterLabel').textContent = label;
+          document.getElementById('programFilterDropdown').classList.add('hidden');
+          document.getElementById('programFilterInput').closest('form').submit();
+        }
+        document.addEventListener('click', function (e) {
+          const dropdown = document.getElementById('programFilterDropdown');
+          const trigger = document.getElementById('programFilterTrigger');
+          if (dropdown && !dropdown.contains(e.target) && !trigger.contains(e.target)) {
+            dropdown.classList.add('hidden');
+          }
+        });
+      </script>
 
       <!-- Stats Row 1 -->
       <div class="flex gap-6 max-[900px]:flex-col">
@@ -81,7 +109,7 @@
               <div class="text-[#3f4941] text-[14px]">{{ $item->calonMurid->nisn }}</div>
               <div class="text-[#3f4941] text-[14px] uppercase">{{ $item->calonMurid->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</div>
               <div class="flex items-center justify-between gap-3">
-                <span class="bg-[#ffdcc3] text-[#2f1500] text-[10px] uppercase px-3 py-1 rounded-full">{{ $item->program->nama_program ?? '-' }}</span>
+                <span class="text-[10px] uppercase px-3 py-1 rounded-full" style="background: {{ $item->program->badge_color['bg'] ?? '#ffdcc3' }}; color: {{ $item->program->badge_color['text'] ?? '#2f1500' }};">{{ $item->program->nama_program ?? '-' }}</span>
                 <a href="{{ route('tata_usaha.detail', $item->id_pendaftaran) }}" class="bg-[#006a3c] text-white text-[16px] px-6 py-2 rounded no-underline hover:bg-[#064e3b]">Detail</a>
               </div>
             </div>

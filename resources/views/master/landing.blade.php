@@ -1155,12 +1155,13 @@
 
     document.addEventListener('DOMContentLoaded', function() {
       let activeTab = 'tab-landing';
+      const hashTabMap = { '#dss': 'tab-dss', '#faq': 'tab-faq', '#kontak': 'tab-contacts', '#program': 'tab-programs' };
       @if(session('success_faq'))
         activeTab = 'tab-faq';
       @elseif(session('success_contact'))
         activeTab = 'tab-contacts';
       @else
-        activeTab = localStorage.getItem('cms_active_tab') || 'tab-landing';
+        activeTab = hashTabMap[window.location.hash] || localStorage.getItem('cms_active_tab') || 'tab-landing';
       @endif
       switchTab(activeTab);
     });

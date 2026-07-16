@@ -111,10 +111,53 @@ class AdminDashboardController extends Controller
         }
  
         $pendaftarans = $query->orderBy('created_at', 'desc')->take($limit)->get();
- 
+
         return view('pendaftaran.index', compact('pendaftarans', 'programs', 'limit'));
     }
- 
+
+    /**
+     * List applicants filtered by Grup WhatsApp status.
+     */
+    public function grupWhatsapp(Request $request)
+    {
+        $this->autoExpireWaitlists();
+        $programs = Program::all();
+
+        $query = Pendaftaran::with(['calonMurid.ibu', 'program']);
+
+        if ($request->filled('status')) {
+            $query->where('status_grup_wa', $request->status);
+        }
+
+        if ($request->filled('program')) {
+            $query->where('id_program', $request->program);
+        }
+
+        if ($request->filled('tahun')) {
+            $query->whereYear('tanggal_pendaftaran', $request->tahun);
+        }
+
+        $pendaftarans = $query->orderBy('created_at', 'desc')->get();
+
+        return view('pendaftaran.grup-whatsapp', compact('pendaftarans', 'programs'));
+    }
+
+    /**
+     * Toggle Grup WhatsApp status for an applicant.
+     */
+    public function updateGrupWhatsapp(Request $request, $id)
+    {
+        $request->validate([
+            'status_grup_wa' => 'required|in:belum_masuk,sudah_masuk',
+        ]);
+
+        $pendaftaran = Pendaftaran::findOrFail($id);
+        $pendaftaran->status_grup_wa = $request->status_grup_wa;
+        $pendaftaran->save();
+
+        return back()->with('success', 'Status Grup WhatsApp berhasil diperbarui.');
+    }
+
     /**
      * View specific applicant profile.
      */
@@ -153,6 +196,10 @@ class AdminDashboardController extends Controller
                 break;
                 
             case 'cek_berkas_onsite':
+                $request->validate([
+                    'token_offline' => 'required|string|max:20',
+                ]);
+                $pendaftaran->token_offline = $request->token_offline;
                 $pendaftaran->status_verifikasi = 'terverifikasi_onsite';
                 break;
                 

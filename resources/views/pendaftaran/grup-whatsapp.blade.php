@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Pendaftaran System - Admin Portal')
+@section('title', 'Grup WhatsApp - Admin Portal')
 
 @section('content')
   <div class="relative min-h-screen flow-root">
@@ -17,7 +17,7 @@
       </div>
 
       <!-- Filter Bento -->
-      <form action="{{ route('scores.index') }}" method="GET" class="flex gap-4 max-[640px]:flex-col">
+      <form action="{{ route('tata_usaha.grup_whatsapp') }}" method="GET" class="flex gap-4 max-[640px]:flex-col">
         <div class="flex-1 bg-white border border-[#bec9be] rounded-lg shadow-[0_1px_1px_rgba(0,0,0,0.05)] px-[17px] pt-[22px] pb-[17px] flex flex-col gap-2.5 relative">
           <label class="text-[#3f4941] text-[12px] font-bold">Periode</label>
           <input type="hidden" name="tahun" id="periodeFilterInput" value="{{ request('tahun') }}">
@@ -96,12 +96,12 @@
 
       <!-- Category Tabs -->
       <div class="flex gap-4 max-[900px]:flex-wrap">
-        <div class="flex-1 bg-[#006a3c] border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center">
-          <span class="text-white text-[18px] font-bold">Pendaftaran</span>
-        </div>
-        <a href="{{ route('tata_usaha.grup_whatsapp') }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
-          <span class="text-[#181c1c] text-[18px] font-bold">Grup WhatsApp</span>
+        <a href="{{ route('scores.index') }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
+          <span class="text-[#181c1c] text-[18px] font-bold">Pendaftaran</span>
         </a>
+        <div class="flex-1 bg-[#006a3c] border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center">
+          <span class="text-white text-[18px] font-bold">Grup WhatsApp</span>
+        </div>
         <a href="#" onclick="event.preventDefault(); alert('Fitur dalam proses pengembangan');" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
           <span class="text-[#181c1c] text-[18px] font-bold">Verifikasi Offline</span>
         </a>
@@ -115,24 +115,26 @@
 
       <!-- Status Sub-Filter -->
       <div class="flex gap-4 max-[640px]:flex-wrap">
-        <a href="{{ route('scores.index', array_merge(request()->except('status'), ['status' => 'belum_konfirmasi'])) }}"
-           class="rounded px-6 py-2 no-underline {{ request('status') == 'belum_konfirmasi' ? 'bg-[#109aaa]' : 'bg-white' }}">
-          <span class="{{ request('status') == 'belum_konfirmasi' ? 'text-white' : 'text-[#109aaa]' }} text-[16px]">Belum Terkonfirmasi</span>
+        <a href="{{ route('tata_usaha.grup_whatsapp', array_merge(request()->except('status'), ['status' => 'belum_masuk'])) }}"
+           class="rounded px-6 py-2 no-underline {{ request('status') == 'belum_masuk' ? 'bg-[#ba1a1a]' : 'bg-white' }}">
+          <span class="{{ request('status') == 'belum_masuk' ? 'text-white' : 'text-[#ba1a1a]' }} text-[16px]">Belum Masuk</span>
         </a>
-        <a href="{{ route('scores.index', array_merge(request()->except('status'), ['status' => 'ditolak'])) }}"
-           class="rounded px-6 py-2 no-underline {{ request('status') == 'ditolak' ? 'bg-[#ba1a1a]' : 'bg-white' }}">
-          <span class="{{ request('status') == 'ditolak' ? 'text-white' : 'text-[#ba1a1a]' }} text-[16px]">Tolak</span>
-        </a>
-        <a href="{{ route('scores.index', array_merge(request()->except('status'), ['status' => 'terkonfirmasi'])) }}"
-           class="rounded px-6 py-2 no-underline {{ request('status') == 'terkonfirmasi' ? 'bg-[#006a3c]' : 'bg-white' }}">
-          <span class="{{ request('status') == 'terkonfirmasi' ? 'text-white' : 'text-[#006a3c]' }} text-[16px]">Terima</span>
+        <a href="{{ route('tata_usaha.grup_whatsapp', array_merge(request()->except('status'), ['status' => 'sudah_masuk'])) }}"
+           class="rounded px-6 py-2 no-underline {{ request('status') == 'sudah_masuk' ? 'bg-[#006a3c]' : 'bg-white' }}">
+          <span class="{{ request('status') == 'sudah_masuk' ? 'text-white' : 'text-[#006a3c]' }} text-[16px]">Sudah Masuk</span>
         </a>
         @if(request()->filled('status'))
-          <a href="{{ route('scores.index', request()->except('status')) }}" class="rounded px-6 py-2 no-underline flex items-center">
+          <a href="{{ route('tata_usaha.grup_whatsapp', request()->except('status')) }}" class="rounded px-6 py-2 no-underline flex items-center">
             <span class="text-[#3f4941] text-[14px] underline">Reset filter status</span>
           </a>
         @endif
       </div>
+
+      @if(session('success'))
+        <div class="bg-emerald-50 border border-emerald-300 text-emerald-700 text-[13px] rounded-md p-3 font-bold">
+          {{ session('success') }}
+        </div>
+      @endif
 
       <!-- Applicants Table -->
       <div class="bg-white border border-[#bec9be] rounded-xl overflow-hidden mb-10">
