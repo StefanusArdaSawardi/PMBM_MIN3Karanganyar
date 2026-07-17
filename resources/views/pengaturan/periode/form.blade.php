@@ -95,15 +95,6 @@
             </div>
           </div>
 
-          <div class="flex flex-col gap-2">
-            <label class="text-[#3f4941] text-[12px] font-bold">Status</label>
-            <select name="status" class="bg-[#f1f4f3] border border-[#bec9be] rounded px-4 py-4 text-[14px] text-[#181c1c] outline-none">
-              <option value="aktif" {{ old('status', $periode->status ?? '') === 'aktif' ? 'selected' : '' }}>Aktif</option>
-              <option value="nonaktif" {{ old('status', $periode->status ?? '') === 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
-            </select>
-            @error('status') <span class="text-red-600 text-[12px]">{{ $message }}</span> @enderror
-          </div>
-
           <div class="flex justify-center pt-4">
             <button type="submit" class="bg-[#006a3c] text-white text-[16px] px-6 py-2 rounded cursor-pointer hover:bg-[#064e3b]">Simpan</button>
           </div>

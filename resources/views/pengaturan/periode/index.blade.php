@@ -54,9 +54,12 @@
                 {{ \Carbon\Carbon::parse($periode->tanggal_mulai)->translatedFormat('d M') }} - {{ \Carbon\Carbon::parse($periode->tanggal_selesai)->translatedFormat('d M') }}
               </div>
               <div class="text-[#3f4941] text-[14px]">{{ $periode->jumlah_program }}</div>
-              <div class="{{ $periode->status === 'aktif' ? 'text-[#006b24]' : 'text-[#3f4940]' }} text-[14px] font-medium">
-                {{ $periode->status === 'aktif' ? 'Aktif' : 'Nonaktif' }}
-              </div>
+              <form action="{{ route('tata_usaha.periode.toggle_status', $periode->id) }}" method="POST" onsubmit="return confirm('Ubah status periode ini menjadi {{ $periode->status === 'aktif' ? 'Nonaktif' : 'Aktif' }}?')">
+                @csrf
+                <button type="submit" class="{{ $periode->status === 'aktif' ? 'text-[#006b24]' : 'text-[#3f4940]' }} text-[14px] font-medium cursor-pointer bg-transparent border-0 underline decoration-dotted">
+                  {{ $periode->status === 'aktif' ? 'Aktif' : 'Nonaktif' }}
+                </button>
+              </form>
               <div class="flex items-center gap-3 flex-wrap">
                 <a href="{{ route('tata_usaha.periode.edit', $periode->id) }}" class="border border-[#005b31]/20 text-[#005b31] text-[12px] font-medium px-4 py-1.5 rounded-lg no-underline">Edit</a>
                 <form action="{{ route('tata_usaha.periode.destroy', $periode->id) }}" method="POST" onsubmit="return confirm('Hapus periode ini?')">

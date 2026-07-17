@@ -41,7 +41,6 @@ class PeriodePendaftaranController extends Controller
             'judul' => 'required|string|max:255',
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
-            'status' => 'required|in:aktif,nonaktif',
             'id_programs' => 'nullable|array',
             'id_programs.*' => 'exists:programs,id_program',
             'id_panitias' => 'nullable|array',
@@ -49,6 +48,7 @@ class PeriodePendaftaranController extends Controller
         ]);
 
         $validated['jumlah_program'] = count($request->input('id_programs', []));
+        $validated['status'] = 'aktif';
 
         $periode = PeriodePendaftaran::create($validated);
         $periode->programs()->sync($request->input('id_programs', []));
@@ -75,7 +75,6 @@ class PeriodePendaftaranController extends Controller
             'judul' => 'required|string|max:255',
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
-            'status' => 'required|in:aktif,nonaktif',
             'id_programs' => 'nullable|array',
             'id_programs.*' => 'exists:programs,id_program',
             'id_panitias' => 'nullable|array',
@@ -96,5 +95,14 @@ class PeriodePendaftaranController extends Controller
         PeriodePendaftaran::findOrFail($id)->delete();
 
         return redirect()->route('tata_usaha.periode.index')->with('success', 'Periode pendaftaran berhasil dihapus.');
+    }
+
+    public function toggleStatus($id)
+    {
+        $periode = PeriodePendaftaran::findOrFail($id);
+        $periode->status = $periode->status === 'aktif' ? 'nonaktif' : 'aktif';
+        $periode->save();
+
+        return redirect()->route('tata_usaha.periode.index')->with('success', 'Status periode berhasil diperbarui.');
     }
 }

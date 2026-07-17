@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\PanitiaDashboardController;
 use App\Http\Controllers\PeriodePendaftaranController;
+use App\Http\Controllers\ProgramManagementController;
 
 // 1. Public Landing Pages
 Route::get('/', [LandingController::class, 'index'])->name('home');
@@ -59,6 +60,15 @@ Route::middleware('auth:tata_usaha')->prefix('tata-usaha')->group(function () {
     Route::get('/periode/edit/{id}', [PeriodePendaftaranController::class, 'edit'])->name('tata_usaha.periode.edit');
     Route::post('/periode/update/{id}', [PeriodePendaftaranController::class, 'update'])->name('tata_usaha.periode.update');
     Route::post('/periode/delete/{id}', [PeriodePendaftaranController::class, 'destroy'])->name('tata_usaha.periode.destroy');
+    Route::post('/periode/toggle-status/{id}', [PeriodePendaftaranController::class, 'toggleStatus'])->name('tata_usaha.periode.toggle_status');
+
+    // Kelola Program (halaman terpisah)
+    Route::get('/program', [ProgramManagementController::class, 'index'])->name('tata_usaha.program.index');
+    Route::get('/program/create', [ProgramManagementController::class, 'create'])->name('tata_usaha.program.create');
+    Route::post('/program', [ProgramManagementController::class, 'store'])->name('tata_usaha.program.store');
+    Route::get('/program/edit/{id}', [ProgramManagementController::class, 'edit'])->name('tata_usaha.program.edit');
+    Route::post('/program/update/{id}', [ProgramManagementController::class, 'update'])->name('tata_usaha.program.update');
+    Route::post('/program/delete/{id}', [ProgramManagementController::class, 'destroy'])->name('tata_usaha.program.destroy');
     Route::post('/content/text', [AdminDashboardController::class, 'updateContentText'])->name('tata_usaha.content.update_text');
     Route::post('/content/settings', [AdminDashboardController::class, 'updateSettings'])->name('tata_usaha.settings.update');
     Route::post('/content/dss-config', [AdminDashboardController::class, 'updateDssConfig'])->name('tata_usaha.dss.update');

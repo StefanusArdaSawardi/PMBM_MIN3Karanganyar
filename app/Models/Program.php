@@ -13,12 +13,17 @@ class Program extends Model
         'nama_program',
         'kuota_program',
         'persyaratan',
+        'poin_unggulan',
         'image',
         'dss_weights',
+        'jenis_penilaian',
+        'threshold_nilai_min',
+        'threshold_nilai_max',
     ];
 
     protected $casts = [
         'dss_weights' => 'array',
+        'poin_unggulan' => 'array',
     ];
 
     public function pendaftarans()

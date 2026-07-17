@@ -35,7 +35,7 @@
   <a href="{{ route('scores.index') }}" class="{{ $activeFolder === 'applicants' ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[93px] flex items-center px-9 no-underline">
     <span class="{{ $activeFolder === 'applicants' ? 'text-white' : 'text-[#005b31]' }} text-[20px] font-bold tracking-[-0.4px]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Pendaftaran System</span>
   </a>
-  @php($pengaturanOpen = $activeFolder === 'periode' || $activeFolder === 'landing-manage')
+  @php($pengaturanOpen = $activeFolder === 'periode' || $activeFolder === 'program' || $activeFolder === 'landing-manage')
   <button type="button" onclick="document.getElementById('pengaturanSubmenu').classList.toggle('hidden'); this.querySelector('svg').classList.toggle('rotate-180')"
           class="{{ $pengaturanOpen ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[93px] flex items-center justify-between px-9 w-full cursor-pointer">
     <span class="{{ $pengaturanOpen ? 'text-white' : 'text-[#005b31]' }} text-[20px] font-bold tracking-[-0.4px]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Pengaturan</span>
@@ -45,8 +45,8 @@
     <a href="{{ route('tata_usaha.periode.index') }}" class="{{ $activeFolder === 'periode' ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[70px] flex items-center pl-14 pr-9 no-underline">
       <span class="{{ $activeFolder === 'periode' ? 'text-white' : 'text-[#005b31]' }} text-[16px] font-bold">Data Periode</span>
     </a>
-    <a href="{{ route('tata_usaha.content') }}#program" class="{{ $activeFolder === 'landing-manage' ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[70px] flex items-center pl-14 pr-9 no-underline">
-      <span class="{{ $activeFolder === 'landing-manage' ? 'text-white' : 'text-[#005b31]' }} text-[16px] font-bold">Kelola Program</span>
+    <a href="{{ route('tata_usaha.program.index') }}" class="{{ $activeFolder === 'program' ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[70px] flex items-center pl-14 pr-9 no-underline">
+      <span class="{{ $activeFolder === 'program' ? 'text-white' : 'text-[#005b31]' }} text-[16px] font-bold">Kelola Program</span>
     </a>
     <a href="#" onclick="event.preventDefault(); alert('Fitur dalam proses pengembangan')" class="bg-white h-[70px] flex items-center pl-14 pr-9 no-underline hover:bg-gray-50">
       <span class="text-[#005b31] text-[16px] font-bold">Guide Pendaftaran</span>
