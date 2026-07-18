@@ -14,67 +14,67 @@
         padding-bottom: 120px !important;
      }
      
-     /* Better non-overlapping layout for form and side columns */
-     .grid-layout-for-desktop {
-        position: absolute !important;
-        left: 360px !important;
-        width: 540px !important;
-        right: auto !important;
-        top: 290px !important;
-     }
-     
-     .role-guidance-card-bento-style {
-        position: absolute !important;
-        left: 930px !important;
-        width: 350px !important;
-        right: auto !important;
-        top: 290px !important;
-     }
-     
-     .status-toggle {
-        position: absolute !important;
-        left: 930px !important;
-        width: 350px !important;
-        right: auto !important;
-        top: 602px !important; /* aligned nicely below bento card */
-        border-top: none !important;
-        padding-top: 0 !important;
-     }
-     
-     /* Responsive styling for screens narrower than 1320px */
-     @media (max-width: 1320px) {
-        .grid-layout-for-desktop {
-           position: relative !important;
-           left: 360px !important;
-           width: calc(100% - 400px) !important;
-           max-width: 600px !important;
-           top: auto !important;
-           margin-top: 180px !important;
-        }
-        
-        .role-guidance-card-bento-style {
-           position: relative !important;
-           left: 360px !important;
-           width: calc(100% - 400px) !important;
-           max-width: 600px !important;
-           top: auto !important;
-           margin-top: 30px !important;
-        }
-        
-        .status-toggle {
-           position: relative !important;
-           left: 360px !important;
-           width: calc(100% - 400px) !important;
-           max-width: 600px !important;
-           top: auto !important;
-           margin-top: 20px !important;
-        }
-     }
-  </style>
+      /* Better non-overlapping layout for form and side columns */
+      .grid-layout-for-desktop {
+         position: absolute !important;
+         left: 360px !important;
+         width: 540px !important;
+         right: auto !important;
+         top: 290px !important;
+      }
+      
+      .role-guidance-card-bento-style {
+         position: absolute !important;
+         left: 360px !important;
+         width: 540px !important;
+         right: auto !important;
+         top: 830px !important;
+      }
+      
+      .status-toggle {
+         position: absolute !important;
+         left: 360px !important;
+         width: 540px !important;
+         right: auto !important;
+         top: 1040px !important;
+         border-top: none !important;
+         padding-top: 0 !important;
+      }
+      
+      /* Responsive styling for screens narrower than 1320px */
+      @media (max-width: 1320px) {
+         .grid-layout-for-desktop {
+            position: relative !important;
+            left: 360px !important;
+            width: calc(100% - 400px) !important;
+            max-width: 600px !important;
+            top: auto !important;
+            margin-top: 180px !important;
+         }
+         
+         .role-guidance-card-bento-style {
+            position: relative !important;
+            left: 360px !important;
+            width: calc(100% - 400px) !important;
+            max-width: 600px !important;
+            top: auto !important;
+            margin-top: 30px !important;
+         }
+         
+         .status-toggle {
+            position: relative !important;
+            left: 360px !important;
+            width: calc(100% - 400px) !important;
+            max-width: 600px !important;
+            top: auto !important;
+            margin-top: 20px !important;
+         }
+      }
+   </style>
 @endsection
 
 @section('content')
-  <div class="desktop-19">
+  <div class="desktop-19" style="padding-bottom: 500px !important;">
     <!-- Admin Sidebar -->
     @include('components.sidebar-admin', ['activeFolder' => 'users'])
 
@@ -143,7 +143,8 @@
                   <option value="super_admin" selected>Super Admin</option>
                 @else
                   <option value="tata_usaha" {{ old('role', $accountData['role']) == 'tata_usaha' ? 'selected' : '' }}>Tata Usaha / Admin</option>
-                  <option value="panitia" {{ old('role', $accountData['role']) == 'panitia' ? 'selected' : '' }}>Panitia Penguji</option>
+                  <option value="panitia_ujian" {{ old('role', $accountData['role']) == 'panitia_ujian' ? 'selected' : '' }}>Panitia Pengawas Ujian</option>
+                  <option value="panitia_wawancara" {{ old('role', $accountData['role']) == 'panitia_wawancara' ? 'selected' : '' }}>Panitia Wawancara / Pewawancara</option>
                 @endif
               </select>
               <img class="container7" src="{{ asset('assets/admin/users/container11.svg') }}" />

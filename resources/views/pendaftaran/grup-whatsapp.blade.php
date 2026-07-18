@@ -8,7 +8,7 @@
     @include('components.sidebar-admin', ['activeFolder' => 'applicants'])
 
     <!-- Content Wrapper -->
-    <div class="absolute left-[380px] top-[138px] right-10 flex flex-col gap-6 z-0 max-[1024px]:left-5 max-[1024px]:right-5 max-[1024px]:top-[150px]">
+    <div class="absolute left-[380px] top-[180px] right-10 flex flex-col gap-6 z-0 max-[1024px]:left-5 max-[1024px]:right-5 max-[1024px]:top-[150px]">
 
       <!-- Page Header -->
       <div class="flex flex-col gap-1">
@@ -18,26 +18,18 @@
 
       <!-- Filter Bento -->
       <form action="{{ route('tata_usaha.grup_whatsapp') }}" method="GET" class="flex gap-4 max-[640px]:flex-col">
-        <div class="flex-1 bg-white border border-[#bec9be] rounded-lg shadow-[0_1px_1px_rgba(0,0,0,0.05)] px-[17px] pt-[22px] pb-[17px] flex flex-col gap-2.5 relative">
-          <label class="text-[#3f4941] text-[12px] font-bold">Periode</label>
-          <input type="hidden" name="tahun" id="periodeFilterInput" value="{{ request('tahun') }}">
-          <button type="button" id="periodeFilterTrigger" onclick="document.getElementById('periodeFilterDropdown').classList.toggle('hidden')"
-                  class="bg-[#f1f4f3] border border-[#bec9be] rounded px-3 py-2 text-[14px] text-[#181c1c] outline-none cursor-pointer flex items-center justify-between gap-2">
-            <span id="periodeFilterLabel">{{ request('tahun') ? request('tahun') : 'Semua Periode' }}</span>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
-          </button>
-          <div id="periodeFilterDropdown" class="hidden absolute left-[17px] right-[17px] top-full mt-1 bg-white border border-[#bec9be] rounded shadow-lg z-30 overflow-hidden">
-            <button type="button" onclick="selectPeriodeFilter('', 'Semua Periode')"
-                    class="w-full text-left px-3 py-2 text-[14px] {{ !request('tahun') ? 'bg-[#005b31] text-white' : 'bg-[#f1f4f3] text-[#181c1c]' }} hover:opacity-90">
-              Semua Periode
-            </button>
-            @foreach([now()->year, now()->year - 1, now()->year - 2] as $year)
-              <button type="button" onclick="selectPeriodeFilter('{{ $year }}', '{{ $year }}')"
-                      class="w-full text-left px-3 py-2 text-[14px] {{ request('tahun') == $year ? 'bg-[#005b31] text-white' : 'bg-[#f1f4f3] text-[#181c1c]' }} hover:opacity-90">
-                {{ $year }}
-              </button>
-            @endforeach
-          </div>
+        <div class="flex-1 bg-white border border-[#bec9be] rounded-lg shadow-[0_1px_1px_rgba(0,0,0,0.05)] px-[17px] pt-[22px] pb-[17px] flex flex-col gap-2.5">
+          <label class="text-[#3f4941] text-[12px] font-bold">Periode Aktif</label>
+          @if(isset($activePeriod) && $activePeriod)
+            <div class="bg-[#005b31] text-white rounded px-3 py-2 text-[14px] flex items-center gap-2">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              {{ $activePeriod->judul }} ({{ $activePeriod->tahun }})
+            </div>
+          @else
+            <div class="bg-red-100 border border-red-300 text-red-700 rounded px-3 py-2 text-[14px]">
+              Tidak ada periode aktif
+            </div>
+          @endif
         </div>
 
         <div class="flex-1 bg-white border border-[#bec9be] rounded-lg shadow-[0_1px_1px_rgba(0,0,0,0.05)] px-[17px] pt-[22px] pb-[17px] flex flex-col gap-2.5 relative">
@@ -102,13 +94,13 @@
         <div class="flex-1 bg-[#006a3c] border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center">
           <span class="text-white text-[18px] font-bold">Grup WhatsApp</span>
         </div>
-        <a href="#" onclick="event.preventDefault(); alert('Fitur dalam proses pengembangan');" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
+        <a href="{{ route('tata_usaha.verifikasi_offline') }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
           <span class="text-[#181c1c] text-[18px] font-bold">Verifikasi Offline</span>
         </a>
-        <a href="#" onclick="event.preventDefault(); alert('Fitur dalam proses pengembangan');" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
+        <a href="{{ route('tata_usaha.seleksi') }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
           <span class="text-[#181c1c] text-[18px] font-bold">Seleksi</span>
         </a>
-        <a href="#" onclick="event.preventDefault(); alert('Fitur dalam proses pengembangan');" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
+        <a href="{{ route('tata_usaha.daftar_ulang') }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
           <span class="text-[#181c1c] text-[18px] font-bold">Daftar Ulang</span>
         </a>
       </div>

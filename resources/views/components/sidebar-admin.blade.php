@@ -35,7 +35,7 @@
   <a href="{{ route('scores.index') }}" class="{{ $activeFolder === 'applicants' ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[93px] flex items-center px-9 no-underline">
     <span class="{{ $activeFolder === 'applicants' ? 'text-white' : 'text-[#005b31]' }} text-[20px] font-bold tracking-[-0.4px]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Pendaftaran System</span>
   </a>
-  @php($pengaturanOpen = $activeFolder === 'periode' || $activeFolder === 'program' || $activeFolder === 'landing-manage')
+  @php($pengaturanOpen = $activeFolder === 'periode' || $activeFolder === 'program' || $activeFolder === 'landing-manage' || $activeFolder === 'guide-manage' || $activeFolder === 'contacts' || $activeFolder === 'faqs' || $activeFolder === 'dss')
   <button type="button" onclick="document.getElementById('pengaturanSubmenu').classList.toggle('hidden'); this.querySelector('svg').classList.toggle('rotate-180')"
           class="{{ $pengaturanOpen ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[93px] flex items-center justify-between px-9 w-full cursor-pointer">
     <span class="{{ $pengaturanOpen ? 'text-white' : 'text-[#005b31]' }} text-[20px] font-bold tracking-[-0.4px]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Pengaturan</span>
@@ -45,22 +45,27 @@
     <a href="{{ route('tata_usaha.periode.index') }}" class="{{ $activeFolder === 'periode' ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[70px] flex items-center pl-14 pr-9 no-underline">
       <span class="{{ $activeFolder === 'periode' ? 'text-white' : 'text-[#005b31]' }} text-[16px] font-bold">Data Periode</span>
     </a>
-    <a href="{{ route('tata_usaha.program.index') }}" class="{{ $activeFolder === 'program' ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[70px] flex items-center pl-14 pr-9 no-underline">
-      <span class="{{ $activeFolder === 'program' ? 'text-white' : 'text-[#005b31]' }} text-[16px] font-bold">Kelola Program</span>
+    <a href="{{ route('tata_usaha.program.index') }}" class="{{ $activeFolder === 'program' || $activeFolder === 'landing-manage' ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[70px] flex items-center pl-14 pr-9 no-underline">
+      <span class="{{ $activeFolder === 'program' || $activeFolder === 'landing-manage' ? 'text-white' : 'text-[#005b31]' }} text-[16px] font-bold">Kelola Program</span>
     </a>
-    <a href="#" onclick="event.preventDefault(); alert('Fitur dalam proses pengembangan')" class="bg-white h-[70px] flex items-center pl-14 pr-9 no-underline hover:bg-gray-50">
-      <span class="text-[#005b31] text-[16px] font-bold">Guide Pendaftaran</span>
+    <a href="{{ route('tata_usaha.guide') }}" class="{{ $activeFolder === 'guide-manage' ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[70px] flex items-center pl-14 pr-9 no-underline">
+      <span class="{{ $activeFolder === 'guide-manage' ? 'text-white' : 'text-[#005b31]' }} text-[16px] font-bold">Guide Pendaftaran</span>
     </a>
-    <a href="{{ route('tata_usaha.content') }}#kontak" class="bg-white h-[70px] flex items-center pl-14 pr-9 no-underline hover:bg-gray-50">
-      <span class="text-[#005b31] text-[16px] font-bold">Kontak</span>
+    <a href="{{ route('tata_usaha.contacts.index') }}" class="{{ $activeFolder === 'contacts' ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[70px] flex items-center pl-14 pr-9 no-underline">
+      <span class="{{ $activeFolder === 'contacts' ? 'text-white' : 'text-[#005b31]' }} text-[16px] font-bold">Kontak</span>
     </a>
-    <a href="{{ route('tata_usaha.content') }}#faq" class="bg-white h-[70px] flex items-center pl-14 pr-9 no-underline hover:bg-gray-50">
-      <span class="text-[#005b31] text-[16px] font-bold">Pengaturan FAQ</span>
+    <a href="{{ route('tata_usaha.faqs.index') }}" class="{{ $activeFolder === 'faqs' ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[70px] flex items-center pl-14 pr-9 no-underline">
+      <span class="{{ $activeFolder === 'faqs' ? 'text-white' : 'text-[#005b31]' }} text-[16px] font-bold">Pengaturan FAQ</span>
     </a>
-    <a href="{{ route('tata_usaha.content') }}#dss" class="bg-white h-[70px] flex items-center pl-14 pr-9 no-underline hover:bg-gray-50">
-      <span class="text-[#005b31] text-[16px] font-bold">DSS</span>
+    <a href="{{ route('tata_usaha.dss.index') }}" class="{{ $activeFolder === 'dss' ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[70px] flex items-center pl-14 pr-9 no-underline">
+      <span class="{{ $activeFolder === 'dss' ? 'text-white' : 'text-[#005b31]' }} text-[16px] font-bold">DSS</span>
     </a>
   </div>
+  
+  <a href="{{ route('tata_usaha.tutorial.view') }}" class="{{ $activeFolder === 'tutorial-view' ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[93px] flex items-center px-9 no-underline">
+    <span class="{{ $activeFolder === 'tutorial-view' ? 'text-white' : 'text-[#005b31]' }} text-[20px] font-bold tracking-[-0.4px]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Tutorial Penggunaan</span>
+  </a>
+
   @if(auth()->guard('tata_usaha')->user()->role === 'super admin')
     <a href="{{ route('tata_usaha.accounts') }}" class="{{ $activeFolder === 'users' ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[93px] flex items-center px-9 no-underline">
       <span class="{{ $activeFolder === 'users' ? 'text-white' : 'text-[#005b31]' }} text-[20px] font-bold tracking-[-0.4px]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Account Management</span>

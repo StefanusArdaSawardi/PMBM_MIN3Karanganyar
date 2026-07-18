@@ -7,6 +7,7 @@ use App\Models\CalonMurid;
 use App\Models\AyahCalonMurid;
 use App\Models\IbuCalonMurid;
 use App\Models\Pendaftaran;
+use App\Models\PeriodePendaftaran;
 use Illuminate\Http\Request;
 
 class LandingController extends Controller
@@ -24,7 +25,10 @@ class LandingController extends Controller
             $landingContent = json_decode(file_get_contents($contentPath), true) ?? [];
         }
 
-        return view('landing.home', compact('programs', 'landingContent'));
+        // Ambil periode aktif untuk ditampilkan di hero section
+        $activePeriod = PeriodePendaftaran::where('status', 'aktif')->first();
+
+        return view('landing.home', compact('programs', 'landingContent', 'activePeriod'));
     }
 
     /**
@@ -59,12 +63,14 @@ class LandingController extends Controller
         return view('landing.kontak');
     }
 
-    /**
-     * Display the Guide page.
-     */
     public function guide()
     {
-        return view('landing.guide');
+        $contentPath = storage_path('app/landing_content.json');
+        $landingContent = [];
+        if (file_exists($contentPath)) {
+            $landingContent = json_decode(file_get_contents($contentPath), true) ?? [];
+        }
+        return view('landing.guide', compact('landingContent'));
     }
 
     /**
@@ -115,8 +121,25 @@ class LandingController extends Controller
      */
     public function showRegisterForm()
     {
+        $activePeriod = PeriodePendaftaran::where('status', 'aktif')->first();
+
+        if (!$activePeriod) {
+            return redirect()->route('home')->with('error', 'Belum ada periode pendaftaran yang aktif saat ini.');
+        }
+
+        if (!$activePeriod->isOpen()) {
+            $tanggalMulai = $activePeriod->tanggal_mulai->translatedFormat('d F Y');
+            $tanggalSelesai = $activePeriod->tanggal_selesai->translatedFormat('d F Y');
+
+            if (now()->lt($activePeriod->tanggal_mulai)) {
+                return redirect()->route('home')->with('error', "Pendaftaran belum dibuka. Pendaftaran dibuka pada tanggal {$tanggalMulai}.");
+            }
+
+            return redirect()->route('home')->with('error', "Pendaftaran sudah ditutup pada tanggal {$tanggalSelesai}.");
+        }
+
         $programs = Program::all();
-        return view('pendaftaran.register', compact('programs'));
+        return view('pendaftaran.register', compact('programs', 'activePeriod'));
     }
 
     /**
@@ -399,12 +422,20 @@ class LandingController extends Controller
             'kartu_identitas_anak' => $files['kartu_identitas_anak'],
         ]);
  
+        // Ambil periode aktif dan validasi
+        $activePeriod = PeriodePendaftaran::where('status', 'aktif')->first();
+
+        if (!$activePeriod || !$activePeriod->isOpen()) {
+            return redirect()->route('home')->with('error', 'Pendaftaran tidak dapat diproses karena tidak ada periode pendaftaran yang sedang dibuka.');
+        }
+
         // Create Registration
         $pendaftaran = Pendaftaran::create([
             'tanggal_pendaftaran' => now(),
             'status_verifikasi' => 'menunggu_verifikasi',
             'id_murid' => $student->id_murid,
             'id_program' => $request->id_program,
+            'periode_pendaftaran_id' => $activePeriod->id,
         ]);
  
         $regNumber = 'PMB-2026-' . str_pad($pendaftaran->id_pendaftaran, 3, '0', STR_PAD_LEFT);

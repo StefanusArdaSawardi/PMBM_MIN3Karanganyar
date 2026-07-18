@@ -5,12 +5,19 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+use App\Traits\HasCustomId;
+
 class PengurusTataUsaha extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, HasCustomId;
 
     protected $table = 'pengurus_tata_usahas';
     protected $primaryKey = 'id_pengurus';
+
+    public function getPrefix()
+    {
+        return 'PTU';
+    }
 
     protected $fillable = [
         'nama_pengurus',

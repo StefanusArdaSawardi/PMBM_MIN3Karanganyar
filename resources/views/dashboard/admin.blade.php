@@ -13,12 +13,17 @@
       <!-- Filter Bento -->
       <form action="{{ route('tata_usaha.dashboard') }}" method="GET" class="flex gap-4 max-[640px]:flex-col">
         <div class="flex-1 bg-white border border-[#bec9be] rounded-lg shadow-[0_1px_1px_rgba(0,0,0,0.05)] px-[17px] pt-[22px] pb-[17px] flex flex-col gap-2.5">
-          <label class="text-[#3f4941] text-[12px] font-bold">Periode</label>
-          <div class="bg-[#f1f4f3] border border-[#bec9be] rounded flex items-stretch">
-            <input type="text" name="tahun" value="{{ request('tahun') }}" placeholder="Tahun Periode"
-                   class="flex-1 min-w-0 bg-transparent px-3 py-2 text-[14px] text-[#181c1c] outline-none">
-            <button type="submit" class="bg-[#005b31] text-white text-[14px] px-4 rounded-r shrink-0">Cari</button>
-          </div>
+          <label class="text-[#3f4941] text-[12px] font-bold">Periode Aktif</label>
+          @if(isset($activePeriod) && $activePeriod)
+            <div class="bg-[#005b31] text-white rounded px-3 py-2 text-[14px] flex items-center gap-2">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              {{ $activePeriod->judul }} ({{ $activePeriod->tahun }})
+            </div>
+          @else
+            <div class="bg-red-100 border border-red-300 text-red-700 rounded px-3 py-2 text-[14px]">
+              Tidak ada periode aktif
+            </div>
+          @endif
         </div>
 
         <div class="flex-1 bg-white border border-[#bec9be] rounded-lg shadow-[0_1px_1px_rgba(0,0,0,0.05)] px-[17px] pt-[22px] pb-[17px] flex flex-col gap-2.5 relative">

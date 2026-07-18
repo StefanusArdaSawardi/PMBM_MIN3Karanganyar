@@ -225,7 +225,7 @@
     @include('components.sidebar-admin', ['activeFolder' => 'landing-manage'])
 
     <!-- Main Content Wrapper -->
-    <div style="position: absolute; left: 340px; top: 138px; right: 40px; display: flex; flex-direction: column; gap: 24px; z-index: 10;">
+    <div style="position: absolute; left: 380px; top: 180px; right: 40px; display: flex; flex-direction: column; gap: 24px; z-index: 10;">
       
       <!-- Messages Flash -->
       @if(session('success'))
@@ -238,9 +238,6 @@
       <div style="display: flex; gap: 10px; border-bottom: 2px solid #becabe; padding-bottom: 8px; margin-bottom: 20px; flex-wrap: wrap;">
         <button type="button" onclick="switchTab('tab-landing')" id="btn-tab-landing" class="tab-btn active" style="font-family: inherit; font-size: 13px; font-weight: 700; color: #008744; padding: 10px 18px; border-radius: 8px; cursor: pointer; transition: all 0.2s; border: 1px solid #becabe; background-color: #eef5ed; outline: none;">📝 Konten Landing</button>
         <button type="button" onclick="switchTab('tab-programs')" id="btn-tab-programs" class="tab-btn" style="font-family: inherit; font-size: 13px; font-weight: 700; color: #475569; padding: 10px 18px; border-radius: 8px; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; background: none; outline: none;">🏫 Jalur Pendaftaran</button>
-        <button type="button" onclick="switchTab('tab-dss')" id="btn-tab-dss" class="tab-btn" style="font-family: inherit; font-size: 13px; font-weight: 700; color: #475569; padding: 10px 18px; border-radius: 8px; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; background: none; outline: none;">⚙️ Konfigurasi DSS</button>
-        <button type="button" onclick="switchTab('tab-faq')" id="btn-tab-faq" class="tab-btn" style="font-family: inherit; font-size: 13px; font-weight: 700; color: #475569; padding: 10px 18px; border-radius: 8px; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; background: none; outline: none;">💬 Kelola FAQ</button>
-        <button type="button" onclick="switchTab('tab-contacts')" id="btn-tab-contacts" class="tab-btn" style="font-family: inherit; font-size: 13px; font-weight: 700; color: #475569; padding: 10px 18px; border-radius: 8px; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; background: none; outline: none;">📞 Kontak &amp; Medsos</button>
       </div>
 
       <!-- TAB 1: KONTEN LANDING -->
@@ -287,84 +284,10 @@
               </div>
             </form>
           </div>
-
-          <!-- Section 2: Countdown Gelombang -->
-          <div class="section-2-countdown-gelombang" style="flex: 1; position: relative; top: auto; left: auto; right: auto; width: auto; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05); margin: 0; min-width: 250px;">
-            <div class="container">
-              <img class="overlay2" src="{{ asset('assets/admin/landing-manage/overlay1.svg') }}" />
-              <div class="heading-32">
-                <div class="text" style="position: static;">Countdown Penutupan</div>
-              </div>
-            </div>
-            
-            <form action="{{ route('tata_usaha.settings.update') }}" method="POST" class="background-border" style="height: auto; padding-bottom: 20px;">
-              @csrf
-              <div class="label">
-                <div class="pilih-tanggal-waktu-target">Pilih Tanggal &amp; Waktu Target</div>
-              </div>
-              <div class="input2" style="border: none; padding: 0; margin-bottom: 15px; height: 42px;">
-                <input type="datetime-local" name="countdown_target" class="input-field" value="{{ isset($settings['countdown_target']) ? date('Y-m-d\TH:i', strtotime($settings['countdown_target'])) : '2026-07-30T11:59' }}" required>
-              </div>
-              
-              <button type="submit" class="btn-submit" style="height: 40px; border: none; background: #064e3b; margin-top: 10px;">
-                <img src="{{ asset('assets/admin/landing-manage/container13.svg') }}" alt="Save" />
-                <span>Atur Ulang Countdown</span>
-              </button>
-            </form>
-          </div>
         </div>
 
-        <!-- Section 4: Digital Booklet & Terms -->
-        <div class="section-4-digital-booklet-terms" style="display: flex; flex-direction: row; gap: 24px; width: 100%; align-items: stretch; height: auto; flex-wrap: wrap;">
-          <!-- Booklet Upload -->
-          <div class="section-booklet-upload" style="flex: 1; position: relative; top: auto; left: auto; right: auto; width: auto; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05); background: #ffffff; border-radius: 12px; border: 1px solid #becabe; padding: 24px; margin: 0; min-width: 280px;">
-            <div class="container">
-              <img class="overlay4" src="{{ asset('assets/admin/landing-manage/overlay3.svg') }}" />
-              <div class="heading-32">
-                <div class="text" style="position: static;">Panduan &amp; Booklet</div>
-              </div>
-            </div>
-            
-            <form action="{{ route('tata_usaha.content.upload_booklet') }}" method="POST" enctype="multipart/form-data" class="margin2" style="height: auto; margin-top: 15px;">
-              @csrf
-              <div class="container3" style="height: auto; gap: 10px;">
-                <div class="label">
-                  <div class="upload-file-booklet-terbaru">Upload File Booklet Terbaru</div>
-                </div>
-                <div class="container17" style="height: 100px; border: 2px dashed #cccccc; border-radius: 8px; position: relative;">
-                  <input type="file" name="booklet_file" style="position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer;" required>
-                  <div class="label2" style="position: absolute; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none;">
-                    <img class="margin3" src="{{ asset('assets/admin/landing-manage/margin2.svg') }}" style="margin-bottom: 5px;" />
-                    <div class="text17" style="position: static; font-size: 11px;">Klik untuk upload berkas baru</div>
-                    <div class="text18" style="position: static; font-size: 10px; color: #9ca3af; margin-top: 2px;">PDF max 5MB</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="background-border2" style="margin-top: 15px;">
-                <div class="container14">
-                  <img class="container20" src="{{ asset('assets/admin/landing-manage/container24.svg') }}" />
-                  <div class="container19">
-                    <div class="container21">
-                      <div class="text19" style="position: static;">booklet_pmbm_2026.pdf</div>
-                    </div>
-                    <div class="container22">
-                      <div class="text18" style="position: static;">3.4 MB</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="overlay5">
-                  <div class="text20" style="position: static;">AKTIF</div>
-                </div>
-              </div>
-
-              <button type="submit" class="btn-submit" style="height: 40px; margin-top: 15px; border: none;">
-                <span>Upload &amp; Ganti Booklet</span>
-              </button>
-            </form>
-          </div>
-
-          <!-- Terms textarea -->
+        <div style="display: flex; flex-direction: row; gap: 24px; width: 100%; align-items: stretch; height: auto; flex-wrap: wrap;">
+          <!-- Row 2: Terms and Conditions -->
           <div class="section-terms-conditions" style="flex: 1; position: relative; top: auto; left: auto; right: auto; width: auto; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05); background: #ffffff; border-radius: 12px; border: 1px solid #becabe; padding: 24px; margin: 0; display: flex; flex-direction: column; min-width: 280px;">
             <div class="container">
               <img class="background7" src="{{ asset('assets/admin/landing-manage/background9.svg') }}" />
@@ -384,7 +307,7 @@
               </button>
             </form>
           </div>
-        </div>
+        </div></div>
 
         <div style="display: flex; flex-direction: row; gap: 24px; width: 100%; align-items: stretch; height: auto; flex-wrap: wrap;">
           <!-- Background customization form -->
@@ -552,181 +475,13 @@
                 @endforeach
               </tbody>
             </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- TAB 3: KONFIGURASI DSS -->
-      <div id="tab-dss" class="tab-pane" style="display: none; flex-direction: column; gap: 24px;">
-        <!-- Section: Konfigurasi Parameter DSS Seleksi PMBM -->
-        <div style="background: #ffffff; border-radius: 12px; border: 1px solid #becabe; padding: 24px; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; gap: 20px;">
-          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #f0fdf4; padding-bottom: 12px;">
-            <div style="font-weight: bold; font-family: 'PlusJakartaSans-Bold', sans-serif; font-size: 16px; color: #064e3b; display: flex; align-items: center; gap: 8px;">
-              <span>⚙️</span> Konfigurasi Parameter DSS Seleksi PMBM (Sistem Cerdas)
-            </div>
-          </div>
-
-          <form action="{{ route('tata_usaha.dss.update') }}" method="POST" style="display: flex; flex-direction: column; gap: 20px;">
-            @csrf
-            <div style="display: flex; flex-direction: row; gap: 24px; width: 100%; align-items: stretch; justify-content: center; flex-wrap: wrap;">
-              <!-- Column: Predikat Batas Angka -->
-              <div style="width: 100%; max-width: 500px; background: #f9fafb; padding: 20px; border-radius: 8px; border: 1px solid #e5e7eb; display: flex; flex-direction: column; gap: 12px;">
-                <div style="font-weight: bold; font-size: 13px; color: #374151; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px;">Predikat Batas Angka DSS (Global)</div>
-                
-                <!-- Sangat Cakap -->
-                <div>
-                  <label style="font-size: 11px; font-weight: 700; color: #047857; text-transform: uppercase;">Sangat Cakap</label>
-                  <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
-                    <input type="number" name="pred_sangat_cakap_min" class="input-field" style="width: 100%;" value="{{ old('pred_sangat_cakap_min', $sangatCakap['min']) }}" required placeholder="Min">
-                    <span style="font-size: 12px; color: #9ca3af;">s.d</span>
-                    <input type="number" name="pred_sangat_cakap_max" class="input-field" style="width: 100%;" value="{{ old('pred_sangat_cakap_max', $sangatCakap['max']) }}" required placeholder="Max">
-                  </div>
-                </div>
-
-                <!-- Cakap -->
-                <div>
-                  <label style="font-size: 11px; font-weight: 700; color: #2563eb; text-transform: uppercase;">Cakap</label>
-                  <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
-                    <input type="number" name="pred_cakap_min" class="input-field" style="width: 100%;" value="{{ old('pred_cakap_min', $cakap['min']) }}" required placeholder="Min">
-                    <span style="font-size: 12px; color: #9ca3af;">s.d</span>
-                    <input type="number" name="pred_cakap_max" class="input-field" style="width: 100%;" value="{{ old('pred_cakap_max', $cakap['max']) }}" required placeholder="Max">
-                  </div>
-                </div>
-
-                <!-- Cukup Cakap -->
-                <div>
-                  <label style="font-size: 11px; font-weight: 700; color: #d97706; text-transform: uppercase;">Cukup Cakap</label>
-                  <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
-                    <input type="number" name="pred_cukup_cakap_min" class="input-field" style="width: 100%;" value="{{ old('pred_cukup_cakap_min', $cukupCakap['min']) }}" required placeholder="Min">
-                    <span style="font-size: 12px; color: #9ca3af;">s.d</span>
-                    <input type="number" name="pred_cukup_cakap_max" class="input-field" style="width: 100%;" value="{{ old('pred_cukup_cakap_max', $cukupCakap['max']) }}" required placeholder="Max">
-                  </div>
-                </div>
-
-                <!-- Butuh Perhatian -->
-                <div>
-                  <label style="font-size: 11px; font-weight: 700; color: #b91c1c; text-transform: uppercase;">Butuh Perhatian</label>
-                  <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
-                    <input type="number" name="pred_perhatian_min" class="input-field" style="width: 100%;" value="{{ old('pred_perhatian_min', $butuhPerhatian['min']) }}" required placeholder="Min">
-                    <span style="font-size: 12px; color: #9ca3af;">s.d</span>
-                    <input type="number" name="pred_perhatian_max" class="input-field" style="width: 100%;" value="{{ old('pred_perhatian_max', $butuhPerhatian['max']) }}" required placeholder="Max">
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div style="display: flex; justify-content: flex-end;">
-              <button type="submit" class="btn-submit" style="width: 280px; height: 44px; border: none; font-weight: bold; background: #064e3b;">
-                Simpan Setelan &amp; Jalankan DSS
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-
-      <!-- TAB 4: KELOLA FAQ CHATBOX -->
-      <div id="tab-faq" class="tab-pane" style="display: none; flex-direction: column; gap: 24px;">
-        <div style="background: #ffffff; border-radius: 12px; border: 1px solid #becabe; padding: 24px; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; gap: 20px;">
-          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #f0fdf4; padding-bottom: 12px; flex-wrap: wrap; gap: 10px;">
-            <div style="font-weight: bold; font-family: 'PlusJakartaSans-Bold', sans-serif; font-size: 16px; color: #064e3b; display: flex; align-items: center; gap: 8px;">
-              <span>💬</span> Kelola FAQ Chatbot Calon Wali Murid
-            </div>
-            <button type="button" class="btn-submit" onclick="openCreateFaqModal()" style="width: auto; height: 36px; padding: 0 16px; background: #298752; color: #ffffff; border: none; font-size: 12px; border-radius: 6px; cursor: pointer;">
-              + Tambah FAQ Baru
-            </button>
-          </div>
-
-          <div class="program-table-container" style="max-height: 400px; overflow-y: auto;">
-            <table class="program-table">
-              <thead>
-                <tr>
-                  <th style="width: 30%;">Pertanyaan</th>
-                  <th style="width: 55%;">Jawaban</th>
-                  <th style="width: 15%; text-align: center;">Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
-                @forelse($faqs as $faq)
-                  <tr>
-                    <td style="font-weight: bold; color: #121c2a; vertical-align: top;">{{ $faq->question }}</td>
-                    <td style="color: #4b5563; line-height: 1.5; vertical-align: top;">{{ $faq->answer }}</td>
-                    <td style="text-align: center; vertical-align: top;">
-                      <div style="display: flex; gap: 12px; justify-content: center; align-items: center;">
-                        <button type="button" onclick="openEditFaqModal('{{ $faq->id }}', '{{ addslashes($faq->question) }}', '{{ addslashes($faq->answer) }}')" style="color: #298752; font-weight: bold; cursor: pointer; background: none; border: none; font-family: inherit; font-size: 13px;">Edit</button>
-                        <form action="{{ route('tata_usaha.faqs.delete', $faq->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus FAQ ini?')" style="margin: 0; padding: 0;">
-                          @csrf
-                          <button type="submit" style="color: #ef4444; font-weight: bold; cursor: pointer; background: none; border: none; font-family: inherit; font-size: 13px;">Hapus</button>
-                        </form>
-                      </div>
-                    </td>
-                  </tr>
-                @empty
-                  <tr>
-                    <td colspan="3" style="text-align: center; color: #9ca3af; padding: 20px;">Belum ada FAQ. Silakan tambah FAQ baru.</td>
-                  </tr>
-                @endforelse
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- TAB 5: KELOLA KONTAK & MEDSOS -->
-      <div id="tab-contacts" class="tab-pane" style="display: none; flex-direction: column; gap: 24px;">
-        <div style="background: #ffffff; border-radius: 12px; border: 1px solid #becabe; padding: 24px; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; gap: 20px;">
-          <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #f0fdf4; padding-bottom: 12px; flex-wrap: wrap; gap: 10px;">
-            <div style="font-weight: bold; font-family: 'PlusJakartaSans-Bold', sans-serif; font-size: 16px; color: #064e3b; display: flex; align-items: center; gap: 8px;">
-              <span>📞</span> Kelola Kontak &amp; Media Sosial Sekolah
-            </div>
-            <button type="button" class="btn-submit" onclick="openCreateContactModal()" style="width: auto; height: 36px; padding: 0 16px; background: #298752; color: #ffffff; border: none; font-size: 12px; border-radius: 6px; cursor: pointer;">
-              + Tambah Kontak Baru
-            </button>
-          </div>
-
-          <div class="program-table-container" style="max-height: 400px; overflow-y: auto;">
-            <table class="program-table">
-              <thead>
-                <tr>
-                  <th style="width: 20%;">Platform / Media</th>
-                  <th style="width: 25%;">Nilai / Kontak</th>
-                  <th style="width: 30%;">Tautan Link</th>
-                  <th style="width: 13%;">Ikon (Icon)</th>
-                  <th style="width: 12%; text-align: center;">Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
-                @forelse($contacts as $con)
-                  <tr>
-                    <td style="font-weight: bold; color: #121c2a;">{{ $con->platform_name }}</td>
-                    <td style="color: #374151; font-weight: 600;">{{ $con->value }}</td>
-                    <td style="color: #4b5563; word-break: break-all;"><a href="{{ $con->link }}" target="_blank" style="color: #298752; text-decoration: underline;">{{ $con->link }}</a></td>
-                    <td style="color: #6b7280; font-family: monospace;">{{ $con->icon ?? '-' }}</td>
-                    <td>
-                      <div style="display: flex; gap: 12px; justify-content: center; align-items: center;">
-                        <button type="button" onclick="openEditContactModal('{{ $con->id }}', '{{ addslashes($con->platform_name) }}', '{{ addslashes($con->value) }}', '{{ addslashes($con->link) }}', '{{ $con->icon }}')" style="color: #298752; font-weight: bold; cursor: pointer; background: none; border: none; font-family: inherit; font-size: 13px;">Edit</button>
-                        <form action="{{ route('tata_usaha.contacts.delete', $con->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kontak ini?')" style="margin: 0; padding: 0;">
-                          @csrf
-                          <button type="submit" style="color: #ef4444; font-weight: bold; cursor: pointer; background: none; border: none; font-family: inherit; font-size: 13px;">Hapus</button>
-                        </form>
-                      </div>
-                    </td>
-                  </tr>
-                @empty
-                  <tr>
-                    <td colspan="5" style="text-align: center; color: #9ca3af; padding: 20px;">Belum ada kontak. Silakan tambah kontak baru.</td>
-                  </tr>
-                @endforelse
-              </tbody>
-            </table>
-          </div>
         </div>
       </div>
     </div>
-  </div>
 
   <!-- Tambah Program Modal Form -->
   <div class="modal" id="createProgramModal">
-    <div class="modal-content">
+    <div class="modal-content" style="width: 500px; max-height: 90vh; overflow-y: auto;">
       <h3 style="font-weight: bold; color: #064e3b; margin-bottom: 20px; font-size: 16px;">Tambah Program Baru</h3>
       
       <form action="{{ route('tata_usaha.programs.store') }}" method="POST" enctype="multipart/form-data">
@@ -751,32 +506,13 @@
           <label for="image">Foto / Image Program</label>
           <input type="file" name="image" id="image" accept="image/*" style="padding: 6px 12px;">
         </div>
-
+ 
         <div style="border-top: 1px solid #e5e7eb; padding-top: 15px; margin-top: 15px;">
-          <h4 style="font-size: 11px; font-weight: bold; color: #064e3b; margin-bottom: 10px; text-transform: uppercase;">Bobot Kriteria Penilaian DSS (%)</h4>
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="weight_hafalan" style="font-size: 10px;">Hafalan</label>
-              <input type="number" name="weight_hafalan" id="weight_hafalan" min="0" max="100" value="30" required>
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="weight_wawancara" style="font-size: 10px;">Wawancara</label>
-              <input type="number" name="weight_wawancara" id="weight_wawancara" min="0" max="100" value="20" required>
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="weight_calistung" style="font-size: 10px;">Calistung</label>
-              <input type="number" name="weight_calistung" id="weight_calistung" min="0" max="100" value="20" required>
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="weight_tasmi" style="font-size: 10px;">Tasmi</label>
-              <input type="number" name="weight_tasmi" id="weight_tasmi" min="0" max="100" value="15" required>
-            </div>
-            <div class="form-group" style="margin-bottom: 0; grid-column: span 2;">
-              <label for="weight_mandiri" style="font-size: 10px;">Mandiri</label>
-              <input type="number" name="weight_mandiri" id="weight_mandiri" min="0" max="100" value="15" required>
-            </div>
+          <h4 style="font-size: 11px; font-weight: bold; color: #064e3b; margin-bottom: 10px; text-transform: uppercase;">Kriteria Persyaratan Kelulusan</h4>
+          <div id="createCriteriaContainer" style="display: flex; flex-direction: column; gap: 10px;">
+            <!-- Dynamic rows will be inserted here -->
           </div>
-          <small style="font-size: 10px; color: #6b7280; display: block; margin-top: 8px;">* Jumlah total kelima bobot kriteria wajib sama dengan 100%.</small>
+          <button type="button" onclick="addCriteriaRow('createCriteriaContainer')" style="margin-top: 10px; background: #eef5ed; color: #005b31; font-weight: bold; padding: 6px 12px; border: 1px dashed #005b31; border-radius: 6px; cursor: pointer; font-size: 11px; width: 100%;">+ Tambah Kriteria</button>
         </div>
         
         <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px;">
@@ -786,10 +522,10 @@
       </form>
     </div>
   </div>
-
+ 
   <!-- Edit Program Modal Form -->
   <div class="modal" id="editProgramModal">
-    <div class="modal-content">
+    <div class="modal-content" style="width: 500px; max-height: 90vh; overflow-y: auto;">
       <h3 id="editProgramTitle" style="font-weight: bold; color: #064e3b; margin-bottom: 20px; font-size: 16px;">Ubah Program Pendidikan</h3>
       
       <form id="editProgramForm" method="POST" enctype="multipart/form-data">
@@ -818,35 +554,16 @@
             <img id="editProgramImagePreview" src="" style="width: 100%; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid #becabe;">
           </div>
         </div>
-
+ 
         <div style="border-top: 1px solid #e5e7eb; padding-top: 15px; margin-top: 15px;">
-          <h4 style="font-size: 11px; font-weight: bold; color: #064e3b; margin-bottom: 10px; text-transform: uppercase;">Bobot Kriteria Penilaian DSS (%)</h4>
-          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="edit_weight_hafalan" style="font-size: 10px;">Hafalan</label>
-              <input type="number" name="weight_hafalan" id="edit_weight_hafalan" min="0" max="100" required>
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="edit_weight_wawancara" style="font-size: 10px;">Wawancara</label>
-              <input type="number" name="weight_wawancara" id="edit_weight_wawancara" min="0" max="100" required>
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="edit_weight_calistung" style="font-size: 10px;">Calistung</label>
-              <input type="number" name="weight_calistung" id="edit_weight_calistung" min="0" max="100" required>
-            </div>
-            <div class="form-group" style="margin-bottom: 0;">
-              <label for="edit_weight_tasmi" style="font-size: 10px;">Tasmi</label>
-              <input type="number" name="weight_tasmi" id="edit_weight_tasmi" min="0" max="100" required>
-            </div>
-            <div class="form-group" style="margin-bottom: 0; grid-column: span 2;">
-              <label for="edit_weight_mandiri" style="font-size: 10px;">Mandiri</label>
-              <input type="number" name="weight_mandiri" id="edit_weight_mandiri" min="0" max="100" required>
-            </div>
+          <h4 style="font-size: 11px; font-weight: bold; color: #064e3b; margin-bottom: 10px; text-transform: uppercase;">Kriteria Persyaratan Kelulusan</h4>
+          <div id="editCriteriaContainer" style="display: flex; flex-direction: column; gap: 10px;">
+            <!-- Dynamic rows will be inserted here -->
           </div>
-          <small style="font-size: 10px; color: #6b7280; display: block; margin-top: 8px;">* Jumlah total kelima bobot kriteria wajib sama dengan 100%.</small>
+          <button type="button" onclick="addCriteriaRow('editCriteriaContainer')" style="margin-top: 10px; background: #eef5ed; color: #005b31; font-weight: bold; padding: 6px 12px; border: 1px dashed #005b31; border-radius: 6px; cursor: pointer; font-size: 11px; width: 100%;">+ Tambah Kriteria</button>
         </div>
         
-        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px;">
+        <div style="display: flex; justify-content: justify-content-end; gap: 10px; margin-top: 25px;">
           <button type="button" style="background: #f3f4f6; color: #4b5563; padding: 10px 15px; border-radius: 6px; cursor: pointer; border: 1px solid #d1d5db;" onclick="closeEditProgramModal()">Batal</button>
           <button type="submit" style="background: #298752; color: #ffffff; padding: 10px 15px; border-radius: 6px; cursor: pointer;">Simpan Perubahan</button>
         </div>
@@ -1018,24 +735,67 @@
 
 @section('scripts')
   <script>
+    const criteriaOptions = [
+      { value: 'hafalan', label: 'Hafalan' },
+      { value: 'aism', label: 'AISM' },
+      { value: 'iqro', label: 'Iqro' },
+      { value: 'calistung', label: 'Calistung' },
+      { value: 'dikte', label: 'Dikte' },
+      { value: 'kemandirian', label: 'Kemandirian' }
+    ];
+
+    function addCriteriaRow(containerId, name = '', minVal = '') {
+      const container = document.getElementById(containerId);
+      const rowId = 'row_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5);
+      
+      let optionsHtml = '';
+      criteriaOptions.forEach(opt => {
+        const selected = opt.value === name ? 'selected' : '';
+        optionsHtml += `<option value="${opt.value}" ${selected}>${opt.label}</option>`;
+      });
+
+      const rowHtml = `
+        <div id="${rowId}" style="display: flex; gap: 10px; align-items: center; width: 100%;">
+          <select name="criteria_name[]" style="flex: 1.5; padding: 8px 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px; outline: none; background: #ffffff;">
+            ${optionsHtml}
+          </select>
+          <input type="number" name="criteria_min[]" value="${minVal !== '' ? minVal : 50}" min="0" max="100" placeholder="Min (0-100)" style="flex: 1; padding: 8px 10px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 12px; outline: none;">
+          <button type="button" onclick="document.getElementById('${rowId}').remove()" style="background: #fee2e2; color: #ef4444; border: 1px solid #fecaca; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: bold; font-family: inherit;">Hapus</button>
+        </div>
+      `;
+      container.insertAdjacentHTML('beforeend', rowHtml);
+    }
+
     function openCreateProgramModal() {
+      document.getElementById('createCriteriaContainer').innerHTML = '';
+      addCriteriaRow('createCriteriaContainer', 'hafalan', 50);
+      addCriteriaRow('createCriteriaContainer', 'calistung', 50);
+      addCriteriaRow('createCriteriaContainer', 'iqro', 50);
       document.getElementById('createProgramModal').style.display = 'flex';
     }
+
     function closeCreateProgramModal() {
       document.getElementById('createProgramModal').style.display = 'none';
     }
-    function openEditProgramModal(id, name, persyaratan, kuota, imageUrl, wHafalan, wWawancara, wCalistung, wTasmi, wMandiri) {
+
+    function openEditProgramModal(id, name, persyaratan, kuota, imageUrl, criteriaJson) {
       document.getElementById('editProgramTitle').innerText = 'Ubah Program: ' + name;
       document.getElementById('edit_nama_program').value = name;
       document.getElementById('edit_persyaratan').value = persyaratan;
       document.getElementById('edit_kuota_program').value = kuota;
       document.getElementById('edit_image').value = '';
       
-      document.getElementById('edit_weight_hafalan').value = wHafalan || 30;
-      document.getElementById('edit_weight_wawancara').value = wWawancara || 20;
-      document.getElementById('edit_weight_calistung').value = wCalistung || 20;
-      document.getElementById('edit_weight_tasmi').value = wTasmi || 15;
-      document.getElementById('edit_weight_mandiri').value = wMandiri || 15;
+      const container = document.getElementById('editCriteriaContainer');
+      container.innerHTML = '';
+      
+      if (criteriaJson && criteriaJson.length > 0) {
+        criteriaJson.forEach(c => {
+          addCriteriaRow('editCriteriaContainer', c.nama_kriteria, c.nilai_minimum);
+        });
+      } else {
+        addCriteriaRow('editCriteriaContainer', 'hafalan', 50);
+        addCriteriaRow('editCriteriaContainer', 'calistung', 50);
+      }
       
       if (imageUrl) {
         document.getElementById('editProgramImagePreview').src = imageUrl;
@@ -1050,9 +810,11 @@
       
       document.getElementById('editProgramModal').style.display = 'flex';
     }
+
     function closeEditProgramModal() {
       document.getElementById('editProgramModal').style.display = 'none';
     }
+
     function confirmDeleteProgram(id, name) {
       if (confirm("Apakah Anda yakin ingin menghapus program '" + name + "'? Tindakan ini tidak dapat dibatalkan.")) {
         let deleteRoute = "{{ route('tata_usaha.programs.delete', ':id') }}";
@@ -1077,50 +839,6 @@
     
     function closeEditRundownModal() {
       document.getElementById('editRundownModal').style.display = 'none';
-    }
-
-    // FAQ Modals
-    function openCreateFaqModal() {
-      document.getElementById('createFaqModal').style.display = 'flex';
-    }
-    function closeCreateFaqModal() {
-      document.getElementById('createFaqModal').style.display = 'none';
-    }
-    function openEditFaqModal(id, question, answer) {
-      document.getElementById('edit_faq_question').value = question;
-      document.getElementById('edit_faq_answer').value = answer;
-      
-      let updateRoute = "{{ route('tata_usaha.faqs.update', ':id') }}";
-      updateRoute = updateRoute.replace(':id', id);
-      document.getElementById('editFaqForm').action = updateRoute;
-      
-      document.getElementById('editFaqModal').style.display = 'flex';
-    }
-    function closeEditFaqModal() {
-      document.getElementById('editFaqModal').style.display = 'none';
-    }
-
-    // Contact Modals
-    function openCreateContactModal() {
-      document.getElementById('createContactModal').style.display = 'flex';
-    }
-    function closeCreateContactModal() {
-      document.getElementById('createContactModal').style.display = 'none';
-    }
-    function openEditContactModal(id, platformName, value, link, icon) {
-      document.getElementById('edit_contact_platform_name').value = platformName;
-      document.getElementById('edit_contact_value').value = value;
-      document.getElementById('edit_contact_link').value = link;
-      document.getElementById('edit_contact_icon').value = icon || '';
-      
-      let updateRoute = "{{ route('tata_usaha.contacts.update', ':id') }}";
-      updateRoute = updateRoute.replace(':id', id);
-      document.getElementById('editContactForm').action = updateRoute;
-      
-      document.getElementById('editContactModal').style.display = 'flex';
-    }
-    function closeEditContactModal() {
-      document.getElementById('editContactModal').style.display = 'none';
     }
 
     // Tab Switching
@@ -1155,14 +873,8 @@
 
     document.addEventListener('DOMContentLoaded', function() {
       let activeTab = 'tab-landing';
-      const hashTabMap = { '#dss': 'tab-dss', '#faq': 'tab-faq', '#kontak': 'tab-contacts', '#program': 'tab-programs' };
-      @if(session('success_faq'))
-        activeTab = 'tab-faq';
-      @elseif(session('success_contact'))
-        activeTab = 'tab-contacts';
-      @else
-        activeTab = hashTabMap[window.location.hash] || localStorage.getItem('cms_active_tab') || 'tab-landing';
-      @endif
+      const hashTabMap = { '#program': 'tab-programs' };
+      activeTab = hashTabMap[window.location.hash] || localStorage.getItem('cms_active_tab') || 'tab-landing';
       switchTab(activeTab);
     });
   </script>

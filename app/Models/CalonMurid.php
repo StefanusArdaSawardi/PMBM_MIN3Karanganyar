@@ -4,10 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Traits\HasCustomId;
+
 class CalonMurid extends Model
 {
+    use HasCustomId;
+
     protected $table = 'calon_murids';
     protected $primaryKey = 'id_murid';
+
+    public function getPrefix()
+    {
+        return 'MRD';
+    }
 
     protected $fillable = [
         'nama_murid',

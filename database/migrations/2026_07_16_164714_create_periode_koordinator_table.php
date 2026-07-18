@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('periode_koordinator', function (Blueprint $table) {
             $table->id();
             $table->foreignId('periode_pendaftaran_id')->constrained('periode_pendaftarans')->cascadeOnDelete();
-            $table->foreignId('id_panitia')->constrained('panitia_pmbms', 'id_panitia')->cascadeOnDelete();
+            $table->string('id_panitia', 10); // varchar FK referencing panitia_pmbms
             $table->timestamps();
+
+            $table->foreign('id_panitia')->references('id_panitia')->on('panitia_pmbms')->cascadeOnDelete();
         });
     }
 

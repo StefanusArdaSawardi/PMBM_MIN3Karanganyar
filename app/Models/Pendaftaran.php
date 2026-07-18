@@ -4,8 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Traits\HasCustomId;
+
 class Pendaftaran extends Model
 {
+    use HasCustomId;
+
     protected $table = 'pendaftarans';
     protected $primaryKey = 'id_pendaftaran';
 
@@ -21,7 +25,15 @@ class Pendaftaran extends Model
         'tanggal_konfirmasi',
         'id_murid',
         'id_program',
+        'periode_pendaftaran_id',
+        'program_kelulusan',
+        'batas_konfirmasi',
     ];
+
+    public function getPrefix()
+    {
+        return 'PDT';
+    }
 
     public function isVerified()
     {
@@ -54,26 +66,50 @@ class Pendaftaran extends Model
         if ($this->status_verifikasi === 'terverifikasi') {
             return 'Berkas Diterima';
         }
-        if ($this->status_verifikasi === 'terverifikasi_onsite' && is_null($this->status_kelulusan)) {
-            if ($this->calonMurid && $this->calonMurid->hasil()->exists()) {
-                return 'Siap Seleksi';
-            }
-            return 'Berkas Onsite Diterima';
+
+        // Cek apakah hasil kelulusan sudah dipublikasikan oleh Tata Usaha untuk periode ini
+        $isPublished = false;
+        if ($this->periodePendaftaran) {
+            $isPublished = (bool) $this->periodePendaftaran->graduation_published;
         }
+
+        // Jika kelulusan BELUM dipublikasikan, sembunyikan status kelulusan dari publik
+        if (!$isPublished) {
+            if ($this->status_verifikasi === 'terverifikasi_onsite') {
+                if ($this->calonMurid && $this->calonMurid->hasil()->exists()) {
+                    return 'Siap Seleksi';
+                }
+                return 'Berkas Onsite Diterima';
+            }
+            return 'Pending';
+        }
+
+        // Jika kelulusan SUDAH dipublikasikan, tampilkan status kelulusan ril
         if ($this->status_kelulusan === 'lulus') {
             if ($this->status_konfirmasi === 'terkonfirmasi') {
                 return 'Diterima (Daftar Ulang)';
             }
+            if ($this->status_konfirmasi === 'tidak_lulus_pmbm') {
+                return 'Tidak Lulus PMBM (Melewati Batas Waktu)';
+            }
             if ($this->status_konfirmasi === 'mengundurkan_diri') {
                 return 'Mengundurkan Diri';
             }
-            return 'Lulus';
+            
+            $progName = $this->program_kelulusan ?: ($this->program->nama_program ?? 'Program Studi');
+            return 'Lulus Seleksi - ' . $progName;
         }
         if ($this->status_kelulusan === 'cadangan') {
             return 'Cadangan';
         }
         if ($this->status_kelulusan === 'tidak_lulus') {
             return 'Tidak Lulus';
+        }
+        if ($this->status_verifikasi === 'terverifikasi_onsite') {
+            if ($this->calonMurid && $this->calonMurid->hasil()->exists()) {
+                return 'Siap Seleksi';
+            }
+            return 'Berkas Onsite Diterima';
         }
         return 'Pending';
     }
@@ -86,5 +122,30 @@ class Pendaftaran extends Model
     public function program()
     {
         return $this->belongsTo(Program::class, 'id_program', 'id_program');
+    }
+
+    public function periodePendaftaran()
+    {
+        return $this->belongsTo(PeriodePendaftaran::class, 'periode_pendaftaran_id', 'id');
+    }
+
+    public function nilaiUjian()
+    {
+        return $this->hasOne(NilaiUjian::class, 'id_pendaftaran', 'id_pendaftaran');
+    }
+
+    public function wawancaraAnak()
+    {
+        return $this->hasOne(WawancaraAnak::class, 'id_pendaftaran', 'id_pendaftaran');
+    }
+
+    public function wawancaraOrtu()
+    {
+        return $this->hasOne(WawancaraOrtu::class, 'id_pendaftaran', 'id_pendaftaran');
+    }
+
+    public function dssRanking()
+    {
+        return $this->hasOne(DssRanking::class, 'id_pendaftaran', 'id_pendaftaran');
     }
 }

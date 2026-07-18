@@ -39,6 +39,8 @@ Route::post('/login', [AuthController::class, 'login']);
 // 3. Admin (Tata Usaha) Dashboard Area
 Route::middleware('auth:tata_usaha')->prefix('tata-usaha')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('tata_usaha.dashboard');
+    Route::post('/periode/publish', [AdminDashboardController::class, 'publishGraduation'])->name('tata_usaha.periode.publish');
+    Route::post('/periode/trigger-countdown', [AdminDashboardController::class, 'triggerCountdown'])->name('tata_usaha.periode.trigger_countdown');
     
     // Applicant List (Matches the frontend route names)
     Route::get('/applicants', [AdminDashboardController::class, 'applicants'])->name('scores.index');
@@ -49,6 +51,11 @@ Route::middleware('auth:tata_usaha')->prefix('tata-usaha')->group(function () {
     // Grup WhatsApp
     Route::get('/grup-whatsapp', [AdminDashboardController::class, 'grupWhatsapp'])->name('tata_usaha.grup_whatsapp');
     Route::post('/grup-whatsapp/{id}/status', [AdminDashboardController::class, 'updateGrupWhatsapp'])->name('tata_usaha.grup_whatsapp.status');
+
+    // Additional Workflow Stages
+    Route::get('/verifikasi-offline', [AdminDashboardController::class, 'verifikasiOffline'])->name('tata_usaha.verifikasi_offline');
+    Route::get('/seleksi', [AdminDashboardController::class, 'seleksi'])->name('tata_usaha.seleksi');
+    Route::get('/daftar-ulang', [AdminDashboardController::class, 'daftarUlang'])->name('tata_usaha.daftar_ulang');
 
     // Content Management (CMS)
     Route::get('/content', [AdminDashboardController::class, 'showContent'])->name('tata_usaha.content');
@@ -69,6 +76,13 @@ Route::middleware('auth:tata_usaha')->prefix('tata-usaha')->group(function () {
     Route::get('/program/edit/{id}', [ProgramManagementController::class, 'edit'])->name('tata_usaha.program.edit');
     Route::post('/program/update/{id}', [ProgramManagementController::class, 'update'])->name('tata_usaha.program.update');
     Route::post('/program/delete/{id}', [ProgramManagementController::class, 'destroy'])->name('tata_usaha.program.destroy');
+
+    Route::get('/guide-manage', [AdminDashboardController::class, 'showGuide'])->name('tata_usaha.guide');
+    Route::post('/guide-manage/update', [AdminDashboardController::class, 'updateGuide'])->name('tata_usaha.guide.update');
+    Route::get('/contacts', [AdminDashboardController::class, 'showContacts'])->name('tata_usaha.contacts.index');
+    Route::get('/faqs', [AdminDashboardController::class, 'showFaqs'])->name('tata_usaha.faqs.index');
+    Route::get('/dss-config', [AdminDashboardController::class, 'showDssConfig'])->name('tata_usaha.dss.index');
+    Route::get('/tutorial', [AdminDashboardController::class, 'showTutorial'])->name('tata_usaha.tutorial.view');
     Route::post('/content/text', [AdminDashboardController::class, 'updateContentText'])->name('tata_usaha.content.update_text');
     Route::post('/content/settings', [AdminDashboardController::class, 'updateSettings'])->name('tata_usaha.settings.update');
     Route::post('/content/dss-config', [AdminDashboardController::class, 'updateDssConfig'])->name('tata_usaha.dss.update');
@@ -110,8 +124,18 @@ Route::middleware('auth:tata_usaha')->prefix('tata-usaha')->group(function () {
 // 4. Panitia (Interview) Dashboard Area
 Route::middleware('auth:panitia')->prefix('panitia')->group(function () {
     Route::get('/dashboard', [PanitiaDashboardController::class, 'index'])->name('panitia.dashboard');
-    Route::get('/grading/{id}', [PanitiaDashboardController::class, 'detail'])->name('panitia.detail');
-    Route::post('/grading/{id}', [PanitiaDashboardController::class, 'storeGrading'])->name('panitia.grading');
+    
+    // Rute khusus Pengawas Ujian
+    Route::middleware('panitia.role:pengawas_ujian')->group(function () {
+        Route::get('/grading/ujian/{id}', [PanitiaDashboardController::class, 'detailUjian'])->name('panitia.detail.ujian');
+        Route::post('/grading/ujian/{id}', [PanitiaDashboardController::class, 'storeUjian'])->name('panitia.grading.ujian');
+    });
+
+    // Rute khusus Petugas Wawancara
+    Route::middleware('panitia.role:petugas_wawancara')->group(function () {
+        Route::get('/grading/wawancara/{id}', [PanitiaDashboardController::class, 'detailWawancara'])->name('panitia.detail.wawancara');
+        Route::post('/grading/wawancara/{id}', [PanitiaDashboardController::class, 'storeWawancara'])->name('panitia.grading.wawancara');
+    });
 
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('panitia.logout');

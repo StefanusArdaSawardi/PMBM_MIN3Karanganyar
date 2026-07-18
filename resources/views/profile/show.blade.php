@@ -8,7 +8,7 @@
     @include('components.sidebar-admin', ['activeFolder' => 'applicants'])
 
     <!-- Content Wrapper -->
-    <div class="absolute left-[380px] top-[138px] right-10 flex flex-col gap-6 z-0 max-[1024px]:left-5 max-[1024px]:right-5 max-[1024px]:top-[150px]">
+    <div class="absolute left-[380px] top-[180px] right-10 flex flex-col gap-6 z-0 max-[1024px]:left-5 max-[1024px]:right-5 max-[1024px]:top-[150px]">
 
       <!-- Page Header -->
       <div class="flex flex-col gap-1">
@@ -191,31 +191,74 @@
               <div class="bg-[#d9e6da] rounded-lg p-4 text-[#131e17] text-[12px]">
                 Tahap saat ini: {{ $step1Completed ? 'Verifikasi Onsite' : 'Verifikasi Dokumen Online' }}. Orang tua telah diinformasikan melalui Email &amp; WhatsApp untuk memantau progres pendaftaran.
               </div>
+
+              @if($pendaftaran->status_verifikasi === 'menunggu_verifikasi')
+                <div class="border-t border-[#bfc9c0] pt-4 flex flex-col gap-4">
+                  <div class="text-[#004228] text-[12px] font-bold uppercase tracking-wide">Persetujuan Berkas Pendaftaran Online</div>
+                  
+                  <div class="flex gap-4">
+                    <!-- Approve Button Form -->
+                    <form action="{{ route('tata_usaha.status', $pendaftaran->id_pendaftaran) }}" method="POST" style="flex: 1; margin: 0; padding: 0;">
+                      @csrf
+                      <input type="hidden" name="action" value="verifikasi_berkas">
+                      <input type="hidden" name="status_verifikasi" value="terverifikasi">
+                      <button type="submit" class="bg-[#004228] text-white rounded-lg py-2.5 w-full text-[14px] font-bold cursor-pointer border-none hover:bg-[#064e3b] transition-colors">
+                        ✓ Setujui &amp; Verifikasi Berkas
+                      </button>
+                    </form>
+                    
+                    <!-- Reject Toggle Button -->
+                    <button type="button" onclick="toggleRejectionForm()" class="bg-[#ffdad6] text-[#ba1a1a] rounded-lg py-2.5 px-4 text-[14px] font-bold cursor-pointer border-none hover:bg-[#ffb4ab] transition-colors">
+                      ✕ Tolak Berkas
+                    </button>
+                  </div>
+
+                  <!-- Hidden Rejection Form Area -->
+                  <div id="rejectionFormArea" class="hidden border border-[#ba1a1a] rounded-lg p-4 bg-[#ffdad6]/20 flex flex-col gap-3">
+                    <form action="{{ route('tata_usaha.status', $pendaftaran->id_pendaftaran) }}" method="POST" class="flex flex-col gap-3" style="margin: 0; padding: 0;">
+                      @csrf
+                      <input type="hidden" name="action" value="verifikasi_berkas">
+                      <input type="hidden" name="status_verifikasi" value="ditolak">
+                      
+                      <div class="flex flex-col gap-1">
+                        <label for="alasan_penolakan" class="text-[#ba1a1a] text-[12px] font-bold">Alasan Penolakan Berkas:</label>
+                        <textarea name="alasan_penolakan" id="alasan_penolakan" required rows="3" placeholder="Contoh: File Akta Kelahiran buram / tidak terbaca." 
+                                  class="w-full px-3 py-2 text-[13px] border border-[#ba1a1a]/50 rounded bg-white outline-none focus:border-[#ba1a1a] resize-none"></textarea>
+                      </div>
+
+                      <button type="submit" class="bg-[#ba1a1a] text-white rounded py-2 w-full text-[13px] font-bold cursor-pointer border-none hover:bg-[#93000a] transition-colors">
+                        Kirim Penolakan
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              @endif
+
+              @if($pendaftaran->status_verifikasi === 'ditolak')
+                <div class="bg-[#ffdad6] border border-[#ba1a1a] rounded-lg p-4 text-[#ba1a1a] text-[13px]">
+                  <strong>Berkas Ditolak:</strong> {{ $pendaftaran->alasan_penolakan ?? 'Tidak ada alasan penolakan yang dicantumkan.' }}
+                </div>
+              @endif
             </div>
           @endunless
 
           @if($step2Active)
-            <!-- Verifikasi Offline: Token Input + Admin Action -->
-            <div class="flex gap-6 max-[900px]:flex-col">
-              <form action="{{ route('tata_usaha.status', $pendaftaran->id_pendaftaran) }}" method="POST" class="flex-1 bg-[#004228]/10 border-2 border-dashed border-[#004228] rounded-xl p-6 flex flex-col gap-4">
+            <!-- Verifikasi Offline: Admin Action Button -->
+            <div style="background: #ffffff; border-radius: 12px; border: 1px solid #becabe; padding: 24px; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; gap: 15px; width: 100%;">
+              <div style="font-weight: bold; font-family: 'PlusJakartaSans-Bold', sans-serif; font-size: 16px; color: #064e3b; border-bottom: 2px solid #f0fdf4; padding-bottom: 8px;">
+                📝 Verifikasi Berkas Fisik (Onsite)
+              </div>
+              <p style="font-size: 13px; color: #4b5563; line-height: 1.5; margin: 0;">
+                Calon murid telah hadir di sekolah untuk pemeriksaan kelengkapan berkas fisik secara langsung.
+              </p>
+              
+              <form action="{{ route('tata_usaha.status', $pendaftaran->id_pendaftaran) }}" method="POST" style="margin: 0; padding: 0;">
                 @csrf
                 <input type="hidden" name="action" value="cek_berkas_onsite">
-                <div class="flex items-center gap-3 text-[#004228] text-[14px] font-semibold uppercase tracking-wide">
-                  <svg width="20" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.75 5.74L9 19l-1 1H6v2H2v-4l6.26-6.26A6 6 0 1121 9z"/></svg>
-                  Nomor Token Offline
-                </div>
-                <div class="flex flex-col gap-2">
-                  <input type="text" name="token_offline" placeholder="XXX - XXX - XXX" required
-                         class="bg-white border border-[#bfc9c0] rounded-lg px-4 py-3 text-center text-[18px] font-bold tracking-[3.6px] text-gray-500 outline-none">
-                  <div class="text-[#3f4942] text-[11px] italic">Wajib diisi saat verifikasi berkas fisik di lokasi.</div>
-                </div>
-                <button type="submit" class="bg-[#004228] text-white rounded-lg py-3 w-full text-[16px] cursor-pointer">Tandai Sudah Verifikasi</button>
+                <button type="submit" class="bg-[#005b31] text-white rounded-lg py-3 w-full text-[15px] font-bold cursor-pointer hover:bg-[#064e3b] transition-colors border-none" style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                  ✓ Tandai Sudah Verifikasi Fisik
+                </button>
               </form>
-
-              <div class="flex-1 bg-[#004228]/5 border border-[#004228]/10 rounded-xl p-6 flex flex-col gap-3">
-                <div class="text-[#004228] text-[12px] font-semibold tracking-wide">Tindakan Admin</div>
-                <div class="text-[#3f4942] text-[14px]">Verifikasi manual jika siswa sudah verifikasi secara offline.</div>
-              </div>
             </div>
           @endif
 
@@ -343,9 +386,9 @@
               <svg width="16" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             </div>
             <div>
-              @if($hasil)
-                <div class="text-[#7ada99] text-[30px] font-bold">{{ $dssRecommendation }}</div>
-                <div class="text-white/70 text-[14px]">Skor Akumulasi: {{ number_format($hasil->nilai_akhir, 1) }} / 100</div>
+              @if($pendaftaran->nilaiUjian)
+                <div class="text-[#7ada99] text-[30px] font-bold">{{ $pendaftaran->dssRanking->rekomendasi ?? 'Dalam Proses' }}</div>
+                <div class="text-white/70 text-[14px]">Skor Akumulasi: {{ number_format($pendaftaran->dssRanking->nilai_total ?? 0, 1) }} / 100</div>
               @else
                 <div class="text-[#7ada99] text-[20px] font-bold">Menunggu Penilaian</div>
                 <div class="text-white/70 text-[14px]">Nilai belum diinput oleh panitia.</div>
@@ -354,15 +397,18 @@
           </div>
         </div>
 
-        @if($hasil)
+        @if($pendaftaran->nilaiUjian)
           <!-- Detailed Scores -->
-          <div class="grid grid-cols-4 gap-6 max-[900px]:grid-cols-2 max-[600px]:grid-cols-1">
+          <div class="grid grid-cols-3 gap-6 max-[900px]:grid-cols-2 max-[600px]:grid-cols-1" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;">
             @php
+              $nilai = $pendaftaran->nilaiUjian;
               $scores = [
-                ['label' => 'Tes Hafalan', 'value' => $hasil->nilai_hafalan],
-                ['label' => 'Calistung', 'value' => $hasil->nilai_calistung],
-                ['label' => 'Tes Wawancara', 'value' => $hasil->nilai_wawancara],
-                ['label' => 'Kemandirian', 'value' => $hasil->nilai_mandiri],
+                ['label' => 'Hafalan', 'value' => $nilai->nilai_hafalan ?? 0],
+                ['label' => 'AISM', 'value' => $nilai->nilai_aism ?? 0],
+                ['label' => 'Iqro', 'value' => $nilai->nilai_iqro ?? 0],
+                ['label' => 'Calistung', 'value' => $nilai->nilai_calistung ?? 0],
+                ['label' => 'Dikte', 'value' => $nilai->nilai_dikte ?? 0],
+                ['label' => 'Kemandirian', 'value' => $nilai->nilai_kemandirian ?? 0],
               ];
             @endphp
             @foreach($scores as $score)

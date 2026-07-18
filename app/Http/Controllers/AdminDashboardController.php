@@ -7,6 +7,7 @@ use App\Models\Program;
 use App\Models\CalonMurid;
 use App\Models\PengurusTataUsaha;
 use App\Models\PanitiaPmbm;
+use App\Models\PeriodePendaftaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -21,11 +22,17 @@ class AdminDashboardController extends Controller
         $this->autoExpireWaitlists();
 
         $programs = Program::all();
+        $activePeriod = PeriodePendaftaran::where('status', 'aktif')->first();
 
         $query = Pendaftaran::query();
-        if ($request->filled('tahun')) {
-            $query->whereYear('tanggal_pendaftaran', $request->tahun);
+
+        // Filter berdasarkan periode aktif
+        if ($activePeriod) {
+            $query->where('periode_pendaftaran_id', $activePeriod->id);
+        } else {
+            $query->whereRaw('1 = 0'); // Tidak ada periode aktif = data kosong
         }
+
         if ($request->filled('program')) {
             $query->where('id_program', $request->program);
         }
@@ -68,7 +75,7 @@ class AdminDashboardController extends Controller
 
         return view('dashboard.admin', compact(
             'totalPeserta', 'totalTidakKeterima', 'totalKeterima', 'tingkatKelulusan',
-            'charts', 'programs', 'programKelasDibuka', 'totalTidakKonfirmasi', 'recentApplicants'
+            'charts', 'programs', 'programKelasDibuka', 'totalTidakKonfirmasi', 'recentApplicants', 'activePeriod'
         ));
     }
  
@@ -79,29 +86,61 @@ class AdminDashboardController extends Controller
     {
         $this->autoExpireWaitlists();
         $programs = Program::all();
+        $activePeriod = PeriodePendaftaran::where('status', 'aktif')->first();
         
-        $query = Pendaftaran::with(['calonMurid.ibu', 'program']);
+        $query = Pendaftaran::with(['calonMurid.ayah', 'calonMurid.ibu', 'program'])
+            ->join('calon_murids', 'pendaftarans.id_murid', '=', 'calon_murids.id_murid')
+            ->select('pendaftarans.*');
+
+        // Filter berdasarkan periode aktif
+        if ($activePeriod) {
+            $query->where('pendaftarans.periode_pendaftaran_id', $activePeriod->id);
+        } else {
+            $query->whereRaw('1 = 0');
+        }
  
+        // Search filter (name, nisn, or parent name)
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('calon_murids.nama_murid', 'like', "%{$search}%")
+                  ->orWhere('calon_murids.nisn', 'like', "%{$search}%")
+                  ->orWhereHas('calonMurid.ayah', function ($qa) use ($search) {
+                      $qa->where('nama_ayah', 'like', "%{$search}%");
+                  })
+                  ->orWhereHas('calonMurid.ibu', function ($qi) use ($search) {
+                      $qi->where('nama_ibu', 'like', "%{$search}%");
+                  });
+            });
+        }
+
         // Filter by Status
         if ($request->filled('status')) {
             $status = $request->status;
             if (in_array($status, ['menunggu_verifikasi', 'ditolak', 'terverifikasi', 'terverifikasi_onsite'])) {
-                $query->where('status_verifikasi', $status);
+                $query->where('pendaftarans.status_verifikasi', $status);
             } elseif (in_array($status, ['lulus', 'tidak_lulus', 'cadangan'])) {
-                $query->where('status_kelulusan', $status);
+                $query->where('pendaftarans.status_kelulusan', $status);
             } elseif (in_array($status, ['belum_konfirmasi', 'terkonfirmasi', 'mengundurkan_diri'])) {
-                $query->where('status_konfirmasi', $status);
+                $query->where('pendaftarans.status_konfirmasi', $status);
             }
         }
  
         // Filter by Program Study
         if ($request->filled('program')) {
-            $query->where('id_program', $request->program);
+            $query->where('pendaftarans.id_program', $request->program);
         }
- 
-        // Filter by Year
-        if ($request->filled('tahun')) {
-            $query->whereYear('tanggal_pendaftaran', $request->tahun);
+
+        // Sorting
+        $sort = $request->input('sort', 'date_desc');
+        if ($sort === 'name_asc') {
+            $query->orderBy('calon_murids.nama_murid', 'asc');
+        } elseif ($sort === 'name_desc') {
+            $query->orderBy('calon_murids.nama_murid', 'desc');
+        } elseif ($sort === 'date_asc') {
+            $query->orderBy('pendaftarans.tanggal_pendaftaran', 'asc');
+        } else {
+            $query->orderBy('pendaftarans.tanggal_pendaftaran', 'desc');
         }
  
         // Limit results
@@ -110,9 +149,9 @@ class AdminDashboardController extends Controller
             $limit = 10;
         }
  
-        $pendaftarans = $query->orderBy('created_at', 'desc')->take($limit)->get();
-
-        return view('pendaftaran.index', compact('pendaftarans', 'programs', 'limit'));
+        $pendaftarans = $query->take($limit)->get();
+ 
+        return view('pendaftaran.index', compact('pendaftarans', 'programs', 'limit', 'activePeriod', 'sort'));
     }
 
     /**
@@ -122,8 +161,16 @@ class AdminDashboardController extends Controller
     {
         $this->autoExpireWaitlists();
         $programs = Program::all();
+        $activePeriod = PeriodePendaftaran::where('status', 'aktif')->first();
 
         $query = Pendaftaran::with(['calonMurid.ibu', 'program']);
+
+        // Filter berdasarkan periode aktif
+        if ($activePeriod) {
+            $query->where('periode_pendaftaran_id', $activePeriod->id);
+        } else {
+            $query->whereRaw('1 = 0');
+        }
 
         if ($request->filled('status')) {
             $query->where('status_grup_wa', $request->status);
@@ -133,13 +180,9 @@ class AdminDashboardController extends Controller
             $query->where('id_program', $request->program);
         }
 
-        if ($request->filled('tahun')) {
-            $query->whereYear('tanggal_pendaftaran', $request->tahun);
-        }
-
         $pendaftarans = $query->orderBy('created_at', 'desc')->get();
 
-        return view('pendaftaran.grup-whatsapp', compact('pendaftarans', 'programs'));
+        return view('pendaftaran.grup-whatsapp', compact('pendaftarans', 'programs', 'activePeriod'));
     }
 
     /**
@@ -173,6 +216,157 @@ class AdminDashboardController extends Controller
     }
 
     /**
+     * List applicants for Offline Verification phase.
+     */
+    public function verifikasiOffline(Request $request)
+    {
+        $programs = Program::all();
+        $activePeriod = PeriodePendaftaran::where('status', 'aktif')->first();
+
+        $query = Pendaftaran::with(['calonMurid.ayah', 'calonMurid.ibu', 'program'])
+            ->join('calon_murids', 'pendaftarans.id_murid', '=', 'calon_murids.id_murid')
+            ->select('pendaftarans.*');
+
+        if ($activePeriod) {
+            $query->where('pendaftarans.periode_pendaftaran_id', $activePeriod->id);
+        } else {
+            $query->whereRaw('1 = 0');
+        }
+
+        // Show students who are in offline verification stage (online verified but not onsite verified)
+        $query->where('pendaftarans.status_verifikasi', 'terverifikasi');
+
+        // Apply search if present
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('calon_murids.nama_murid', 'like', "%{$search}%")
+                  ->orWhere('calon_murids.nisn', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('program')) {
+            $query->where('pendaftarans.id_program', $request->program);
+        }
+
+        $pendaftarans = $query->orderBy('pendaftarans.tanggal_pendaftaran', 'desc')->get();
+
+        return view('pendaftaran.verifikasi-offline', compact('pendaftarans', 'programs', 'activePeriod'));
+    }
+
+    /**
+     * List applicants for Selection phase with Ujian/Wawancara marks & DSS Recommendations.
+     */
+    public function seleksi(Request $request)
+    {
+        // Recalculate rankings and DSS recommendations
+        \App\Services\DssService::recalculateAll();
+
+        $programs = Program::all();
+        $activePeriod = PeriodePendaftaran::where('status', 'aktif')->first();
+
+        $query = Pendaftaran::with(['calonMurid.ayah', 'calonMurid.ibu', 'program', 'nilaiUjian', 'dssRanking'])
+            ->join('calon_murids', 'pendaftarans.id_murid', '=', 'calon_murids.id_murid')
+            ->select('pendaftarans.*');
+
+        if ($activePeriod) {
+            $query->where('pendaftarans.periode_pendaftaran_id', $activePeriod->id);
+        } else {
+            $query->whereRaw('1 = 0');
+        }
+
+        // Show students who have completed offline verification and are ready for selection
+        $query->whereIn('pendaftarans.status_verifikasi', ['terverifikasi_onsite']);
+
+        // Apply search if present
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('calon_murids.nama_murid', 'like', "%{$search}%")
+                  ->orWhere('calon_murids.nisn', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('program')) {
+            $query->where('pendaftarans.id_program', $request->program);
+        }
+
+        $pendaftarans = $query->orderBy('pendaftarans.tanggal_pendaftaran', 'desc')->get();
+
+        return view('pendaftaran.seleksi', compact('pendaftarans', 'programs', 'activePeriod'));
+    }
+
+    /**
+     * List applicants for Re-registration (Daftar Ulang) phase.
+     */
+    public function daftarUlang(Request $request)
+    {
+        $programs = Program::all();
+        $activePeriod = PeriodePendaftaran::where('status', 'aktif')->first();
+
+        $query = Pendaftaran::with(['calonMurid.ayah', 'calonMurid.ibu', 'program'])
+            ->join('calon_murids', 'pendaftarans.id_murid', '=', 'calon_murids.id_murid')
+            ->select('pendaftarans.*');
+
+        if ($activePeriod) {
+            $query->where('pendaftarans.periode_pendaftaran_id', $activePeriod->id);
+        } else {
+            $query->whereRaw('1 = 0');
+        }
+
+        // Only show candidates who are graduated (Lulus)
+        $query->where('pendaftarans.status_kelulusan', 'lulus');
+
+        // Apply search if present
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('calon_murids.nama_murid', 'like', "%{$search}%")
+                  ->orWhere('calon_murids.nisn', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('program')) {
+            $query->where('pendaftarans.id_program', $request->program);
+        }
+
+        $pendaftarans = $query->orderBy('pendaftarans.tanggal_pendaftaran', 'desc')->get();
+
+        return view('pendaftaran.daftar-ulang', compact('pendaftarans', 'programs', 'activePeriod'));
+    }
+
+    /**
+     * Change target program or graduation program.
+     */
+    public function changeProgram(Request $request, $id)
+    {
+        $pendaftaran = Pendaftaran::findOrFail($id);
+        $request->validate([
+            'id_program' => 'required|exists:programs,id_program',
+            'type' => 'nullable|string|in:pilihan,kelulusan'
+        ]);
+
+        if ($request->input('type') === 'kelulusan') {
+            $prog = Program::find($request->id_program);
+            $pendaftaran->program_kelulusan = $prog->nama_program;
+        } else {
+            $pendaftaran->id_program = $request->id_program;
+            $student = $pendaftaran->calonMurid;
+            if ($student && $student->hasil) {
+                $student->hasil->id_program = $request->id_program;
+                $student->hasil->save();
+            }
+        }
+
+        $pendaftaran->save();
+
+        // Trigger recalculation of rankings/DSS
+        \App\Services\DssService::recalculateAll();
+
+        return back()->with('success', 'Program pendaftaran berhasil diperbarui dan sistem DSS telah disesuaikan.');
+    }
+
+    /**
      * Update pendaftaran status.
      */
     public function updateStatus(Request $request, $id)
@@ -197,9 +391,9 @@ class AdminDashboardController extends Controller
                 
             case 'cek_berkas_onsite':
                 $request->validate([
-                    'token_offline' => 'required|string|max:20',
+                    'token_offline' => 'nullable|string|max:20',
                 ]);
-                $pendaftaran->token_offline = $request->token_offline;
+                $pendaftaran->token_offline = $request->token_offline ?? 'VERIFIED';
                 $pendaftaran->status_verifikasi = 'terverifikasi_onsite';
                 break;
                 
@@ -264,15 +458,57 @@ class AdminDashboardController extends Controller
             $content = json_decode(file_get_contents($contentPath), true);
         }
  
-        $programs = Program::all();
+        $programs = Program::with('criteria')->get();
         $settings = $content; // map settings to the same content payload
-        $dssConfig = \App\Services\DssService::getConfig();
         
-        // Fetch FAQs and School Contacts for CRUD management tabs
-        $faqs = \App\Models\Faq::orderBy('created_at', 'desc')->get();
+        return view('master.landing', compact('content', 'settings', 'programs'));
+    }
+
+    /**
+     * Show school contacts CRUD page.
+     */
+    public function showContacts()
+    {
         $contacts = \App\Models\SchoolContact::all();
- 
-        return view('master.landing', compact('content', 'settings', 'programs', 'dssConfig', 'faqs', 'contacts'));
+        return view('master.contacts', compact('contacts'));
+    }
+
+    /**
+     * Show FAQ CRUD page.
+     */
+    public function showFaqs()
+    {
+        $faqs = \App\Models\Faq::orderBy('created_at', 'desc')->get();
+        return view('master.faqs', compact('faqs'));
+    }
+
+    /**
+     * Show DSS parameter weights & predicates page.
+     */
+    public function showDssConfig()
+    {
+        $dssConfig = \App\Services\DssService::getConfig();
+        $predikats = $dssConfig['predikats'] ?? [];
+        
+        $sangatCakap = collect($predikats)->firstWhere('label', 'Sangat Cakap') ?? ['min' => 85, 'max' => 100];
+        $cakap = collect($predikats)->firstWhere('label', 'Cakap') ?? ['min' => 70, 'max' => 84];
+        $cukupCakap = collect($predikats)->firstWhere('label', 'Cukup Cakap') ?? ['min' => 60, 'max' => 69];
+        $butuhPerhatian = collect($predikats)->firstWhere('label', 'Butuh Perhatian') ?? ['min' => 1, 'max' => 59];
+
+        return view('master.dss', compact('dssConfig', 'sangatCakap', 'cakap', 'cukupCakap', 'butuhPerhatian'));
+    }
+
+    /**
+     * Show internal tutorial videos page.
+     */
+    public function showTutorial()
+    {
+        $contentPath = storage_path('app/landing_content.json');
+        $content = [];
+        if (file_exists($contentPath)) {
+            $content = json_decode(file_get_contents($contentPath), true);
+        }
+        return view('master.tutorial', compact('content'));
     }
 
     /**
@@ -444,7 +680,7 @@ class AdminDashboardController extends Controller
                 'name' => $panitia->nama_panitia,
                 'email' => $panitia->email,
                 'role' => 'panitia',
-                'role_label' => 'Panitia Penguji',
+                'role_label' => $panitia->role_panitia === 'petugas_wawancara' ? 'Panitia Wawancara' : 'Panitia Pengawas Ujian',
             ];
         }
 
@@ -487,8 +723,8 @@ class AdminDashboardController extends Controller
                 'id' => $account->id_panitia,
                 'name' => $account->nama_panitia,
                 'email' => $account->email,
-                'role' => 'panitia',
-                'role_label' => 'Panitia Penguji',
+                'role' => $account->role_panitia === 'petugas_wawancara' ? 'panitia_wawancara' : 'panitia_ujian',
+                'role_label' => $account->role_panitia === 'petugas_wawancara' ? 'Panitia Wawancara' : 'Panitia Pengawas Ujian',
             ];
         }
 
@@ -508,7 +744,7 @@ class AdminDashboardController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'password' => 'required|min:8',
-            'role' => 'required|in:tata_usaha,panitia',
+            'role' => 'required|in:tata_usaha,panitia_ujian,panitia_wawancara',
         ]);
 
         $role = $request->role;
@@ -537,6 +773,7 @@ class AdminDashboardController extends Controller
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
                 'password_plain' => $request->password,
+                'role_panitia' => $role === 'panitia_ujian' ? 'pengawas_ujian' : 'petugas_wawancara',
             ]);
         }
 
@@ -556,7 +793,7 @@ class AdminDashboardController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'password' => 'nullable|min:8',
-            'role' => 'required|in:tata_usaha,super_admin,panitia',
+            'role' => 'required|in:tata_usaha,super_admin,panitia_ujian,panitia_wawancara',
         ]);
 
         $newRole = $request->role;
@@ -619,6 +856,7 @@ class AdminDashboardController extends Controller
                     'email' => $email,
                     'password' => $passwordHash,
                     'password_plain' => $passwordPlain,
+                    'role_panitia' => $newRole === 'panitia_ujian' ? 'pengawas_ujian' : 'petugas_wawancara',
                 ]);
             }
         } else {
@@ -627,6 +865,7 @@ class AdminDashboardController extends Controller
             if (!$isNewAdmin) {
                 $account->nama_panitia = $request->name;
                 $account->email = $email;
+                $account->role_panitia = $newRole === 'panitia_ujian' ? 'pengawas_ujian' : 'petugas_wawancara';
                 if ($request->filled('password')) {
                     $account->password = Hash::make($request->password);
                     $account->password_plain = $request->password;
@@ -689,23 +928,11 @@ class AdminDashboardController extends Controller
             'persyaratan' => 'required|string',
             'kuota_program' => 'required|integer|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
-            'weight_hafalan' => 'required|integer|min:0|max:100',
-            'weight_wawancara' => 'required|integer|min:0|max:100',
-            'weight_calistung' => 'required|integer|min:0|max:100',
-            'weight_tasmi' => 'required|integer|min:0|max:100',
-            'weight_mandiri' => 'required|integer|min:0|max:100',
+            'criteria_name' => 'nullable|array',
+            'criteria_name.*' => 'required|string|in:hafalan,aism,iqro,calistung,dikte,kemandirian',
+            'criteria_min' => 'nullable|array',
+            'criteria_min.*' => 'required|integer|min:0|max:100',
         ]);
-
-        $wHafalan = (int) $request->weight_hafalan;
-        $wWawancara = (int) $request->weight_wawancara;
-        $wCalistung = (int) $request->weight_calistung;
-        $wTasmi = (int) $request->weight_tasmi;
-        $wMandiri = (int) $request->weight_mandiri;
-
-        $totalWeight = $wHafalan + $wWawancara + $wCalistung + $wTasmi + $wMandiri;
-        if ($totalWeight !== 100) {
-            return back()->with('error', "Total bobot nilai harus sama dengan 100%! (Total saat ini: {$totalWeight}%)")->withInput();
-        }
 
         $imagePath = null;
         if ($request->hasFile('image')) {
@@ -715,19 +942,22 @@ class AdminDashboardController extends Controller
             $imagePath = '/uploads/programs/' . $filename;
         }
 
-        Program::create([
+        $program = Program::create([
             'nama_program' => $request->nama_program,
             'persyaratan' => $request->persyaratan,
             'kuota_program' => $request->kuota_program,
             'image' => $imagePath,
-            'dss_weights' => [
-                'hafalan' => $wHafalan,
-                'wawancara' => $wWawancara,
-                'calistung' => $wCalistung,
-                'tasmi' => $wTasmi,
-                'mandiri' => $wMandiri,
-            ]
         ]);
+
+        if ($request->has('criteria_name') && is_array($request->criteria_name)) {
+            foreach ($request->criteria_name as $idx => $name) {
+                $minVal = isset($request->criteria_min[$idx]) ? (int)$request->criteria_min[$idx] : 0;
+                $program->criteria()->create([
+                    'nama_kriteria' => $name,
+                    'nilai_minimum' => $minVal,
+                ]);
+            }
+        }
 
         // Dynamic DSS recommendation update
         \App\Services\DssService::recalculateAll();
@@ -745,23 +975,11 @@ class AdminDashboardController extends Controller
             'persyaratan' => 'required|string',
             'kuota_program' => 'required|integer|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
-            'weight_hafalan' => 'required|integer|min:0|max:100',
-            'weight_wawancara' => 'required|integer|min:0|max:100',
-            'weight_calistung' => 'required|integer|min:0|max:100',
-            'weight_tasmi' => 'required|integer|min:0|max:100',
-            'weight_mandiri' => 'required|integer|min:0|max:100',
+            'criteria_name' => 'nullable|array',
+            'criteria_name.*' => 'required|string|in:hafalan,aism,iqro,calistung,dikte,kemandirian',
+            'criteria_min' => 'nullable|array',
+            'criteria_min.*' => 'required|integer|min:0|max:100',
         ]);
-
-        $wHafalan = (int) $request->weight_hafalan;
-        $wWawancara = (int) $request->weight_wawancara;
-        $wCalistung = (int) $request->weight_calistung;
-        $wTasmi = (int) $request->weight_tasmi;
-        $wMandiri = (int) $request->weight_mandiri;
-
-        $totalWeight = $wHafalan + $wWawancara + $wCalistung + $wTasmi + $wMandiri;
-        if ($totalWeight !== 100) {
-            return back()->with('error', "Total bobot nilai harus sama dengan 100%! (Total saat ini: {$totalWeight}%)")->withInput();
-        }
 
         $program = Program::findOrFail($id);
 
@@ -783,14 +1001,19 @@ class AdminDashboardController extends Controller
             'persyaratan' => $request->persyaratan,
             'kuota_program' => $request->kuota_program,
             'image' => $imagePath,
-            'dss_weights' => [
-                'hafalan' => $wHafalan,
-                'wawancara' => $wWawancara,
-                'calistung' => $wCalistung,
-                'tasmi' => $wTasmi,
-                'mandiri' => $wMandiri,
-            ]
         ]);
+
+        // Sync criteria
+        $program->criteria()->delete();
+        if ($request->has('criteria_name') && is_array($request->criteria_name)) {
+            foreach ($request->criteria_name as $idx => $name) {
+                $minVal = isset($request->criteria_min[$idx]) ? (int)$request->criteria_min[$idx] : 0;
+                $program->criteria()->create([
+                    'nama_kriteria' => $name,
+                    'nilai_minimum' => $minVal,
+                ]);
+            }
+        }
 
         // Dynamic DSS recommendation update
         \App\Services\DssService::recalculateAll();
@@ -818,22 +1041,38 @@ class AdminDashboardController extends Controller
         return redirect()->route('tata_usaha.content')->with('success', 'Program pendidikan berhasil dihapus.');
     }
 
-    /**
-     * Update DSS configuration weights and predicates.
-     */
     public function updateDssConfig(Request $request)
     {
         $request->validate([
             // Predikats
-            'pred_sangat_cakap_min' => 'required|integer|min:0|max:10',
-            'pred_sangat_cakap_max' => 'required|integer|min:0|max:10',
-            'pred_cakap_min' => 'required|integer|min:0|max:10',
-            'pred_cakap_max' => 'required|integer|min:0|max:10',
-            'pred_cukup_cakap_min' => 'required|integer|min:0|max:10',
-            'pred_cukup_cakap_max' => 'required|integer|min:0|max:10',
-            'pred_perhatian_min' => 'required|integer|min:0|max:10',
-            'pred_perhatian_max' => 'required|integer|min:0|max:10',
+            'pred_sangat_cakap_min' => 'required|integer|min:0|max:100',
+            'pred_sangat_cakap_max' => 'required|integer|min:0|max:100',
+            'pred_cakap_min' => 'required|integer|min:0|max:100',
+            'pred_cakap_max' => 'required|integer|min:0|max:100',
+            'pred_cukup_cakap_min' => 'required|integer|min:0|max:100',
+            'pred_cukup_cakap_max' => 'required|integer|min:0|max:100',
+            'pred_perhatian_min' => 'required|integer|min:0|max:100',
+            'pred_perhatian_max' => 'required|integer|min:0|max:100',
+            // Weights
+            'weight_hafalan' => 'required|integer|min:0|max:100',
+            'weight_aism' => 'required|integer|min:0|max:100',
+            'weight_iqro' => 'required|integer|min:0|max:100',
+            'weight_calistung' => 'required|integer|min:0|max:100',
+            'weight_dikte' => 'required|integer|min:0|max:100',
+            'weight_kemandirian' => 'required|integer|min:0|max:100',
         ]);
+
+        $wHafalan = (int) $request->weight_hafalan;
+        $wAism = (int) $request->weight_aism;
+        $wIqro = (int) $request->weight_iqro;
+        $wCalistung = (int) $request->weight_calistung;
+        $wDikte = (int) $request->weight_dikte;
+        $wKemandirian = (int) $request->weight_kemandirian;
+
+        $totalWeight = $wHafalan + $wAism + $wIqro + $wCalistung + $wDikte + $wKemandirian;
+        if ($totalWeight !== 100) {
+            return back()->with('error', "Total bobot nilai harus sama dengan 100%! (Total saat ini: {$totalWeight}%)")->withInput();
+        }
 
         // Store in DB
         $setting = \App\Models\PmbmSetting::first();
@@ -843,17 +1082,15 @@ class AdminDashboardController extends Controller
             $setting->current_angkatan = date('Y');
         }
 
-        // Keep existing weights, just update predikats
-        $currentWeights = isset($setting->dss_weights['weights']) ? $setting->dss_weights['weights'] : [
-            'hafalan' => 30,
-            'wawancara' => 20,
-            'calistung' => 20,
-            'tasmi' => 15,
-            'mandiri' => 15
-        ];
-
         $setting->dss_weights = [
-            'weights' => $currentWeights,
+            'weights' => [
+                'hafalan' => $wHafalan,
+                'aism' => $wAism,
+                'iqro' => $wIqro,
+                'calistung' => $wCalistung,
+                'dikte' => $wDikte,
+                'kemandirian' => $wKemandirian,
+            ],
             'predikats' => [
                 [
                     'min' => (int) $request->pred_sangat_cakap_min,
@@ -880,10 +1117,23 @@ class AdminDashboardController extends Controller
         
         $setting->save();
 
+        // Also save to BobotPenilaian for backwards compatibility
+        $bobot = \App\Models\BobotPenilaian::first();
+        if (!$bobot) {
+            $bobot = new \App\Models\BobotPenilaian();
+        }
+        $bobot->bobot_hafalan = $wHafalan;
+        $bobot->bobot_aism = $wAism;
+        $bobot->bobot_irqa = $wIqro;
+        $bobot->bobot_calistung = $wCalistung;
+        $bobot->bobot_dikte = $wDikte;
+        $bobot->bobot_kemandirian = $wKemandirian;
+        $bobot->save();
+
         // Trigger mass recalculation
         \App\Services\DssService::recalculateAll();
 
-        return redirect()->route('tata_usaha.content')->with('success', 'Konfigurasi predikat batas angka DSS berhasil diperbarui!');
+        return redirect()->route('tata_usaha.dss.index')->with('success', 'Konfigurasi predikat batas angka dan bobot perhitungan DSS berhasil diperbarui!');
     }
 
     /**
@@ -1087,28 +1337,156 @@ class AdminDashboardController extends Controller
         return redirect()->route('tata_usaha.content')->with('success_contact', 'Kontak/Media Sosial berhasil dihapus.');
     }
 
+
+
     /**
-     * Change program study for applicant.
+     * Publish or unpublish the graduation results.
      */
-    public function changeProgram(Request $request, $id)
+    public function publishGraduation(Request $request)
     {
-        $request->validate([
-            'id_program' => 'required|exists:programs,id_program',
-        ]);
-
-        $pendaftaran = Pendaftaran::findOrFail($id);
-        $pendaftaran->id_program = $request->id_program;
-        $pendaftaran->save();
-
-        $student = $pendaftaran->calonMurid;
-        if ($student && $student->hasil) {
-            $student->hasil->id_program = $request->id_program;
-            $student->hasil->save();
+        $activePeriod = \App\Models\PeriodePendaftaran::where('status', 'aktif')->first();
+        if (!$activePeriod) {
+            return back()->with('error', 'Tidak ada periode pendaftaran aktif untuk mempublikasikan pengumuman.');
         }
 
-        // Trigger recalculation of rankings/DSS
+        $activePeriod->graduation_published = !$activePeriod->graduation_published;
+        $activePeriod->save();
+
+        $status = $activePeriod->graduation_published ? 'dipublikasikan' : 'disembunyikan';
+        return back()->with('success', "Status pengumuman kelulusan berhasil {$status}!");
+    }
+
+    /**
+     * Manually trigger waitlist countdown promotions.
+     */
+    public function triggerCountdown(Request $request)
+    {
+        $activePeriod = \App\Models\PeriodePendaftaran::where('status', 'aktif')->first();
+        if (!$activePeriod) {
+            return back()->with('error', 'Tidak ada periode pendaftaran aktif untuk memproses hitung mundur.');
+        }
+
+        // 1. Find Lulus candidates of the active period who have missed the confirm deadline
+        $expiredPendaftarans = Pendaftaran::where('periode_pendaftaran_id', $activePeriod->id)
+            ->where('status_kelulusan', 'lulus')
+            ->where(function($q) {
+                $q->whereNull('status_konfirmasi')
+                  ->orWhere('status_konfirmasi', 'belum_konfirmasi');
+            })
+            ->whereNotNull('batas_konfirmasi')
+            ->where('batas_konfirmasi', '<', now())
+            ->get();
+
+        $promotedCount = 0;
+
+        foreach ($expiredPendaftarans as $pendaftaran) {
+            // Update status to Tidak Lulus PMBM
+            $pendaftaran->status_konfirmasi = 'tidak_lulus_pmbm';
+            $pendaftaran->save();
+
+            // 2. Promote the highest ranked waitlist candidate for this program
+            $candidateToPromote = Pendaftaran::where('periode_pendaftaran_id', $activePeriod->id)
+                ->where('id_program', $pendaftaran->id_program)
+                ->where('status_kelulusan', 'cadangan')
+                ->whereHas('nilaiUjian')
+                ->join('dss_rankings', 'pendaftarans.id_pendaftaran', '=', 'dss_rankings.id_pendaftaran')
+                ->orderBy('dss_rankings.nilai_total', 'desc')
+                ->select('pendaftarans.*')
+                ->first();
+
+            if ($candidateToPromote) {
+                $candidateToPromote->status_kelulusan = 'lulus';
+                $candidateToPromote->peringkat_cadangan = null;
+                $candidateToPromote->status_konfirmasi = 'belum_konfirmasi';
+                $candidateToPromote->tanggal_kelulusan = now();
+                $candidateToPromote->batas_konfirmasi = now()->addWeek(); // 1 week deadline
+                $candidateToPromote->save();
+                $promotedCount++;
+            }
+        }
+
+        // 3. Recalculate ranking to update recommendations
         \App\Services\DssService::recalculateAll();
 
-        return back()->with('success', 'Program kelas pilihan calon murid berhasil diubah dan sistem DSS telah disesuaikan.');
+        return back()->with('success', "Proses hitung mundur manual selesai! " . count($expiredPendaftarans) . " siswa terlambat diubah menjadi 'Tidak Lulus PMBM' dan {$promotedCount} siswa cadangan dipromosikan.");
+    }
+
+    /**
+     * Show guide management page.
+     */
+    public function showGuide()
+    {
+        $contentPath = storage_path('app/landing_content.json');
+        $content = [];
+        if (file_exists($contentPath)) {
+            $content = json_decode(file_get_contents($contentPath), true) ?? [];
+        }
+
+        return view('master.guide', compact('content'));
+    }
+
+    /**
+     * Update guide videos.
+     */
+    public function updateGuide(Request $request)
+    {
+        $request->validate([
+            'guide_parent_video_url' => 'nullable|url',
+            'guide_parent_video_file' => 'nullable|file|mimes:mp4,webm|max:51200', // max 50MB
+            'guide_admin_video_url' => 'nullable|url',
+            'guide_admin_video_file' => 'nullable|file|mimes:mp4,webm|max:51200', // max 50MB
+            'guide_panitia_video_url' => 'nullable|url',
+            'guide_panitia_video_file' => 'nullable|file|mimes:mp4,webm|max:51200', // max 50MB
+        ]);
+
+        $contentPath = storage_path('app/landing_content.json');
+        $content = [];
+        if (file_exists($contentPath)) {
+            $content = json_decode(file_get_contents($contentPath), true) ?? [];
+        }
+
+        // Handle Parent Video File
+        if ($request->hasFile('guide_parent_video_file')) {
+            $file = $request->file('guide_parent_video_file');
+            $filename = 'guide_parent_' . time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/videos'), $filename);
+            
+            if (!empty($content['guide_parent_video_file']) && file_exists(public_path($content['guide_parent_video_file']))) {
+                @unlink(public_path($content['guide_parent_video_file']));
+            }
+            $content['guide_parent_video_file'] = '/uploads/videos/' . $filename;
+        }
+
+        // Handle Admin Video File
+        if ($request->hasFile('guide_admin_video_file')) {
+            $file = $request->file('guide_admin_video_file');
+            $filename = 'guide_admin_' . time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/videos'), $filename);
+            
+            if (!empty($content['guide_admin_video_file']) && file_exists(public_path($content['guide_admin_video_file']))) {
+                @unlink(public_path($content['guide_admin_video_file']));
+            }
+            $content['guide_admin_video_file'] = '/uploads/videos/' . $filename;
+        }
+
+        // Handle Panitia Video File
+        if ($request->hasFile('guide_panitia_video_file')) {
+            $file = $request->file('guide_panitia_video_file');
+            $filename = 'guide_panitia_' . time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('uploads/videos'), $filename);
+            
+            if (!empty($content['guide_panitia_video_file']) && file_exists(public_path($content['guide_panitia_video_file']))) {
+                @unlink(public_path($content['guide_panitia_video_file']));
+            }
+            $content['guide_panitia_video_file'] = '/uploads/videos/' . $filename;
+        }
+
+        $content['guide_parent_video_url'] = $request->guide_parent_video_url;
+        $content['guide_admin_video_url'] = $request->guide_admin_video_url;
+        $content['guide_panitia_video_url'] = $request->guide_panitia_video_url;
+
+        file_put_contents($contentPath, json_encode($content, JSON_PRETTY_PRINT));
+
+        return back()->with('success', 'Video panduan pendaftaran dan tutorial penggunaan sistem berhasil diperbarui.');
     }
 }

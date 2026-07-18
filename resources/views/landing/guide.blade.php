@@ -31,8 +31,34 @@
       </div>
     </section>
 
+    <!-- Video Panduan Pendaftaran Section -->
+    @if(!empty($landingContent['guide_parent_video_url']) || !empty($landingContent['guide_parent_video_file']))
+      <section class="max-w-[800px] mx-auto px-6 mt-8 mb-12 relative z-[2] flex flex-col items-center gap-4 bg-white rounded-2xl p-6 shadow-sm">
+        <h2 class="text-[#005b31] font-bold text-[24px] text-center m-0" style="font-family: 'HankenGrotesk-Bold', sans-serif;">Video Panduan Tata Cara Pendaftaran</h2>
+        <div class="w-full aspect-video bg-black rounded-2xl overflow-hidden shadow-md">
+          @if(!empty($landingContent['guide_parent_video_file']))
+            <video class="w-full h-full object-contain" controls>
+              <source src="{{ asset($landingContent['guide_parent_video_file']) }}" type="video/mp4">
+              Browser Anda tidak mendukung pemutaran video HTML5.
+            </video>
+          @else
+            @php
+              $url = $landingContent['guide_parent_video_url'];
+              $embedUrl = $url;
+              if (strpos($url, 'youtube.com') !== false || strpos($url, 'youtu.be') !== false) {
+                  if (preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/ ]{11})%i', $url, $match)) {
+                      $embedUrl = 'https://www.youtube.com/embed/' . $match[1];
+                  }
+              }
+            @endphp
+            <iframe class="w-full h-full border-none" src="{{ $embedUrl }}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          @endif
+        </div>
+      </section>
+    @endif
+
     <!-- Guide Items Grid -->
-    <section class="max-w-[1170px] mx-auto px-6 -mt-10 mb-16 relative z-[2] grid grid-cols-3 gap-7 max-[1024px]:grid-cols-2 max-[640px]:grid-cols-1">
+    <section class="max-w-[1170px] mx-auto px-6 mb-16 relative z-[2] grid grid-cols-3 gap-7 max-[1024px]:grid-cols-2 max-[640px]:grid-cols-1">
       <div class="bg-white rounded-2xl shadow-[0px_4px_20px_0px_rgba(0,0,0,0.15)] backdrop-blur-[10px] p-7 flex flex-col gap-3 cursor-pointer transition-transform duration-200 hover:-translate-y-1" onclick="openRequirementsOverlay()">
         <img class="w-9 h-9" src="{{ asset('assets/landing/guide/overlay0.svg') }}" alt="Icon" />
         <div class="text-[#1c1b1b] text-[24px] font-semibold" style="font-family: 'HankenGrotesk-SemiBold', sans-serif;">Syarat Pendaftaran</div>

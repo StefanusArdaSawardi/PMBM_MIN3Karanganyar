@@ -14,37 +14,82 @@
         <div class="absolute inset-0 bg-black/45"></div>
       </div>
       <div class="relative z-[1] w-full max-w-[900px] mx-auto px-6 flex flex-col items-center gap-4 text-center">
-        <span class="text-white/80 text-[15px] font-bold tracking-[-0.4px]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Daftar</span>
-        <h1 class="text-white font-extrabold tracking-[-0.4px] leading-[1.3] m-0" style="font-family: 'PlusJakartaSans-ExtraBold', sans-serif; font-size: clamp(20px, 4vw, 30px);">{{ strtoupper($landingContent['main_heading'] ?? 'PENERIMAAN SISWA BARU MIN 3 KARANGANYAR') }}</h1>
-        <p class="text-white text-[15px] tracking-[-0.4px] leading-[1.6] max-w-[600px] m-0" style="font-family: 'PlusJakartaSans-Regular', sans-serif;">{{ $landingContent['sub_heading'] ?? 'Bergabunglah bersama sekolah yang berkomitmen membentuk generasi unggul, berakhlak mulia dan berprestasi di tingkat nasional maupun internasional.' }}</p>
 
-        <div class="flex flex-wrap justify-center gap-3 mt-2">
-          <div class="backdrop-blur-[10px] bg-white/10 border border-white/20 rounded-2xl shadow-[0px_4px_20px_0px_rgba(0,0,0,0.04)] w-[90px] h-20 flex flex-col items-center justify-center gap-1">
-            <div class="text-white text-[28px] font-bold leading-[1.2]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;" id="cd-days">100</div>
-            <div class="text-white/60 text-[12px] font-semibold tracking-[0.7px]" style="font-family: 'PlusJakartaSans-SemiBold', sans-serif;">HARI</div>
-          </div>
-          <div class="backdrop-blur-[10px] bg-white/10 border border-white/20 rounded-2xl shadow-[0px_4px_20px_0px_rgba(0,0,0,0.04)] w-[90px] h-20 flex flex-col items-center justify-center gap-1">
-            <div class="text-white text-[28px] font-bold leading-[1.2]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;" id="cd-hours">02</div>
-            <div class="text-white/60 text-[12px] font-semibold tracking-[0.7px]" style="font-family: 'PlusJakartaSans-SemiBold', sans-serif;">JAM</div>
-          </div>
-          <div class="backdrop-blur-[10px] bg-white/10 border border-white/20 rounded-2xl shadow-[0px_4px_20px_0px_rgba(0,0,0,0.04)] w-[90px] h-20 flex flex-col items-center justify-center gap-1">
-            <div class="text-white text-[28px] font-bold leading-[1.2]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;" id="cd-minutes">59</div>
-            <div class="text-white/60 text-[12px] font-semibold tracking-[0.7px]" style="font-family: 'PlusJakartaSans-SemiBold', sans-serif;">MENIT</div>
-          </div>
-          <div class="backdrop-blur-[10px] bg-white/10 border border-white/20 rounded-2xl shadow-[0px_4px_20px_0px_rgba(0,0,0,0.04)] w-[90px] h-20 flex flex-col items-center justify-center gap-1">
-            <div class="text-white text-[28px] font-bold leading-[1.2]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;" id="cd-seconds">47</div>
-            <div class="text-white/60 text-[12px] font-semibold tracking-[0.7px]" style="font-family: 'PlusJakartaSans-SemiBold', sans-serif;">DETIK</div>
-          </div>
-        </div>
+        @if($activePeriod)
+          <span class="text-white/80 text-[15px] font-bold tracking-[-0.4px]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Daftar</span>
+          <h1 class="text-white font-extrabold tracking-[-0.4px] leading-[1.3] m-0" style="font-family: 'PlusJakartaSans-ExtraBold', sans-serif; font-size: clamp(20px, 4vw, 30px);">{{ strtoupper($activePeriod->judul) }}</h1>
 
-        <div class="flex flex-wrap justify-center gap-3 mt-2">
-          <a href="{{ route('student.register') }}"
-             class="flex items-center justify-center h-9 px-6 rounded text-[15px] font-bold tracking-[-0.4px] whitespace-nowrap transition-all duration-250 ease-in-out text-white/80 bg-[#064e3b] border border-[#0f7643] hover:bg-[#056a4c] hover:border-[#056a4c] hover:text-white hover:-translate-y-px hover:shadow-[0_4px_10px_rgba(6,78,59,0.2)]"
-             style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Daftar Sekarang</a>
-          <a href="{{ route('landing.guide') }}"
-             class="flex items-center justify-center h-9 px-6 rounded text-[15px] font-bold tracking-[-0.4px] whitespace-nowrap transition-all duration-250 ease-in-out text-[#0f7643]/80 bg-[rgba(15,118,67,0)] border border-[#0f7643]/80 hover:bg-[rgba(41,135,82,0.15)] hover:border-[#298752] hover:text-[#298752] hover:-translate-y-px"
-             style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Guide PMBM</a>
-        </div>
+          @if($activePeriod->deskripsi)
+            <p class="text-white/80 text-[15px] tracking-[-0.4px] leading-[1.6] max-w-[600px] m-0" style="font-family: 'PlusJakartaSans-Regular', sans-serif;">{{ $activePeriod->deskripsi }}</p>
+          @endif
+
+          <div class="flex items-center gap-2 mt-1">
+            <span class="inline-flex items-center gap-1.5 bg-white/10 backdrop-blur-[10px] border border-white/20 rounded-full px-4 py-1.5 text-white/90 text-[13px]" style="font-family: 'PlusJakartaSans-SemiBold', sans-serif;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              {{ \Carbon\Carbon::parse($activePeriod->tanggal_mulai)->translatedFormat('d F Y') }} – {{ \Carbon\Carbon::parse($activePeriod->tanggal_selesai)->translatedFormat('d F Y') }}
+            </span>
+          </div>
+
+          @if($activePeriod->isOpen())
+            <div class="flex flex-wrap justify-center gap-3 mt-2">
+              <div class="backdrop-blur-[10px] bg-white/10 border border-white/20 rounded-2xl shadow-[0px_4px_20px_0px_rgba(0,0,0,0.04)] w-[90px] h-20 flex flex-col items-center justify-center gap-1">
+                <div class="text-white text-[28px] font-bold leading-[1.2]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;" id="cd-days">00</div>
+                <div class="text-white/60 text-[12px] font-semibold tracking-[0.7px]" style="font-family: 'PlusJakartaSans-SemiBold', sans-serif;">HARI</div>
+              </div>
+              <div class="backdrop-blur-[10px] bg-white/10 border border-white/20 rounded-2xl shadow-[0px_4px_20px_0px_rgba(0,0,0,0.04)] w-[90px] h-20 flex flex-col items-center justify-center gap-1">
+                <div class="text-white text-[28px] font-bold leading-[1.2]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;" id="cd-hours">00</div>
+                <div class="text-white/60 text-[12px] font-semibold tracking-[0.7px]" style="font-family: 'PlusJakartaSans-SemiBold', sans-serif;">JAM</div>
+              </div>
+              <div class="backdrop-blur-[10px] bg-white/10 border border-white/20 rounded-2xl shadow-[0px_4px_20px_0px_rgba(0,0,0,0.04)] w-[90px] h-20 flex flex-col items-center justify-center gap-1">
+                <div class="text-white text-[28px] font-bold leading-[1.2]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;" id="cd-minutes">00</div>
+                <div class="text-white/60 text-[12px] font-semibold tracking-[0.7px]" style="font-family: 'PlusJakartaSans-SemiBold', sans-serif;">MENIT</div>
+              </div>
+              <div class="backdrop-blur-[10px] bg-white/10 border border-white/20 rounded-2xl shadow-[0px_4px_20px_0px_rgba(0,0,0,0.04)] w-[90px] h-20 flex flex-col items-center justify-center gap-1">
+                <div class="text-white text-[28px] font-bold leading-[1.2]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;" id="cd-seconds">00</div>
+                <div class="text-white/60 text-[12px] font-semibold tracking-[0.7px]" style="font-family: 'PlusJakartaSans-SemiBold', sans-serif;">DETIK</div>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-3 mt-2">
+              <a href="{{ route('student.register') }}"
+                 class="flex items-center justify-center h-9 px-6 rounded text-[15px] font-bold tracking-[-0.4px] whitespace-nowrap transition-all duration-250 ease-in-out text-white/80 bg-[#064e3b] border border-[#0f7643] hover:bg-[#056a4c] hover:border-[#056a4c] hover:text-white hover:-translate-y-px hover:shadow-[0_4px_10px_rgba(6,78,59,0.2)]"
+                 style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Daftar Sekarang</a>
+              <a href="{{ route('landing.guide') }}"
+                 class="flex items-center justify-center h-9 px-6 rounded text-[15px] font-bold tracking-[-0.4px] whitespace-nowrap transition-all duration-250 ease-in-out text-[#0f7643]/80 bg-[rgba(15,118,67,0)] border border-[#0f7643]/80 hover:bg-[rgba(41,135,82,0.15)] hover:border-[#298752] hover:text-[#298752] hover:-translate-y-px"
+                 style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Guide PMBM</a>
+            </div>
+          @else
+            {{-- Periode aktif tapi di luar tanggal --}}
+            <div class="bg-white/10 backdrop-blur-[10px] border border-white/20 rounded-xl px-6 py-3 mt-2">
+              <p class="text-white/90 text-[14px] m-0" style="font-family: 'PlusJakartaSans-SemiBold', sans-serif;">
+                @if(now()->lt($activePeriod->tanggal_mulai))
+                  Pendaftaran akan dibuka pada {{ \Carbon\Carbon::parse($activePeriod->tanggal_mulai)->translatedFormat('d F Y') }}
+                @else
+                  Pendaftaran sudah ditutup pada {{ \Carbon\Carbon::parse($activePeriod->tanggal_selesai)->translatedFormat('d F Y') }}
+                @endif
+              </p>
+            </div>
+            <div class="flex flex-wrap justify-center gap-3 mt-2">
+              <a href="{{ route('landing.guide') }}"
+                 class="flex items-center justify-center h-9 px-6 rounded text-[15px] font-bold tracking-[-0.4px] whitespace-nowrap transition-all duration-250 ease-in-out text-[#0f7643]/80 bg-[rgba(15,118,67,0)] border border-[#0f7643]/80 hover:bg-[rgba(41,135,82,0.15)] hover:border-[#298752] hover:text-[#298752] hover:-translate-y-px"
+                 style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Guide PMBM</a>
+            </div>
+          @endif
+
+        @else
+          {{-- Tidak ada periode aktif --}}
+          <h1 class="text-white font-extrabold tracking-[-0.4px] leading-[1.3] m-0" style="font-family: 'PlusJakartaSans-ExtraBold', sans-serif; font-size: clamp(20px, 4vw, 30px);">{{ strtoupper($landingContent['main_heading'] ?? 'PENERIMAAN SISWA BARU MIN 3 KARANGANYAR') }}</h1>
+          <p class="text-white text-[15px] tracking-[-0.4px] leading-[1.6] max-w-[600px] m-0" style="font-family: 'PlusJakartaSans-Regular', sans-serif;">{{ $landingContent['sub_heading'] ?? 'Bergabunglah bersama sekolah yang berkomitmen membentuk generasi unggul, berakhlak mulia dan berprestasi di tingkat nasional maupun internasional.' }}</p>
+          <div class="bg-white/10 backdrop-blur-[10px] border border-white/20 rounded-xl px-6 py-3 mt-2">
+            <p class="text-white/90 text-[14px] m-0" style="font-family: 'PlusJakartaSans-SemiBold', sans-serif;">Belum ada pendaftaran yang dibuka saat ini.</p>
+          </div>
+          <div class="flex flex-wrap justify-center gap-3 mt-2">
+            <a href="{{ route('landing.guide') }}"
+               class="flex items-center justify-center h-9 px-6 rounded text-[15px] font-bold tracking-[-0.4px] whitespace-nowrap transition-all duration-250 ease-in-out text-[#0f7643]/80 bg-[rgba(15,118,67,0)] border border-[#0f7643]/80 hover:bg-[rgba(41,135,82,0.15)] hover:border-[#298752] hover:text-[#298752] hover:-translate-y-px"
+               style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Guide PMBM</a>
+          </div>
+        @endif
+
       </div>
     </section>
 
@@ -123,32 +168,34 @@
 
 @section('scripts')
   <script>
-    const targetDate = new Date("{{ $landingContent['countdown_target'] ?? '2026-07-31T23:59:00' }}");
+    @if(isset($activePeriod) && $activePeriod && $activePeriod->isOpen())
+      const targetDate = new Date("{{ \Carbon\Carbon::parse($activePeriod->tanggal_selesai)->format('Y-m-d') }}T23:59:59");
 
-    function updateCountdown() {
-      const now = new Date();
-      const diff = targetDate - now;
+      function updateCountdown() {
+        const now = new Date();
+        const diff = targetDate - now;
 
-      if (diff <= 0) {
-        document.getElementById('cd-days').innerText = "00";
-        document.getElementById('cd-hours').innerText = "00";
-        document.getElementById('cd-minutes').innerText = "00";
-        document.getElementById('cd-seconds').innerText = "00";
-        return;
+        if (diff <= 0) {
+          document.getElementById('cd-days').innerText = "00";
+          document.getElementById('cd-hours').innerText = "00";
+          document.getElementById('cd-minutes').innerText = "00";
+          document.getElementById('cd-seconds').innerText = "00";
+          return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        document.getElementById('cd-days').innerText = String(days).padStart(2, '0');
+        document.getElementById('cd-hours').innerText = String(hours).padStart(2, '0');
+        document.getElementById('cd-minutes').innerText = String(minutes).padStart(2, '0');
+        document.getElementById('cd-seconds').innerText = String(seconds).padStart(2, '0');
       }
 
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-      document.getElementById('cd-days').innerText = String(days).padStart(2, '0');
-      document.getElementById('cd-hours').innerText = String(hours).padStart(2, '0');
-      document.getElementById('cd-minutes').innerText = String(minutes).padStart(2, '0');
-      document.getElementById('cd-seconds').innerText = String(seconds).padStart(2, '0');
-    }
-
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+    @endif
   </script>
 @endsection

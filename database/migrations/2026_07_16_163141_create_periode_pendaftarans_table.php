@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('periode_pendaftarans', function (Blueprint $table) {
-            $table->id();
+            $table->string('id', 10)->primary(); // varchar PK
             $table->year('tahun');
             $table->string('judul');
             $table->date('tanggal_mulai');

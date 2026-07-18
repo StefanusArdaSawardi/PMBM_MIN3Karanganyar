@@ -4,8 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Traits\HasCustomId;
+
 class Program extends Model
 {
+    use HasCustomId;
+
     protected $table = 'programs';
     protected $primaryKey = 'id_program';
 
@@ -25,6 +29,16 @@ class Program extends Model
         'dss_weights' => 'array',
         'poin_unggulan' => 'array',
     ];
+
+    public function getPrefix()
+    {
+        return 'PRG';
+    }
+
+    public function criteria()
+    {
+        return $this->hasMany(ProgramCriterion::class, 'id_program', 'id_program');
+    }
 
     public function pendaftarans()
     {

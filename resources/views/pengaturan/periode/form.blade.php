@@ -40,6 +40,13 @@
           </div>
 
           <div class="flex flex-col gap-2">
+            <label class="text-[#3f4941] text-[12px] font-bold">Deskripsi Periode</label>
+            <textarea name="deskripsi" rows="3" placeholder="Deskripsi singkat mengenai periode pendaftaran ini"
+                      class="bg-[#f1f4f3] border border-[#bec9be] rounded px-4 py-4 text-[14px] text-[#181c1c] outline-none resize-y">{{ old('deskripsi', $periode->deskripsi ?? '') }}</textarea>
+            @error('deskripsi') <span class="text-red-600 text-[12px]">{{ $message }}</span> @enderror
+          </div>
+
+          <div class="flex flex-col gap-2">
             <label class="text-[#3f4941] text-[12px] font-bold">Tanggal Mulai - Berakhir</label>
             <div class="flex gap-4 max-[600px]:flex-col">
               <input type="date" name="tanggal_mulai" value="{{ old('tanggal_mulai', isset($periode) ? \Carbon\Carbon::parse($periode->tanggal_mulai)->format('Y-m-d') : '') }}" required

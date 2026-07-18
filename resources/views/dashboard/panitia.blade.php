@@ -65,25 +65,43 @@
           <tbody>
             @forelse($queue as $item)
               <tr class="hover:bg-gray-50">
-                <td class="p-[15px_12px] border-b border-gray-100 text-gray-800 font-bold">PMB-2026-{{ str_pad($item->id_murid, 3, '0', STR_PAD_LEFT) }}</td>
-                <td class="p-[15px_12px] border-b border-gray-100 font-bold text-[#0f7643]">{{ $item->nama_murid }}</td>
-                <td class="p-[15px_12px] border-b border-gray-100 text-gray-800">{{ $item->nisn }}</td>
-                <td class="p-[15px_12px] border-b border-gray-100 text-gray-800">{{ $item->pendaftaran->program->nama_program ?? 'Umum' }}</td>
+                <td class="p-[15px_12px] border-b border-gray-100 text-gray-800 font-bold">PMB-2026-{{ substr($item->id_pendaftaran, 3) }}</td>
+                <td class="p-[15px_12px] border-b border-gray-100 font-bold text-[#0f7643]">{{ $item->calonMurid->nama_murid ?? '' }}</td>
+                <td class="p-[15px_12px] border-b border-gray-100 text-gray-800">{{ $item->calonMurid->nisn ?? '' }}</td>
+                <td class="p-[15px_12px] border-b border-gray-100 text-gray-800">{{ $item->program->nama_program ?? 'Umum' }}</td>
                 <td class="p-[15px_12px] border-b border-gray-100">
-                  @if(isset($item->hasil) && $item->hasil->nilai_wawancara !== null)
-                    <span class="px-2 py-1 rounded-full text-[10px] font-bold bg-[#ecfdf5] text-[#047857]">Selesai Uji (Score: {{ $item->hasil->nilai_wawancara }})</span>
+                  @if($role === 'pengawas_ujian')
+                    @if(isset($item->nilaiUjian) && $item->nilaiUjian->nilai_hafalan !== null)
+                      <span class="px-2 py-1 rounded-full text-[10px] font-bold bg-[#ecfdf5] text-[#047857]">Selesai Uji (Hafalan: {{ $item->nilaiUjian->nilai_hafalan }})</span>
+                    @else
+                      <span class="px-2 py-1 rounded-full text-[10px] font-bold bg-[#fffbeb] text-[#d97706]">Menunggu Uji</span>
+                    @endif
                   @else
-                    <span class="px-2 py-1 rounded-full text-[10px] font-bold bg-[#fffbeb] text-[#d97706]">Menunggu Uji</span>
+                    @if(isset($item->wawancaraAnak) && $item->wawancaraAnak->rekap_wawancara !== null)
+                      <span class="px-2 py-1 rounded-full text-[10px] font-bold bg-[#ecfdf5] text-[#047857]">Selesai Wawancara</span>
+                    @else
+                      <span class="px-2 py-1 rounded-full text-[10px] font-bold bg-[#fffbeb] text-[#d97706]">Menunggu Wawancara</span>
+                    @endif
                   @endif
                 </td>
                 <td class="p-[15px_12px] border-b border-gray-100">
-                  <a href="{{ route('panitia.detail', $item->id_murid) }}" class="inline-block bg-[#298752] text-white px-4 py-2 rounded-md font-bold no-underline text-[12px] hover:bg-[#064e3b]">
-                    @if(isset($item->hasil) && $item->hasil->nilai_wawancara !== null)
-                      Ubah Nilai
-                    @else
-                      Mulai Uji
-                    @endif
-                  </a>
+                  @if($role === 'pengawas_ujian')
+                    <a href="{{ route('panitia.detail.ujian', $item->id_pendaftaran) }}" class="inline-block bg-[#298752] text-white px-4 py-2 rounded-md font-bold no-underline text-[12px] hover:bg-[#064e3b]">
+                      @if(isset($item->nilaiUjian) && $item->nilaiUjian->nilai_hafalan !== null)
+                        Ubah Nilai
+                      @else
+                        Mulai Uji
+                      @endif
+                    </a>
+                  @else
+                    <a href="{{ route('panitia.detail.wawancara', $item->id_pendaftaran) }}" class="inline-block bg-[#298752] text-white px-4 py-2 rounded-md font-bold no-underline text-[12px] hover:bg-[#064e3b]">
+                      @if(isset($item->wawancaraAnak) && $item->wawancaraAnak->rekap_wawancara !== null)
+                        Ubah Wawancara
+                      @else
+                        Mulai Wawancara
+                      @endif
+                    </a>
+                  @endif
                 </td>
               </tr>
             @empty

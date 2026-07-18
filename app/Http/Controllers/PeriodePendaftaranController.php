@@ -39,6 +39,7 @@ class PeriodePendaftaranController extends Controller
         $validated = $request->validate([
             'tahun' => 'required|digits:4|integer',
             'judul' => 'required|string|max:255',
+            'deskripsi' => 'nullable|string|max:1000',
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
             'id_programs' => 'nullable|array',
@@ -49,6 +50,11 @@ class PeriodePendaftaranController extends Controller
 
         $validated['jumlah_program'] = count($request->input('id_programs', []));
         $validated['status'] = 'aktif';
+
+        // Pastikan hanya satu periode aktif
+        if ($validated['status'] === 'aktif') {
+            PeriodePendaftaran::where('status', 'aktif')->update(['status' => 'nonaktif']);
+        }
 
         $periode = PeriodePendaftaran::create($validated);
         $periode->programs()->sync($request->input('id_programs', []));
@@ -73,6 +79,7 @@ class PeriodePendaftaranController extends Controller
         $validated = $request->validate([
             'tahun' => 'required|digits:4|integer',
             'judul' => 'required|string|max:255',
+            'deskripsi' => 'nullable|string|max:1000',
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
             'id_programs' => 'nullable|array',
@@ -82,6 +89,11 @@ class PeriodePendaftaranController extends Controller
         ]);
 
         $validated['jumlah_program'] = count($request->input('id_programs', []));
+
+        // Pastikan hanya satu periode aktif
+        if ($validated['status'] === 'aktif') {
+            PeriodePendaftaran::where('status', 'aktif')->where('id', '!=', $periode->id)->update(['status' => 'nonaktif']);
+        }
 
         $periode->update($validated);
         $periode->programs()->sync($request->input('id_programs', []));

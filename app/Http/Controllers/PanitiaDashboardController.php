@@ -2,129 +2,183 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CalonMurid;
-use App\Models\HasilWawancaraDanUjian;
+use App\Models\Pendaftaran;
+use App\Models\NilaiUjian;
+use App\Models\WawancaraAnak;
+use App\Models\WawancaraOrtu;
+use App\Models\PeriodePendaftaran;
 use Illuminate\Http\Request;
 
 class PanitiaDashboardController extends Controller
 {
     /**
-     * Display the interview queue.
+     * Display the candidate queue based on panitia role.
      */
     public function index()
     {
-        // Count how many have been evaluated (having interview score)
-        $telahDiujiCount = HasilWawancaraDanUjian::whereNotNull('nilai_wawancara')->count();
- 
-        // Count how many are still pending / not evaluated yet (must be verified onsite)
-        $antreanCount = CalonMurid::whereHas('pendaftaran', function($q) {
-            $q->where('status_verifikasi', 'terverifikasi_onsite');
-        })->whereDoesntHave('hasil', function($q) {
-            $q->whereNotNull('nilai_wawancara');
-        })->count();
- 
-        // Get queue of onsite-verified candidates with their registration details and existing scores
-        $queue = CalonMurid::whereHas('pendaftaran', function($q) {
-            $q->where('status_verifikasi', 'terverifikasi_onsite');
-        })->with(['pendaftaran.program', 'hasil'])->get();
- 
-        return view('dashboard.panitia', compact('telahDiujiCount', 'antreanCount', 'queue'));
+        $panitia = auth()->guard('panitia')->user();
+        // Fallback for dev mode
+        $role = $panitia ? $panitia->role_panitia : 'pengawas_ujian';
+        $activePeriod = PeriodePendaftaran::where('status', 'aktif')->first();
+
+        $periodFilter = function ($query) use ($activePeriod) {
+            $query->where('status_verifikasi', 'terverifikasi_onsite');
+            if ($activePeriod) {
+                $query->where('periode_pendaftaran_id', $activePeriod->id);
+            } else {
+                $query->whereRaw('1 = 0');
+            }
+        };
+
+        if ($role === 'pengawas_ujian') {
+            $telahDiujiCount = Pendaftaran::where(function ($q) use ($periodFilter) { $periodFilter($q); })
+                ->whereHas('nilaiUjian')
+                ->count();
+
+            $antreanCount = Pendaftaran::where(function ($q) use ($periodFilter) { $periodFilter($q); })
+                ->whereDoesntHave('nilaiUjian')
+                ->count();
+
+            $queue = Pendaftaran::where(function ($q) use ($periodFilter) { $periodFilter($q); })
+                ->with(['calonMurid', 'program', 'nilaiUjian'])
+                ->get();
+        } else {
+            $telahDiujiCount = Pendaftaran::where(function ($q) use ($periodFilter) { $periodFilter($q); })
+                ->whereHas('wawancaraAnak')
+                ->count();
+
+            $antreanCount = Pendaftaran::where(function ($q) use ($periodFilter) { $periodFilter($q); })
+                ->whereDoesntHave('wawancaraAnak')
+                ->count();
+
+            $queue = Pendaftaran::where(function ($q) use ($periodFilter) { $periodFilter($q); })
+                ->with(['calonMurid', 'program', 'wawancaraAnak', 'wawancaraOrtu'])
+                ->get();
+        }
+
+        return view('dashboard.panitia', compact('telahDiujiCount', 'antreanCount', 'queue', 'role', 'activePeriod'));
     }
 
     /**
-     * Show grading panel for a student.
+     * Show grading panel for exam scores.
      */
-    public function detail($id)
+    public function detailUjian($id)
     {
-        $student = CalonMurid::with(['pendaftaran.program', 'hasil'])->findOrFail($id);
-
-        return view('dashboard.panitia-grading', compact('student'));
+        $pendaftaran = Pendaftaran::with(['calonMurid', 'program', 'nilaiUjian'])->findOrFail($id);
+        return view('dashboard.panitia-grading-ujian', compact('pendaftaran'));
     }
 
     /**
-     * Store candidate score and comments.
+     * Store exam scores (integer 1-100).
      */
-    public function storeGrading(Request $request, $id)
+    public function storeUjian(Request $request, $id)
     {
         $request->validate([
             'nilai_hafalan' => 'required|integer|between:1,100',
-            'nilai_wawancara' => 'required|integer|between:1,100',
+            'nilai_iqro' => 'required|integer|between:1,100',
             'nilai_calistung' => 'required|integer|between:1,100',
-            'nilai_tasmi' => 'required|integer|between:1,100',
-            'nilai_mandiri' => 'required|integer|between:1,100',
-            'rating_ortu' => 'required|integer|between:1,10',
-            'catatan' => 'nullable|string',
         ]);
 
-        $student = CalonMurid::with('pendaftaran')->findOrFail($id);
+        $pendaftaran = Pendaftaran::findOrFail($id);
+        $panitiaId = auth()->guard('panitia')->id() ?: 'PAN0001';
 
-        // Retrieve current authenticated panitia ID (guard: panitia)
-        $panitiaId = auth()->guard('panitia')->id() ?: 1;
+        $nilai = NilaiUjian::updateOrCreate(
+            ['id_pendaftaran' => $pendaftaran->id_pendaftaran],
+            [
+                'id_panitia' => $panitiaId,
+                'nilai_hafalan' => $request->nilai_hafalan,
+                'nilai_iqro' => $request->nilai_iqro,
+                'nilai_calistung' => $request->nilai_calistung,
+            ]
+        );
 
-        // Check if there is already a result record for this student
-        $hasil = HasilWawancaraDanUjian::where('id_murid', $id)->first();
-        if (!$hasil) {
-            $hasil = new HasilWawancaraDanUjian();
+        // Check if interview is also completed
+        if ($pendaftaran->wawancaraAnak()->exists() && $pendaftaran->wawancaraOrtu()->exists()) {
+            $pendaftaran->status_kelulusan = null; // reset until recalculation/TU approval
+            $pendaftaran->status_verifikasi = 'terverifikasi_onsite';
+            // Mark general transition status
+            $pendaftaran->status = 'cek_kelulusan'; // for backwards compatibility if needed
+            $pendaftaran->status_kelulusan = null;
+            $pendaftaran->save();
+            
+            // Trigger DSS ranking recalculation
+            \App\Services\DssService::recalculateAll();
         }
 
-        $hasil->id_murid = $student->id_murid;
-        $hasil->id_ayah = $student->id_ayah;
-        $hasil->id_ibu = $student->id_ibu;
-        $hasil->id_program = $student->pendaftaran->id_program;
-        $hasil->id_panitia = $panitiaId;
-        
-        $hasil->nilai_hafalan = $request->nilai_hafalan;
-        $hasil->nilai_wawancara = $request->nilai_wawancara;
-        $hasil->nilai_calistung = $request->nilai_calistung;
-        $hasil->nilai_tasmi = $request->nilai_tasmi;
-        $hasil->nilai_mandiri = $request->nilai_mandiri;
-        $hasil->rating_ortu = $request->rating_ortu;
+        return redirect()->route('panitia.dashboard')->with('success_grading', 'Nilai ujian berhasil disimpan!');
+    }
 
-        // Calculate average for nilai_ujian (legacy compatibility)
-        $hasil->nilai_ujian = round(
-            ($request->nilai_hafalan + $request->nilai_wawancara + $request->nilai_calistung + $request->nilai_tasmi + $request->nilai_mandiri) / 5
-        );
-        
-        // Save manual comment
-        $hasil->catatan_manual = $request->catatan;
+    /**
+     * Show grading panel for interview notes.
+     */
+    public function detailWawancara($id)
+    {
+        $pendaftaran = Pendaftaran::with(['calonMurid', 'program', 'wawancaraAnak', 'wawancaraOrtu'])->findOrFail($id);
+        return view('dashboard.panitia-grading-wawancara', compact('pendaftaran'));
+    }
 
-        // Calculate dynamic final score and generate narrative
-        $config = \App\Services\DssService::getConfig();
-        $program = \App\Models\Program::find($hasil->id_program);
-        $weights = ($program && $program->dss_weights) ? $program->dss_weights : ($config['weights'] ?? [
-            'hafalan' => 30,
-            'wawancara' => 20,
-            'calistung' => 20,
-            'tasmi' => 15,
-            'mandiri' => 15
+    /**
+     * Store interview notes (text description) and scores.
+     */
+    public function storeWawancara(Request $request, $id)
+    {
+        $request->validate([
+            'wawancara_aism' => 'required|string|max:1000',
+            'wawancara_irqa' => 'required|string|max:1000',
+            'wawancara_calistung' => 'required|string|max:1000',
+            'wawancara_dikte' => 'required|string|max:1000',
+            'wawancara_kemandirian' => 'required|string|max:1000',
+            'rekap_wawancara' => 'required|string|max:2000',
+            'komitmen_ortu' => 'required|string|max:1000',
+            // Numeric scores
+            'nilai_aism' => 'required|integer|between:1,100',
+            'nilai_dikte' => 'required|integer|between:1,100',
+            'nilai_kemandirian' => 'required|integer|between:1,100',
         ]);
 
-        $nilaiAkhir = (
-            ($request->nilai_hafalan * ($weights['hafalan'] ?? 30)) +
-            ($request->nilai_wawancara * ($weights['wawancara'] ?? 20)) +
-            ($request->nilai_calistung * ($weights['calistung'] ?? 20)) +
-            ($request->nilai_tasmi * ($weights['tasmi'] ?? 15)) +
-            ($request->nilai_mandiri * ($weights['mandiri'] ?? 15))
-        ) / 100;
+        $pendaftaran = Pendaftaran::findOrFail($id);
+        $panitiaId = auth()->guard('panitia')->id() ?: 'PAN0001';
 
-        $scores = [
-            'hafalan' => $request->nilai_hafalan,
-            'wawancara' => $request->nilai_wawancara,
-            'calistung' => $request->nilai_calistung,
-            'tasmi' => $request->nilai_tasmi,
-            'mandiri' => $request->nilai_mandiri
-        ];
+        WawancaraAnak::updateOrCreate(
+            ['id_pendaftaran' => $pendaftaran->id_pendaftaran],
+            [
+                'id_panitia' => $panitiaId,
+                'wawancara_aism' => $request->wawancara_aism,
+                'wawancara_irqa' => $request->wawancara_irqa,
+                'wawancara_calistung' => $request->wawancara_calistung,
+                'wawancara_dikte' => $request->wawancara_dikte,
+                'wawancara_kemandirian' => $request->wawancara_kemandirian,
+                'rekap_wawancara' => $request->rekap_wawancara,
+            ]
+        );
 
-        $hasil->catatan_otomatis = \App\Services\DssService::generateNarrative($scores, $config);
-        $hasil->nilai_akhir = $nilaiAkhir;
+        WawancaraOrtu::updateOrCreate(
+            ['id_pendaftaran' => $pendaftaran->id_pendaftaran],
+            [
+                'id_panitia' => $panitiaId,
+                'komitmen_ortu' => $request->komitmen_ortu,
+            ]
+        );
 
-        // Combined comment
-        $hasil->catatan = $hasil->catatan_otomatis . ($request->catatan ? "\n\nCatatan Penguji: " . $request->catatan : "");
-        $hasil->save();
+        // Update remaining numeric values in NilaiUjian
+        NilaiUjian::updateOrCreate(
+            ['id_pendaftaran' => $pendaftaran->id_pendaftaran],
+            [
+                'id_panitia' => $panitiaId,
+                'nilai_aism' => $request->nilai_aism,
+                'nilai_dikte' => $request->nilai_dikte,
+                'nilai_kemandirian' => $request->nilai_kemandirian,
+            ]
+        );
 
-        // Run mass recommendation engine recalculation
-        \App\Services\DssService::recalculateAll();
+        // Check if exams are also completed
+        if ($pendaftaran->nilaiUjian()->exists()) {
+            $pendaftaran->status_kelulusan = null;
+            $pendaftaran->status_verifikasi = 'terverifikasi_onsite';
+            // Trigger DSS ranking recalculation
+            \App\Services\DssService::recalculateAll();
+        }
 
-        return redirect()->route('panitia.dashboard')->with('success_grading', 'Penilaian untuk ' . $student->nama_murid . ' berhasil disimpan!');
+        return redirect()->route('panitia.dashboard')->with('success_grading', 'Hasil wawancara berhasil disimpan!');
     }
 }
