@@ -88,6 +88,123 @@
     .program-table tr:hover td {
       background-color: #f9fafb;
     }
+
+    /* Modal Styling */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    
+    .modal-content {
+      width: 90%;
+      max-width: 480px;
+      background: linear-gradient(135deg, #005b31 0%, #064e3b 100%);
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      color: #ffffff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      box-sizing: border-box;
+      animation: modalFadeIn 0.3s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-content h3 {
+      font-size: 20px;
+      font-weight: bold;
+      color: #ffffff !important;
+      margin-top: 0;
+      margin-bottom: 20px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding-bottom: 12px;
+    }
+
+    .modal-content label {
+      font-size: 12px;
+      font-weight: bold;
+      color: rgba(255, 255, 255, 0.9);
+      display: block;
+      margin-bottom: 6px;
+      text-align: left;
+    }
+
+    .modal-content .form-group {
+      margin-bottom: 16px;
+      text-align: left;
+    }
+
+    .modal-content .input-field, 
+    .modal-content .textarea-field {
+      width: 100% !important;
+      background: linear-gradient(180deg, #ffffff 0%, #f3f4f6 100%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.8) !important;
+      border-radius: 8px !important;
+      color: #1f2937 !important;
+      font-size: 14px !important;
+      padding: 10px 14px !important;
+      box-sizing: border-box !important;
+      outline: none !important;
+      transition: all 0.2s;
+    }
+
+    .modal-content .input-field:focus, 
+    .modal-content .textarea-field:focus {
+      border-color: #93f4b0 !important;
+      box-shadow: 0 0 0 3px rgba(147, 244, 176, 0.3) !important;
+    }
+
+    .modal-content .textarea-field {
+      height: 100px !important;
+      resize: none !important;
+    }
+
+    .modal-content .btn-submit {
+      background: #ffffff !important;
+      color: #064e3b !important;
+      padding: 10px 20px !important;
+      border-radius: 8px !important;
+      font-weight: bold !important;
+      border: none !important;
+      cursor: pointer !important;
+      transition: all 0.2s !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    
+    .modal-content .btn-submit:hover {
+      background: #dcfce7 !important;
+      transform: translateY(-1px);
+    }
+
+    .modal-content .btn-cancel {
+      background: rgba(255, 255, 255, 0.1) !important;
+      color: #ffffff !important;
+      border: 1px solid rgba(255, 255, 255, 0.3) !important;
+      padding: 10px 20px !important;
+      border-radius: 8px !important;
+      font-weight: bold !important;
+      cursor: pointer !important;
+      transition: all 0.2s !important;
+    }
+
+    .modal-content .btn-cancel:hover {
+      background: rgba(255, 255, 255, 0.2) !important;
+    }
   </style>
 @endsection
 
@@ -155,7 +272,7 @@
   <!-- Tambah FAQ Modal Form -->
   <div class="modal" id="createFaqModal">
     <div class="modal-content">
-      <h3 style="font-weight: bold; color: #064e3b; margin-bottom: 20px; font-size: 16px;">Tambah FAQ Baru</h3>
+      <h3>Tambah FAQ Baru</h3>
       
       <form action="{{ route('tata_usaha.faqs.store') }}" method="POST">
         @csrf
@@ -171,7 +288,7 @@
         </div>
         
         <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px;">
-          <button type="button" style="background: #f3f4f6; color: #4b5563; padding: 10px 15px; border-radius: 6px; cursor: pointer; border: 1px solid #d1d5db;" onclick="closeCreateFaqModal()">Batal</button>
+          <button type="button" class="btn-cancel" onclick="closeCreateFaqModal()">Batal</button>
           <button type="submit" class="btn-submit">Simpan FAQ</button>
         </div>
       </form>
@@ -181,7 +298,7 @@
   <!-- Edit FAQ Modal Form -->
   <div class="modal" id="editFaqModal">
     <div class="modal-content">
-      <h3 style="font-weight: bold; color: #064e3b; margin-bottom: 20px; font-size: 16px;">Ubah FAQ</h3>
+      <h3>Ubah FAQ</h3>
       
       <form id="editFaqForm" method="POST">
         @csrf
@@ -197,7 +314,7 @@
         </div>
         
         <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px;">
-          <button type="button" style="background: #f3f4f6; color: #4b5563; padding: 10px 15px; border-radius: 6px; cursor: pointer; border: 1px solid #d1d5db;" onclick="closeEditFaqModal()">Batal</button>
+          <button type="button" class="btn-cancel" onclick="closeEditFaqModal()">Batal</button>
           <button type="submit" class="btn-submit">Simpan Perubahan</button>
         </div>
       </form>

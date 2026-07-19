@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('periode_pendaftarans', function (Blueprint $table) {
             $table->text('deskripsi')->nullable()->after('judul');
+            $table->boolean('graduation_published')->default(false)->after('status');
         });
     }
 
@@ -22,7 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('periode_pendaftarans', function (Blueprint $table) {
-            $table->dropColumn('deskripsi');
+            $table->dropColumn(['deskripsi', 'graduation_published']);
         });
     }
 };

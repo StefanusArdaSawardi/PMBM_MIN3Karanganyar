@@ -18,6 +18,9 @@
 
       <!-- Filter Bento -->
       <form action="{{ route('tata_usaha.verifikasi_offline') }}" method="GET" class="flex gap-4 max-[1024px]:flex-col flex-wrap w-full bg-white border border-[#bec9be] rounded-lg shadow-[0_1px_1px_rgba(0,0,0,0.05)] p-5 items-stretch">
+        @if(request()->filled('tahun'))
+          <input type="hidden" name="tahun" value="{{ request('tahun') }}">
+        @endif
         <!-- Search Input -->
         <div style="flex: 2; min-width: 250px; display: flex; flex-direction: column; gap: 8px;">
           <label class="text-[#3f4941] text-[12px] font-bold">Cari Calon Siswa</label>
@@ -74,20 +77,21 @@
       </script>
 
       <!-- Category Tabs -->
+      @php($queryParams = request()->only(['tahun']))
       <div class="flex gap-4 max-[900px]:flex-wrap">
-        <a href="{{ route('scores.index') }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
+        <a href="{{ route('scores.index', $queryParams) }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
           <span class="text-[#181c1c] text-[18px] font-bold">Pendaftaran</span>
         </a>
-        <a href="{{ route('tata_usaha.grup_whatsapp') }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
+        <a href="{{ route('tata_usaha.grup_whatsapp', $queryParams) }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
           <span class="text-[#181c1c] text-[18px] font-bold">Grup WhatsApp</span>
         </a>
         <div class="flex-1 bg-[#006a3c] border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center">
           <span class="text-white text-[18px] font-bold">Verifikasi Offline</span>
         </div>
-        <a href="{{ route('tata_usaha.seleksi') }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
+        <a href="{{ route('tata_usaha.seleksi', $queryParams) }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
           <span class="text-[#181c1c] text-[18px] font-bold">Seleksi</span>
         </a>
-        <a href="{{ route('tata_usaha.daftar_ulang') }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
+        <a href="{{ route('tata_usaha.daftar_ulang', $queryParams) }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
           <span class="text-[#181c1c] text-[18px] font-bold">Daftar Ulang</span>
         </a>
       </div>

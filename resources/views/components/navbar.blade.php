@@ -1,9 +1,9 @@
 @php
   $isHomeActive = Request::routeIs('home');
-  $isProgramActive = Request::routeIs('landing.program-khusus') || Request::routeIs('landing.program-unggulan') || Request::routeIs('landing.program-fullday');
+  $isProgramActive = Request::routeIs('landing.program-khusus') || Request::routeIs('landing.program-unggulan') || Request::routeIs('landing.program-fullday') || Request::routeIs('landing.program-detail');
   $isKelulusanActive = Request::routeIs('landing.cek-kelulusan') || Request::routeIs('student.status.check') || Request::routeIs('landing.hasil-kelulusan');
   $isKontakActive = Request::routeIs('landing.kontak');
-  $isOnDark = Request::routeIs('home', 'landing.program-khusus', 'landing.program-unggulan', 'landing.program-fullday', 'landing.cek-kelulusan', 'student.status.check', 'landing.kontak');
+  $isOnDark = Request::routeIs('home', 'landing.program-khusus', 'landing.program-unggulan', 'landing.program-fullday', 'landing.program-detail', 'landing.cek-kelulusan', 'student.status.check', 'landing.kontak');
 @endphp
 
 <!-- Navbar Component -->

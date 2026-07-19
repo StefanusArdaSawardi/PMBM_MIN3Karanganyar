@@ -13,6 +13,7 @@ Route::get('/', [LandingController::class, 'index'])->name('home');
 Route::get('/program/khusus', [LandingController::class, 'programKhusus'])->name('landing.program-khusus');
 Route::get('/program/unggulan', [LandingController::class, 'programUnggulan'])->name('landing.program-unggulan');
 Route::get('/program/fullday', [LandingController::class, 'programFullday'])->name('landing.program-fullday');
+Route::get('/program/detail/{id}', [LandingController::class, 'showProgramDetail'])->name('landing.program-detail');
 Route::get('/kontak', [LandingController::class, 'kontak'])->name('landing.kontak');
 Route::get('/guide', [LandingController::class, 'guide'])->name('landing.guide');
 

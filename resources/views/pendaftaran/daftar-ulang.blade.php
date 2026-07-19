@@ -18,6 +18,9 @@
 
       <!-- Filter Bento -->
       <form action="{{ route('tata_usaha.daftar_ulang') }}" method="GET" class="flex gap-4 max-[1024px]:flex-col flex-wrap w-full bg-white border border-[#bec9be] rounded-lg shadow-[0_1px_1px_rgba(0,0,0,0.05)] p-5 items-stretch">
+        @if(request()->filled('tahun'))
+          <input type="hidden" name="tahun" value="{{ request('tahun') }}">
+        @endif
         <!-- Search Input -->
         <div style="flex: 2; min-width: 250px; display: flex; flex-direction: column; gap: 8px;">
           <label class="text-[#3f4941] text-[12px] font-bold">Cari Calon Siswa</label>
@@ -74,17 +77,18 @@
       </script>
 
       <!-- Category Tabs -->
+      @php($queryParams = request()->only(['tahun']))
       <div class="flex gap-4 max-[900px]:flex-wrap">
-        <a href="{{ route('scores.index') }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
+        <a href="{{ route('scores.index', $queryParams) }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
           <span class="text-[#181c1c] text-[18px] font-bold">Pendaftaran</span>
         </a>
-        <a href="{{ route('tata_usaha.grup_whatsapp') }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
+        <a href="{{ route('tata_usaha.grup_whatsapp', $queryParams) }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
           <span class="text-[#181c1c] text-[18px] font-bold">Grup WhatsApp</span>
         </a>
-        <a href="{{ route('tata_usaha.verifikasi_offline') }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
+        <a href="{{ route('tata_usaha.verifikasi_offline', $queryParams) }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
           <span class="text-[#181c1c] text-[18px] font-bold">Verifikasi Offline</span>
         </a>
-        <a href="{{ route('tata_usaha.seleksi') }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
+        <a href="{{ route('tata_usaha.seleksi', $queryParams) }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
           <span class="text-[#181c1c] text-[18px] font-bold">Seleksi</span>
         </a>
         <div class="flex-1 bg-[#006a3c] border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center">
@@ -165,38 +169,78 @@
 
               <!-- Confirmation Status Badge -->
               <div>
-                @php
+                <?php
                   $status = $item->status_konfirmasi;
                   $bg = '#f3f4f6'; $fg = '#374151'; $lbl = 'Belum Konfirmasi';
                   if ($status === 'terkonfirmasi') { $bg = '#dcfce7'; $fg = '#166534'; $lbl = 'Daftar Ulang'; }
                   elseif ($status === 'mengundurkan_diri') { $bg = '#fee2e2'; $fg = '#991b1b'; $lbl = 'Mundur'; }
-                @endphp
+                ?>
                 <span class="text-[11px] font-bold px-2.5 py-1 rounded-full" style="background-color: {{ $bg }}; color: {{ $fg }};">
                   {{ $lbl }}
                 </span>
               </div>
 
               <!-- Action Confirmation Buttons -->
-              <div class="flex gap-2 justify-center">
-                <!-- Approve Re-Registration -->
-                <form action="{{ route('tata_usaha.status', $item->id_pendaftaran) }}" method="POST" style="margin: 0; padding: 0;">
-                  @csrf
-                  <input type="hidden" name="action" value="konfirmasi_onsite">
-                  <input type="hidden" name="status_konfirmasi" value="terkonfirmasi">
-                  <button type="submit" class="bg-[#005b31] hover:bg-[#064e3b] text-white text-[12px] font-bold px-4 py-2 rounded cursor-pointer border-none transition-colors">
-                    ✓ Konfirmasi Lulus
-                  </button>
-                </form>
+              <div class="flex flex-col gap-1 items-center">
+                @if($item->status_konfirmasi === 'terkonfirmasi')
+                  <!-- If already confirmed, show option to mark as withdrawn or cancel confirmation -->
+                  <form action="{{ route('tata_usaha.status', $item->id_pendaftaran) }}" method="POST" style="margin: 0; padding: 0; width: 100%;">
+                    @csrf
+                    <input type="hidden" name="action" value="konfirmasi_onsite">
+                    <input type="hidden" name="status_konfirmasi" value="mengundurkan_diri">
+                    <button type="submit" class="w-full bg-[#ba1a1a] hover:bg-[#93000a] text-white text-[12px] font-bold py-1.5 px-3 rounded cursor-pointer border-none transition-colors">
+                      ✕ Tandai Mundur
+                    </button>
+                  </form>
+                  <form action="{{ route('tata_usaha.status', $item->id_pendaftaran) }}" method="POST" style="margin: 0; padding: 0; width: 100%; margin-top: 4px;">
+                    @csrf
+                    <input type="hidden" name="action" value="konfirmasi_onsite">
+                    <input type="hidden" name="status_konfirmasi" value="belum_konfirmasi">
+                    <button type="submit" class="w-full bg-gray-500 hover:bg-gray-600 text-white text-[11px] font-bold py-1 px-3 rounded cursor-pointer border-none transition-colors">
+                      Batalkan Konfirmasi
+                    </button>
+                  </form>
 
-                <!-- Mark as Withdrawn -->
-                <form action="{{ route('tata_usaha.status', $item->id_pendaftaran) }}" method="POST" style="margin: 0; padding: 0;">
-                  @csrf
-                  <input type="hidden" name="action" value="konfirmasi_onsite">
-                  <input type="hidden" name="status_konfirmasi" value="mengundurkan_diri">
-                  <button type="submit" class="bg-[#ba1a1a] hover:bg-[#93000a] text-white text-[12px] font-bold px-4 py-2 rounded cursor-pointer border-none transition-colors">
-                    ✕ Mundur
-                  </button>
-                </form>
+                @elseif($item->status_konfirmasi === 'mengundurkan_diri')
+                  <!-- If withdrawn, show option to confirm or cancel withdrawal -->
+                  <form action="{{ route('tata_usaha.status', $item->id_pendaftaran) }}" method="POST" style="margin: 0; padding: 0; width: 100%;">
+                    @csrf
+                    <input type="hidden" name="action" value="konfirmasi_onsite">
+                    <input type="hidden" name="status_konfirmasi" value="terkonfirmasi">
+                    <button type="submit" class="w-full bg-[#005b31] hover:bg-[#064e3b] text-white text-[12px] font-bold py-1.5 px-3 rounded cursor-pointer border-none transition-colors">
+                      ✓ Konfirmasi Lulus
+                    </button>
+                  </form>
+                  <form action="{{ route('tata_usaha.status', $item->id_pendaftaran) }}" method="POST" style="margin: 0; padding: 0; width: 100%; margin-top: 4px;">
+                    @csrf
+                    <input type="hidden" name="action" value="konfirmasi_onsite">
+                    <input type="hidden" name="status_konfirmasi" value="belum_konfirmasi">
+                    <button type="submit" class="w-full bg-gray-500 hover:bg-gray-600 text-white text-[11px] font-bold py-1 px-3 rounded cursor-pointer border-none transition-colors">
+                      Batalkan Mundur
+                    </button>
+                  </form>
+
+                @else
+                  <!-- If pending/belum_konfirmasi, show both actions -->
+                  <div class="flex gap-1 w-full">
+                    <form action="{{ route('tata_usaha.status', $item->id_pendaftaran) }}" method="POST" style="margin: 0; padding: 0; flex: 1;">
+                      @csrf
+                      <input type="hidden" name="action" value="konfirmasi_onsite">
+                      <input type="hidden" name="status_konfirmasi" value="terkonfirmasi">
+                      <button type="submit" class="w-full bg-[#005b31] hover:bg-[#064e3b] text-white text-[12px] font-bold py-1.5 rounded cursor-pointer border-none transition-colors">
+                        ✓ Lulus
+                      </button>
+                    </form>
+                    <form action="{{ route('tata_usaha.status', $item->id_pendaftaran) }}" method="POST" style="margin: 0; padding: 0; flex: 1;">
+                      @csrf
+                      <input type="hidden" name="action" value="konfirmasi_onsite">
+                      <input type="hidden" name="status_konfirmasi" value="mengundurkan_diri">
+                      <button type="submit" class="w-full bg-[#ba1a1a] hover:bg-[#93000a] text-white text-[12px] font-bold py-1.5 rounded cursor-pointer border-none transition-colors">
+                        ✕ Mundur
+                      </button>
+                    </form>
+                  </div>
+                @endif
               </div>
 
             </div>

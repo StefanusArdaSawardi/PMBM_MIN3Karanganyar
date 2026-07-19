@@ -62,23 +62,27 @@
             @error('image') <span class="text-red-600 text-[12px]">{{ $message }}</span> @enderror
           </div>
 
-          <div class="flex flex-col gap-2">
-            <label class="text-[#005b31] text-[14px] font-semibold tracking-wide">BUSINESS RULES</label>
-            <select name="jenis_penilaian" class="bg-[#f1f4f3] border border-[#bec9be] rounded px-4 py-2.5 text-[14px] text-[#181c1c] outline-none">
-              <option value="">Cari Penilaian</option>
-              <option value="Sains" {{ old('jenis_penilaian', $program->jenis_penilaian ?? '') === 'Sains' ? 'selected' : '' }}>Sains</option>
-              <option value="Fullday" {{ old('jenis_penilaian', $program->jenis_penilaian ?? '') === 'Fullday' ? 'selected' : '' }}>Fullday</option>
-              <option value="Tahfidz" {{ old('jenis_penilaian', $program->jenis_penilaian ?? '') === 'Tahfidz' ? 'selected' : '' }}>Tahfidz</option>
-            </select>
-            <div class="flex items-center gap-3 max-[500px]:flex-col max-[500px]:items-stretch">
-              <input type="number" name="threshold_nilai_min" value="{{ old('threshold_nilai_min', $program->threshold_nilai_min ?? '') }}" min="0" max="100" placeholder="70"
-                     class="flex-1 border border-black/25 rounded px-4 py-2.5 text-[14px] text-[#3f4940] outline-none">
-              <span class="text-[#3f4940] text-[14px]">s.d</span>
-              <input type="number" name="threshold_nilai_max" value="{{ old('threshold_nilai_max', $program->threshold_nilai_max ?? '') }}" min="0" max="100" placeholder="100"
-                     class="flex-1 border border-black/25 rounded px-4 py-2.5 text-[14px] text-[#3f4940] outline-none">
+          <div class="flex flex-col gap-3">
+            <label class="text-[#005b31] text-[14px] font-semibold tracking-wide">KRITERIA PERSYARATAN</label>
+            
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse" style="min-width: 400px;">
+                <thead>
+                  <tr class="border-b border-[#bec9be]">
+                    <th class="pb-2 text-[#3f4940] text-[12px] font-bold uppercase" style="width: 50%;">Kategori Penilaian</th>
+                    <th class="pb-2 text-[#3f4940] text-[12px] font-bold uppercase" style="width: 35%;">Nilai Minimum Kelulusan</th>
+                    <th class="pb-2 text-center text-[#3f4940] text-[12px] font-bold uppercase" style="width: 15%;">Tindakan</th>
+                  </tr>
+                </thead>
+                <tbody id="criteriaListTable">
+                  <!-- Dynamic rows inserted via JS -->
+                </tbody>
+              </table>
             </div>
-            @error('threshold_nilai_min') <span class="text-red-600 text-[12px]">{{ $message }}</span> @enderror
-            @error('threshold_nilai_max') <span class="text-red-600 text-[12px]">{{ $message }}</span> @enderror
+            
+            <button type="button" onclick="addCriteriaRow()" class="text-[#005b31] text-[13px] font-semibold cursor-pointer w-fit mt-2">
+              ➕ Tambah Kriteria Persyaratan Baru
+            </button>
           </div>
 
           <div class="flex justify-center gap-3 pt-2">
@@ -101,12 +105,52 @@
       document.getElementById('poinList').appendChild(wrapper);
     }
 
+    let criteriaIndex = 0;
+    function addCriteriaRow(namaKriteria = '', nilaiMinimum = 0) {
+      const tbody = document.getElementById('criteriaListTable');
+      const row = document.createElement('tr');
+      row.className = 'border-b border-gray-100';
+      row.innerHTML = `
+        <td class="py-2.5">
+          <select name="criteria[${criteriaIndex}][nama_kriteria]" class="bg-[#f1f4f3] border border-[#bec9be] rounded px-3 py-2.5 text-[14px] text-[#181c1c] outline-none w-full" required>
+            <option value="">-- Pilih Kategori --</option>
+            <option value="hafalan" ${namaKriteria === 'hafalan' ? 'selected' : ''}>Hafalan</option>
+            <option value="aism" ${namaKriteria === 'aism' ? 'selected' : ''}>AISM</option>
+            <option value="iqro" ${namaKriteria === 'iqro' ? 'selected' : ''}>Iqro</option>
+            <option value="calistung" ${namaKriteria === 'calistung' ? 'selected' : ''}>Calistung</option>
+            <option value="dikte" ${namaKriteria === 'dikte' ? 'selected' : ''}>Dikte</option>
+            <option value="kemandirian" ${namaKriteria === 'kemandirian' ? 'selected' : ''}>Kemandirian</option>
+          </select>
+        </td>
+        <td class="py-2.5 px-2">
+          <input type="number" name="criteria[${criteriaIndex}][nilai_minimum]" value="${nilaiMinimum}" min="0" max="100" placeholder="Ketik nilai (contoh: 70)" required
+                 class="border border-black/25 rounded px-3 py-2.5 text-[14px] text-[#3f4940] outline-none w-full">
+        </td>
+        <td class="py-2.5 text-center">
+          <button type="button" onclick="this.closest('tr').remove()" class="bg-[#ba1a1a] hover:bg-[#93000a] text-white font-bold px-3 py-2 rounded text-[12px] cursor-pointer border-none transition-colors">
+            Hapus
+          </button>
+        </td>
+      `;
+      tbody.appendChild(row);
+      criteriaIndex++;
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
+      // Points Unggulan
       const existing = @json(old('poin_unggulan', $program->poin_unggulan ?? []));
       if (existing.length) {
         existing.forEach(p => addPoinField(p));
       } else {
         addPoinField(); addPoinField();
+      }
+
+      // Requirements Criteria
+      const existingCriteria = @json(old('criteria', $program ? $program->criteria->toArray() : []));
+      if (existingCriteria.length) {
+        existingCriteria.forEach(c => {
+          addCriteriaRow(c.nama_kriteria, c.nilai_minimum);
+        });
       }
     });
   </script>

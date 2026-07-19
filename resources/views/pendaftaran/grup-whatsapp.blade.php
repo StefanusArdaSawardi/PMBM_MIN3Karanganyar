@@ -18,6 +18,9 @@
 
       <!-- Filter Bento -->
       <form action="{{ route('tata_usaha.grup_whatsapp') }}" method="GET" class="flex gap-4 max-[640px]:flex-col">
+        @if(request()->filled('tahun'))
+          <input type="hidden" name="tahun" value="{{ request('tahun') }}">
+        @endif
         <div class="flex-1 bg-white border border-[#bec9be] rounded-lg shadow-[0_1px_1px_rgba(0,0,0,0.05)] px-[17px] pt-[22px] pb-[17px] flex flex-col gap-2.5">
           <label class="text-[#3f4941] text-[12px] font-bold">Periode Aktif</label>
           @if(isset($activePeriod) && $activePeriod)
@@ -87,20 +90,22 @@
       </script>
 
       <!-- Category Tabs -->
+      <!-- Category Tabs -->
+      @php($queryParams = request()->only(['tahun']))
       <div class="flex gap-4 max-[900px]:flex-wrap">
-        <a href="{{ route('scores.index') }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
+        <a href="{{ route('scores.index', $queryParams) }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
           <span class="text-[#181c1c] text-[18px] font-bold">Pendaftaran</span>
         </a>
         <div class="flex-1 bg-[#006a3c] border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center">
           <span class="text-white text-[18px] font-bold">Grup WhatsApp</span>
         </div>
-        <a href="{{ route('tata_usaha.verifikasi_offline') }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
+        <a href="{{ route('tata_usaha.verifikasi_offline', $queryParams) }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
           <span class="text-[#181c1c] text-[18px] font-bold">Verifikasi Offline</span>
         </a>
-        <a href="{{ route('tata_usaha.seleksi') }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
+        <a href="{{ route('tata_usaha.seleksi', $queryParams) }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
           <span class="text-[#181c1c] text-[18px] font-bold">Seleksi</span>
         </a>
-        <a href="{{ route('tata_usaha.daftar_ulang') }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
+        <a href="{{ route('tata_usaha.daftar_ulang', $queryParams) }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
           <span class="text-[#181c1c] text-[18px] font-bold">Daftar Ulang</span>
         </a>
       </div>

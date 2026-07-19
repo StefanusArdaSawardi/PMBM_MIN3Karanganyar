@@ -1,9 +1,5 @@
 @php
-  $tabs = [
-    ['key' => 'khusus', 'label' => 'Program Khusus (Tahfidz)', 'route' => 'landing.program-khusus'],
-    ['key' => 'unggulan', 'label' => 'Program Unggulan (Sains)', 'route' => 'landing.program-unggulan'],
-    ['key' => 'fullday', 'label' => 'Program Fullday', 'route' => 'landing.program-fullday'],
-  ];
+  $allPrograms = \App\Models\Program::all();
 @endphp
 
 <section class="relative overflow-hidden px-6 pt-[110px] pb-12 text-center">
@@ -16,12 +12,27 @@
     <p class="text-white max-w-[600px] mx-auto mb-8 leading-[1.6] text-[16px]" style="font-family: 'Roboto-Regular', sans-serif;">Kurikulum yang dirancang khusus untuk mengoptimalkan potensi akademis dan karakter anak didik di era global.</p>
 
     <div class="flex flex-wrap justify-center gap-4">
-      @foreach($tabs as $tab)
-        <a href="{{ route($tab['route']) }}"
+      @foreach($allPrograms as $prog)
+        @php
+          $isActive = false;
+          if (isset($activeProgramId) && $activeProgramId == $prog->id_program) {
+              $isActive = true;
+          } elseif (isset($activeProgram)) {
+              $nameLower = strtolower($prog->nama_program);
+              if ($activeProgram === 'khusus' && (strpos($nameLower, 'khusus') !== false || strpos($nameLower, 'tahfidz') !== false)) {
+                  $isActive = true;
+              } elseif ($activeProgram === 'unggulan' && (strpos($nameLower, 'unggulan') !== false || strpos($nameLower, 'sains') !== false)) {
+                  $isActive = true;
+              } elseif ($activeProgram === 'fullday' && (strpos($nameLower, 'fullday') !== false || strpos($nameLower, 'reguler') !== false)) {
+                  $isActive = true;
+              }
+          }
+        @endphp
+        <a href="{{ route('landing.program-detail', $prog->id_program) }}"
            class="flex items-center justify-center min-w-[191px] h-[54px] px-5 rounded-lg text-[14px] font-bold text-center border shadow-[0_2px_4px_rgba(0,0,0,0.05)] transition-all duration-300 max-[600px]:min-w-0 max-[600px]:flex-1 max-[600px]:basis-[calc(50%-8px)] max-[600px]:text-[12px] max-[600px]:h-12
-           {{ $activeProgram === $tab['key'] ? 'border-[#0f7643] bg-[#47a26a] text-white shadow-[0_4px_6px_rgba(0,0,0,0.1)]' : 'border-[#bdcab8] bg-white/90 text-black/60 hover:border-[#298752] hover:text-[#298752]' }}"
+           {{ $isActive ? 'border-[#0f7643] bg-[#47a26a] text-white shadow-[0_4px_6px_rgba(0,0,0,0.1)]' : 'border-[#bdcab8] bg-white/90 text-black/60 hover:border-[#298752] hover:text-[#298752]' }}"
            style="font-family: 'PlusJakartaSans-Bold', sans-serif;">
-          {{ $tab['label'] }}
+          {{ $prog->nama_program }}
         </a>
       @endforeach
     </div>
@@ -46,6 +57,16 @@
             <span>{{ $feature }}</span>
           </div>
         @endforeach
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex gap-4 mt-6 flex-wrap">
+        <a href="{{ route('student.register') }}" class="inline-flex items-center justify-center bg-[#0f7643] hover:bg-[#0c5c34] text-white font-bold px-6 py-3 rounded-lg text-[14px] transition-colors shadow-md no-underline">
+          <span>📝</span> &nbsp; Daftar Sekarang
+        </a>
+        <a href="{{ route('landing.kontak') }}" class="inline-flex items-center justify-center bg-white border border-[#bdcab8] hover:border-[#0f7643] text-[#3f4940] hover:text-[#0f7643] font-bold px-6 py-3 rounded-lg text-[14px] transition-colors shadow-sm no-underline">
+          <span>❓</span> &nbsp; Ada Pertanyaan? Hubungi Kami
+        </a>
       </div>
     </div>
   </div>

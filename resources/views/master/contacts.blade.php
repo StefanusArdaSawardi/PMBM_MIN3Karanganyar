@@ -71,6 +71,116 @@
     .program-table tr:hover td {
       background-color: #f9fafb;
     }
+
+    /* Modal Styling */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+    
+    .modal-content {
+      width: 90%;
+      max-width: 480px;
+      background: linear-gradient(135deg, #005b31 0%, #064e3b 100%);
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      color: #ffffff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      box-sizing: border-box;
+      animation: modalFadeIn 0.3s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-content h3 {
+      font-size: 20px;
+      font-weight: bold;
+      color: #ffffff !important;
+      margin-top: 0;
+      margin-bottom: 20px;
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      padding-bottom: 12px;
+    }
+
+    .modal-content label {
+      font-size: 12px;
+      font-weight: bold;
+      color: rgba(255, 255, 255, 0.9);
+      display: block;
+      margin-bottom: 6px;
+      text-align: left;
+    }
+
+    .modal-content .form-group {
+      margin-bottom: 16px;
+      text-align: left;
+    }
+
+    .modal-content .input-field {
+      width: 100% !important;
+      background: linear-gradient(180deg, #ffffff 0%, #f3f4f6 100%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.8) !important;
+      border-radius: 8px !important;
+      color: #1f2937 !important;
+      font-size: 14px !important;
+      padding: 10px 14px !important;
+      box-sizing: border-box !important;
+      outline: none !important;
+      transition: all 0.2s;
+    }
+
+    .modal-content .input-field:focus {
+      border-color: #93f4b0 !important;
+      box-shadow: 0 0 0 3px rgba(147, 244, 176, 0.3) !important;
+    }
+
+    .modal-content .btn-submit {
+      background: #ffffff !important;
+      color: #064e3b !important;
+      padding: 10px 20px !important;
+      border-radius: 8px !important;
+      font-weight: bold !important;
+      border: none !important;
+      cursor: pointer !important;
+      transition: all 0.2s !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+    
+    .modal-content .btn-submit:hover {
+      background: #dcfce7 !important;
+      transform: translateY(-1px);
+    }
+
+    .modal-content .btn-cancel {
+      background: rgba(255, 255, 255, 0.1) !important;
+      color: #ffffff !important;
+      border: 1px solid rgba(255, 255, 255, 0.3) !important;
+      padding: 10px 20px !important;
+      border-radius: 8px !important;
+      font-weight: bold !important;
+      cursor: pointer !important;
+      transition: all 0.2s !important;
+    }
+
+    .modal-content .btn-cancel:hover {
+      background: rgba(255, 255, 255, 0.2) !important;
+    }
   </style>
 @endsection
 
@@ -136,13 +246,48 @@
           </table>
         </div>
       </div>
+
+      <!-- WhatsApp Group Link Management Card -->
+      <div style="background: #ffffff; border-radius: 12px; border: 1px solid #becabe; padding: 24px; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; gap: 16px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #f0fdf4; padding-bottom: 12px;">
+          <div style="font-weight: bold; font-family: 'PlusJakartaSans-Bold', sans-serif; font-size: 16px; color: #064e3b; display: flex; align-items: center; gap: 8px;">
+            <span>💬</span> Link Grup WhatsApp Calon Wali Murid
+          </div>
+        </div>
+
+        <p style="font-size: 12px; color: #6b7280; margin: 0;">Tautan ini akan ditampilkan kepada calon siswa setelah pendaftaran berhasil dan pada halaman hasil kelulusan.</p>
+
+        <form action="{{ route('tata_usaha.content.update_text') }}" method="POST" style="display: flex; flex-direction: column; gap: 12px;">
+          @csrf
+          <div style="display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 300px;">
+              <label style="font-size: 11px; font-weight: bold; color: #4b5563; text-transform: uppercase; display: block; margin-bottom: 4px;">Tautan Grup WhatsApp PMBM</label>
+              <input type="url" name="whatsapp_group_link" value="{{ $whatsappGroupLink }}" required placeholder="Contoh: https://chat.whatsapp.com/grup-link-anda"
+                     style="width: 100%; padding: 10px 14px; border: 1px solid #becabe; border-radius: 8px; font-size: 13px; outline: none; font-family: inherit; box-sizing: border-box;">
+            </div>
+            <button type="submit" style="background: #064e3b; color: #ffffff; padding: 10px 20px; border-radius: 8px; cursor: pointer; border: none; font-weight: bold; font-size: 13px; font-family: inherit; white-space: nowrap; height: 42px;">
+              Simpan Link
+            </button>
+          </div>
+          @if($whatsappGroupLink)
+            <div style="font-size: 12px; color: #298752; display: flex; align-items: center; gap: 6px;">
+              <span>✅</span> Link aktif saat ini: <a href="{{ $whatsappGroupLink }}" target="_blank" style="color: #298752; text-decoration: underline; word-break: break-all;">{{ $whatsappGroupLink }}</a>
+            </div>
+          @else
+            <div style="font-size: 12px; color: #ef4444; display: flex; align-items: center; gap: 6px;">
+              <span>⚠️</span> Belum ada tautan grup WhatsApp yang diatur.
+            </div>
+          @endif
+        </form>
+      </div>
+
     </div>
   </div>
 
   <!-- Tambah Kontak Modal Form -->
   <div class="modal" id="createContactModal">
     <div class="modal-content">
-      <h3 style="font-weight: bold; color: #064e3b; margin-bottom: 20px; font-size: 16px;">Tambah Kontak / Medsos Baru</h3>
+      <h3>Tambah Kontak / Medsos Baru</h3>
       
       <form action="{{ route('tata_usaha.contacts.store') }}" method="POST">
         @csrf
@@ -156,30 +301,30 @@
           <label for="contact_value">Nilai / Kontak (Display Value)</label>
           <input type="text" name="value" id="contact_value" required placeholder="Contoh: @min3kra atau 0812..." class="input-field">
         </div>
-
+ 
         <div class="form-group">
           <label for="contact_link">Tautan URL Link</label>
           <input type="text" name="link" id="contact_link" required placeholder="Contoh: https://wa.me/628..." class="input-field">
         </div>
-
+ 
         <div class="form-group">
           <label for="contact_icon">Nama Ikon (Bootstrap Icon Name)</label>
           <input type="text" name="icon" id="contact_icon" placeholder="Contoh: whatsapp, instagram, phone, envelope" class="input-field">
-          <small style="font-size: 10px; color: #6b7280; display: block; margin-top: 4px;">Masukkan nama class Bootstrap icon (misal: 'whatsapp' untuk bi-whatsapp).</small>
+          <small style="font-size: 10px; color: rgba(255,255,255,0.7); display: block; margin-top: 4px;">Masukkan nama class Bootstrap icon (misal: 'whatsapp' untuk bi-whatsapp).</small>
         </div>
         
         <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px;">
-          <button type="button" style="background: #f3f4f6; color: #4b5563; padding: 10px 15px; border-radius: 6px; cursor: pointer; border: 1px solid #d1d5db;" onclick="closeCreateContactModal()">Batal</button>
+          <button type="button" class="btn-cancel" onclick="closeCreateContactModal()">Batal</button>
           <button type="submit" class="btn-submit">Simpan Kontak</button>
         </div>
       </form>
     </div>
   </div>
-
+ 
   <!-- Edit Kontak Modal Form -->
   <div class="modal" id="editContactModal">
     <div class="modal-content">
-      <h3 style="font-weight: bold; color: #064e3b; margin-bottom: 20px; font-size: 16px;">Ubah Kontak / Medsos</h3>
+      <h3>Ubah Kontak / Medsos</h3>
       
       <form id="editContactForm" method="POST">
         @csrf
@@ -193,19 +338,19 @@
           <label for="edit_contact_value">Nilai / Kontak (Display Value)</label>
           <input type="text" name="value" id="edit_contact_value" required placeholder="Kontak" class="input-field">
         </div>
-
+ 
         <div class="form-group">
           <label for="edit_contact_link">Tautan URL Link</label>
           <input type="text" name="link" id="edit_contact_link" required placeholder="URL Link" class="input-field">
         </div>
-
+ 
         <div class="form-group">
           <label for="edit_contact_icon">Nama Ikon (Bootstrap Icon Name)</label>
           <input type="text" name="icon" id="edit_contact_icon" placeholder="Bootstrap Icon Name" class="input-field">
         </div>
         
         <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px;">
-          <button type="button" style="background: #f3f4f6; color: #4b5563; padding: 10px 15px; border-radius: 6px; cursor: pointer; border: 1px solid #d1d5db;" onclick="closeEditContactModal()">Batal</button>
+          <button type="button" class="btn-cancel" onclick="closeEditContactModal()">Batal</button>
           <button type="submit" class="btn-submit">Simpan Perubahan</button>
         </div>
       </form>

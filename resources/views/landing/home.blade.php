@@ -132,16 +132,7 @@
       <div id="programs-container" class="grid grid-cols-3 gap-8 max-[900px]:grid-cols-2 max-[600px]:grid-cols-1">
         @foreach($programs as $program)
           @php
-            $link = '#';
-            $nameLower = strtolower($program->nama_program);
-            if (strpos($nameLower, 'khusus') !== false || strpos($nameLower, 'tahfidz') !== false) {
-                $link = route('landing.program-khusus');
-            } elseif (strpos($nameLower, 'unggulan') !== false || strpos($nameLower, 'sains') !== false) {
-                $link = route('landing.program-unggulan');
-            } elseif (strpos($nameLower, 'fullday') !== false || strpos($nameLower, 'reguler') !== false) {
-                $link = route('landing.program-fullday');
-            }
-
+            $link = route('landing.program-detail', $program->id_program);
             $imageUrl = $program->image ? asset($program->image) : asset('assets/landing/home/save-clip-app-475743711-1307796790563708-7462844736250640796-n-10.png');
           @endphp
           <div class="bg-[#eaeaea] rounded-xl overflow-hidden flex flex-col shadow-[0px_4px_10px_rgba(0,0,0,0.05)] border border-[#bdcab8] transition-all duration-250 ease hover:-translate-y-1.5 hover:shadow-[0px_12px_24px_rgba(6,78,59,0.12)]">

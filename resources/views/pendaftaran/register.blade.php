@@ -17,10 +17,15 @@
         <div class="bg-emerald-50 border border-emerald-500 text-emerald-800 p-5 rounded-xl mb-6 text-center">
           <h3 class="font-bold mb-2 text-[18px] text-emerald-700">Pendaftaran Berhasil!</h3>
           <p class="text-[14px] mb-3 text-emerald-800">Pendaftaran calon murid telah tersimpan dalam sistem.</p>
-          <div class="bg-white border border-dashed border-emerald-500 p-3 rounded-lg inline-block font-bold text-[16px] text-emerald-700">
-            Nomor Pendaftaran Anda: {{ session('success') }}
+          <p class="text-[12px] mt-3 text-emerald-800">Untuk mengecek status pendaftaran dan kelulusan, silakan gunakan <strong>NISN</strong> dan <strong>Nama Lengkap</strong> Anda pada halaman Cek Kelulusan.</p>
+          
+          <div class="mt-4 p-4 bg-white border border-emerald-200 rounded-lg">
+            <p class="text-[13px] text-emerald-800 font-bold mb-2">Silakan bergabung ke Grup WhatsApp Calon Wali Murid Resmi:</p>
+            <a href="{{ $landingContent['whatsapp_group_link'] ?? 'https://chat.whatsapp.com/ExampleLinkPMBMMIN3KRA' }}" target="_blank"
+               class="inline-flex items-center justify-center gap-2 bg-[#25d366] hover:bg-[#20ba5a] text-white font-bold py-2 px-5 rounded-lg text-[13px] no-underline transition-colors">
+              <span>💬</span> Gabung Grup WhatsApp PMBM
+            </a>
           </div>
-          <p class="text-[12px] mt-3 text-emerald-800">Harap simpan nomor pendaftaran ini untuk melakukan cek status kelulusan nanti.</p>
         </div>
       @endif
 

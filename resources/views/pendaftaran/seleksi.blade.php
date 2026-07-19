@@ -18,6 +18,9 @@
 
       <!-- Filter Bento -->
       <form action="{{ route('tata_usaha.seleksi') }}" method="GET" class="flex gap-4 max-[1024px]:flex-col flex-wrap w-full bg-white border border-[#bec9be] rounded-lg shadow-[0_1px_1px_rgba(0,0,0,0.05)] p-5 items-stretch">
+        @if(request()->filled('tahun'))
+          <input type="hidden" name="tahun" value="{{ request('tahun') }}">
+        @endif
         <!-- Search Input -->
         <div style="flex: 2; min-width: 250px; display: flex; flex-direction: column; gap: 8px;">
           <label class="text-[#3f4941] text-[12px] font-bold">Cari Calon Siswa</label>
@@ -74,20 +77,21 @@
       </script>
 
       <!-- Category Tabs -->
+      @php($queryParams = request()->only(['tahun']))
       <div class="flex gap-4 max-[900px]:flex-wrap">
-        <a href="{{ route('scores.index') }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
+        <a href="{{ route('scores.index', $queryParams) }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
           <span class="text-[#181c1c] text-[18px] font-bold">Pendaftaran</span>
         </a>
-        <a href="{{ route('tata_usaha.grup_whatsapp') }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
+        <a href="{{ route('tata_usaha.grup_whatsapp', $queryParams) }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
           <span class="text-[#181c1c] text-[18px] font-bold">Grup WhatsApp</span>
         </a>
-        <a href="{{ route('tata_usaha.verifikasi_offline') }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
+        <a href="{{ route('tata_usaha.verifikasi_offline', $queryParams) }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
           <span class="text-[#181c1c] text-[18px] font-bold">Verifikasi Offline</span>
         </a>
         <div class="flex-1 bg-[#006a3c] border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center">
           <span class="text-white text-[18px] font-bold">Seleksi</span>
         </div>
-        <a href="{{ route('tata_usaha.daftar_ulang') }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
+        <a href="{{ route('tata_usaha.daftar_ulang', $queryParams) }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
           <span class="text-[#181c1c] text-[18px] font-bold">Daftar Ulang</span>
         </a>
       </div>
@@ -126,9 +130,7 @@
               <!-- Assessment Scores -->
               <div>
                 @if($item->nilaiUjian)
-                  @php
-                    $n = $item->nilaiUjian;
-                  @endphp
+                  <?php $n = $item->nilaiUjian; ?>
                   <div class="grid grid-cols-3 gap-2" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
                     <div style="background-color: #f3f4f6; border-radius: 6px; padding: 6px; text-align: center; font-size: 12px;">
                       <span class="text-gray-500 block font-semibold" style="font-size: 10px;">Hafalan</span>
@@ -165,13 +167,13 @@
               <!-- DSS Recommendation -->
               <div class="text-center">
                 @if($item->nilaiUjian && $item->dssRanking)
-                  @php
+                  <?php
                     $rec = $item->dssRanking->rekomendasi;
                     $bg = '#f3f4f6'; $fg = '#374151';
                     if ($rec === 'Lulus Seleksi') { $bg = '#dcfce7'; $fg = '#15803d'; }
                     elseif ($rec === 'Cadangan') { $bg = '#fef3c7'; $fg = '#b45309'; }
                     elseif ($rec === 'Tidak Lulus') { $bg = '#fee2e2'; $fg = '#b91c1c'; }
-                  @endphp
+                  ?>
                   <span class="text-[12px] font-bold px-3 py-1.5 rounded-full" style="background-color: {{ $bg }}; color: {{ $fg }};">
                     {{ $rec }}
                   </span>
@@ -189,7 +191,7 @@
                   @csrf
                   <input type="hidden" name="type" value="kelulusan">
                   <select name="id_program" onchange="this.form.submit()" class="bg-gray-50 border border-[#bec9be] rounded px-2 py-1.5 text-[12px] text-gray-700 w-full cursor-pointer outline-none">
-                    @php($currentGradName = $item->program_kelulusan ?: ($item->program->nama_program ?? ''))
+                    <?php $currentGradName = $item->program_kelulusan ?: ($item->program->nama_program ?? ''); ?>
                     @foreach($programs as $p)
                       <option value="{{ $p->id_program }}" {{ $currentGradName === $p->nama_program ? 'selected' : '' }}>
                         {{ $p->nama_program }}
@@ -203,13 +205,13 @@
               <div class="flex flex-col gap-2 align-stretch">
                 <!-- Current status label -->
                 <div class="text-center mb-1">
-                  @php
+                  <?php
                     $valStatus = $item->status_kelulusan;
                     $lbl = 'Belum Ditetapkan'; $badgeColor = '#6b7280';
                     if ($valStatus === 'lulus') { $lbl = 'LULUS'; $badgeColor = '#10b981'; }
                     elseif ($valStatus === 'tidak_lulus') { $lbl = 'TIDAK LULUS'; $badgeColor = '#ef4444'; }
                     elseif ($valStatus === 'cadangan') { $lbl = 'CADANGAN'; $badgeColor = '#f59e0b'; }
-                  @endphp
+                  ?>
                   <span class="text-[10px] font-bold text-white px-2.5 py-0.5 rounded" style="background-color: {{ $badgeColor }};">
                     {{ $lbl }}
                   </span>

@@ -215,11 +215,12 @@ class DssService
                 $nilai = $item['nilai'];
                 $total = $item['total'];
 
-                // Evaluate conditions against dynamic program criteria
+                // Evaluate conditions against program's own criteria (Kriteria Persyaratan)
                 $passedThresholds = true;
-                foreach ($criteriaList as $crit) {
+
+                if ($program->jenis_penilaian) {
                     $scoreValue = 0;
-                    switch ($crit->nama_kriteria) {
+                    switch (strtolower($program->jenis_penilaian)) {
                         case 'hafalan':
                             $scoreValue = (int) ($nilai->nilai_hafalan ?: 0);
                             break;
@@ -239,9 +240,43 @@ class DssService
                             $scoreValue = (int) ($nilai->nilai_kemandirian ?: 0);
                             break;
                     }
-                    if ($scoreValue < (int) $crit->nilai_minimum) {
+
+                    if (!is_null($program->threshold_nilai_min) && $scoreValue < (int) $program->threshold_nilai_min) {
                         $passedThresholds = false;
-                        break; // failed a criterion
+                    }
+                    if (!is_null($program->threshold_nilai_max) && $scoreValue > (int) $program->threshold_nilai_max) {
+                        $passedThresholds = false;
+                    }
+                }
+
+                // Evaluate conditions against dynamic program criteria if any
+                if ($passedThresholds) {
+                    foreach ($criteriaList as $crit) {
+                        $scoreValue = 0;
+                        switch ($crit->nama_kriteria) {
+                            case 'hafalan':
+                                $scoreValue = (int) ($nilai->nilai_hafalan ?: 0);
+                                break;
+                            case 'aism':
+                                $scoreValue = (int) ($nilai->nilai_aism ?: 0);
+                                break;
+                            case 'iqro':
+                                $scoreValue = (int) ($nilai->nilai_iqro ?: 0);
+                                break;
+                            case 'calistung':
+                                $scoreValue = (int) ($nilai->nilai_calistung ?: 0);
+                                break;
+                            case 'dikte':
+                                $scoreValue = (int) ($nilai->nilai_dikte ?: 0);
+                                break;
+                            case 'kemandirian':
+                                $scoreValue = (int) ($nilai->nilai_kemandirian ?: 0);
+                                break;
+                        }
+                        if ($scoreValue < (int) $crit->nilai_minimum) {
+                            $passedThresholds = false;
+                            break; // failed a criterion
+                        }
                     }
                 }
 

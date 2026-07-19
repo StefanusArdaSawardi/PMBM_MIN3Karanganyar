@@ -86,7 +86,7 @@ class AdminDashboardController extends Controller
     {
         $this->autoExpireWaitlists();
         $programs = Program::all();
-        $activePeriod = PeriodePendaftaran::where('status', 'aktif')->first();
+        $activePeriod = $this->resolvePeriod($request);
         
         $query = Pendaftaran::with(['calonMurid.ayah', 'calonMurid.ibu', 'program'])
             ->join('calon_murids', 'pendaftarans.id_murid', '=', 'calon_murids.id_murid')
@@ -161,7 +161,7 @@ class AdminDashboardController extends Controller
     {
         $this->autoExpireWaitlists();
         $programs = Program::all();
-        $activePeriod = PeriodePendaftaran::where('status', 'aktif')->first();
+        $activePeriod = $this->resolvePeriod($request);
 
         $query = Pendaftaran::with(['calonMurid.ibu', 'program']);
 
@@ -207,6 +207,14 @@ class AdminDashboardController extends Controller
     public function detail($id)
     {
         $this->autoExpireWaitlists();
+        
+        // Auto-clear view cache to resolve any compiled Blade conflicts
+        try {
+            \Illuminate\Support\Facades\Artisan::call('view:clear');
+        } catch (\Exception $e) {
+            // Ignore if fails
+        }
+
         $pendaftaran = Pendaftaran::with(['calonMurid.ayah', 'calonMurid.ibu', 'program'])
             ->findOrFail($id);
         
@@ -221,7 +229,7 @@ class AdminDashboardController extends Controller
     public function verifikasiOffline(Request $request)
     {
         $programs = Program::all();
-        $activePeriod = PeriodePendaftaran::where('status', 'aktif')->first();
+        $activePeriod = $this->resolvePeriod($request);
 
         $query = Pendaftaran::with(['calonMurid.ayah', 'calonMurid.ibu', 'program'])
             ->join('calon_murids', 'pendaftarans.id_murid', '=', 'calon_murids.id_murid')
@@ -263,7 +271,7 @@ class AdminDashboardController extends Controller
         \App\Services\DssService::recalculateAll();
 
         $programs = Program::all();
-        $activePeriod = PeriodePendaftaran::where('status', 'aktif')->first();
+        $activePeriod = $this->resolvePeriod($request);
 
         $query = Pendaftaran::with(['calonMurid.ayah', 'calonMurid.ibu', 'program', 'nilaiUjian', 'dssRanking'])
             ->join('calon_murids', 'pendaftarans.id_murid', '=', 'calon_murids.id_murid')
@@ -302,7 +310,7 @@ class AdminDashboardController extends Controller
     public function daftarUlang(Request $request)
     {
         $programs = Program::all();
-        $activePeriod = PeriodePendaftaran::where('status', 'aktif')->first();
+        $activePeriod = $this->resolvePeriod($request);
 
         $query = Pendaftaran::with(['calonMurid.ayah', 'calonMurid.ibu', 'program'])
             ->join('calon_murids', 'pendaftarans.id_murid', '=', 'calon_murids.id_murid')
@@ -412,10 +420,10 @@ class AdminDashboardController extends Controller
                 
             case 'konfirmasi_onsite':
                 $request->validate([
-                    'status_konfirmasi' => 'required|string|in:terkonfirmasi,mengundurkan_diri'
+                    'status_konfirmasi' => 'required|string|in:terkonfirmasi,mengundurkan_diri,belum_konfirmasi'
                 ]);
                 $pendaftaran->status_konfirmasi = $request->status_konfirmasi;
-                $pendaftaran->tanggal_konfirmasi = now();
+                $pendaftaran->tanggal_konfirmasi = $request->status_konfirmasi === 'belum_konfirmasi' ? null : now();
                 break;
                 
             case 'promosi_cadangan':
@@ -430,7 +438,7 @@ class AdminDashboardController extends Controller
         }
  
         $pendaftaran->save();
-        return redirect()->route('tata_usaha.detail', $id)->with('success', 'Status pendaftaran berhasil diperbarui.');
+        return back()->with('success', 'Status pendaftaran berhasil diperbarui.');
     }
 
     /**
@@ -470,7 +478,16 @@ class AdminDashboardController extends Controller
     public function showContacts()
     {
         $contacts = \App\Models\SchoolContact::all();
-        return view('master.contacts', compact('contacts'));
+
+        // Load WhatsApp group link from landing content
+        $contentPath = storage_path('app/landing_content.json');
+        $landingContent = [];
+        if (file_exists($contentPath)) {
+            $landingContent = json_decode(file_get_contents($contentPath), true) ?? [];
+        }
+        $whatsappGroupLink = $landingContent['whatsapp_group_link'] ?? '';
+
+        return view('master.contacts', compact('contacts', 'whatsappGroupLink'));
     }
 
     /**
@@ -517,22 +534,30 @@ class AdminDashboardController extends Controller
     public function updateContentText(Request $request)
     {
         $request->validate([
-            'main_heading' => 'required|string',
-            'sub_heading' => 'required|string',
+            'main_heading' => 'nullable|string',
+            'sub_heading' => 'nullable|string',
+            'whatsapp_group_link' => 'nullable|url',
         ]);
 
         $contentPath = storage_path('app/landing_content.json');
         $content = [];
         if (file_exists($contentPath)) {
-            $content = json_decode(file_get_contents($contentPath), true);
+            $content = json_decode(file_get_contents($contentPath), true) ?? [];
         }
 
-        $content['main_heading'] = strip_tags($request->main_heading);
-        $content['sub_heading'] = strip_tags($request->sub_heading);
+        if ($request->filled('main_heading')) {
+            $content['main_heading'] = strip_tags($request->main_heading);
+        }
+        if ($request->filled('sub_heading')) {
+            $content['sub_heading'] = strip_tags($request->sub_heading);
+        }
+        if ($request->filled('whatsapp_group_link')) {
+            $content['whatsapp_group_link'] = strip_tags($request->whatsapp_group_link);
+        }
 
         file_put_contents($contentPath, json_encode($content, JSON_PRETTY_PRINT));
 
-        return redirect()->route('tata_usaha.content')->with('success', 'Teks utama landing page berhasil diperbarui.');
+        return back()->with('success', 'Data berhasil diperbarui.');
     }
 
     /**
@@ -563,7 +588,9 @@ class AdminDashboardController extends Controller
     public function updateTerms(Request $request)
     {
         $request->validate([
-            'terms_content' => 'required|string',
+            'terms_general' => 'required|string',
+            'terms_documents' => 'required|string',
+            'terms_optional' => 'required|string',
         ]);
 
         $contentPath = storage_path('app/landing_content.json');
@@ -572,7 +599,9 @@ class AdminDashboardController extends Controller
             $content = json_decode(file_get_contents($contentPath), true);
         }
 
-        $content['terms_content'] = $request->terms_content;
+        $content['terms_general'] = $request->terms_general;
+        $content['terms_documents'] = $request->terms_documents;
+        $content['terms_optional'] = $request->terms_optional;
 
         file_put_contents($contentPath, json_encode($content, JSON_PRETTY_PRINT));
 
@@ -1214,6 +1243,19 @@ class AdminDashboardController extends Controller
 
 
     /**
+     * Resolve the period to use for data queries.
+     * If 'tahun' is provided in the request, find the matching period by year.
+     * Otherwise, fall back to the currently active period.
+     */
+    private function resolvePeriod(Request $request): ?PeriodePendaftaran
+    {
+        if ($request->filled('tahun')) {
+            return PeriodePendaftaran::where('tahun', $request->tahun)->first();
+        }
+        return PeriodePendaftaran::where('status', 'aktif')->first();
+    }
+
+    /**
      * Auto expire waitlisted (Cadangan) candidates and unconfirmed Lulus candidates.
      */
     private function autoExpireWaitlists()
@@ -1248,7 +1290,7 @@ class AdminDashboardController extends Controller
             'answer' => $request->answer,
         ]);
  
-        return redirect()->route('tata_usaha.content')->with('success_faq', 'FAQ baru berhasil ditambahkan.');
+        return redirect()->route('tata_usaha.faqs.index')->with('success', 'FAQ baru berhasil ditambahkan.');
     }
  
     /**
@@ -1267,7 +1309,7 @@ class AdminDashboardController extends Controller
             'answer' => $request->answer,
         ]);
  
-        return redirect()->route('tata_usaha.content')->with('success_faq', 'FAQ berhasil diperbarui.');
+        return redirect()->route('tata_usaha.faqs.index')->with('success', 'FAQ berhasil diperbarui.');
     }
  
     /**
@@ -1278,7 +1320,7 @@ class AdminDashboardController extends Controller
         $faq = \App\Models\Faq::findOrFail($id);
         $faq->delete();
  
-        return redirect()->route('tata_usaha.content')->with('success_faq', 'FAQ berhasil dihapus.');
+        return redirect()->route('tata_usaha.faqs.index')->with('success', 'FAQ berhasil dihapus.');
     }
  
     /**
@@ -1300,7 +1342,7 @@ class AdminDashboardController extends Controller
             'icon' => $request->icon,
         ]);
  
-        return redirect()->route('tata_usaha.content')->with('success_contact', 'Kontak/Media Sosial baru berhasil ditambahkan.');
+        return redirect()->route('tata_usaha.contacts.index')->with('success', 'Kontak/Media Sosial baru berhasil ditambahkan.');
     }
  
     /**
@@ -1323,7 +1365,7 @@ class AdminDashboardController extends Controller
             'icon' => $request->icon,
         ]);
  
-        return redirect()->route('tata_usaha.content')->with('success_contact', 'Kontak/Media Sosial berhasil diperbarui.');
+        return redirect()->route('tata_usaha.contacts.index')->with('success', 'Kontak/Media Sosial berhasil diperbarui.');
     }
  
     /**
@@ -1334,7 +1376,7 @@ class AdminDashboardController extends Controller
         $contact = \App\Models\SchoolContact::findOrFail($id);
         $contact->delete();
  
-        return redirect()->route('tata_usaha.content')->with('success_contact', 'Kontak/Media Sosial berhasil dihapus.');
+        return redirect()->route('tata_usaha.contacts.index')->with('success', 'Kontak/Media Sosial berhasil dihapus.');
     }
 
 
@@ -1344,6 +1386,11 @@ class AdminDashboardController extends Controller
      */
     public function publishGraduation(Request $request)
     {
+        // Run pending migrations automatically
+        try {
+            \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        } catch (\Exception $e) {}
+
         $activePeriod = \App\Models\PeriodePendaftaran::where('status', 'aktif')->first();
         if (!$activePeriod) {
             return back()->with('error', 'Tidak ada periode pendaftaran aktif untuk mempublikasikan pengumuman.');

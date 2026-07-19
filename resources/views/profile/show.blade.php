@@ -10,6 +10,12 @@
     <!-- Content Wrapper -->
     <div class="absolute left-[380px] top-[180px] right-10 flex flex-col gap-6 z-0 max-[1024px]:left-5 max-[1024px]:right-5 max-[1024px]:top-[150px]">
 
+      <!-- Back Button Link -->
+      <a href="{{ route('scores.index') }}" class="flex items-center gap-2 text-[#3f4941] text-[15px] no-underline w-fit hover:underline font-bold" style="font-family: 'Manrope-Bold', sans-serif;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5m0 0l6 6m-6-6l6-6"/></svg>
+        Kembali ke Halaman Pendaftaran
+      </a>
+
       <!-- Page Header -->
       <div class="flex flex-col gap-1">
         <div class="text-[#181c1c] text-[28px] font-bold tracking-[-0.56px]" style="font-family: 'Manrope-Bold', sans-serif;">Detail Registrasi {{ $student->nama_murid }}</div>
@@ -136,7 +142,6 @@
             </div>
           @endif
 
-          @unless($stepWaActive || $stepWaCompleted)
             <!-- Documents Checklist Card -->
             <div class="bg-white border border-[#bfc9c0] rounded-xl p-6 flex flex-col gap-4">
               <div class="border-b border-[#bfc9c0] pb-4 flex items-center justify-between">
@@ -240,7 +245,6 @@
                 </div>
               @endif
             </div>
-          @endunless
 
           @if($step2Active)
             <!-- Verifikasi Offline: Admin Action Button -->
@@ -428,6 +432,7 @@
             @endforeach
           </div>
 
+          @if($hasil)
           <!-- Interview Summaries -->
           <div class="grid grid-cols-2 gap-6 max-[900px]:grid-cols-1">
             <div class="bg-white border border-black/5 shadow-sm rounded-xl p-6 flex flex-col gap-4">
@@ -466,6 +471,11 @@
               @endif
             </div>
           </div>
+          @else
+          <div class="bg-amber-50 border border-amber-200 rounded-xl p-6 text-amber-700 text-center text-[14px]">
+            ⚠️ Data wawancara dan observasi belum diinput oleh panitia.
+          </div>
+          @endif
         @endif
 
         <!-- Action Footer -->

@@ -234,11 +234,6 @@
         </div>
       @endif
       
-      <!-- Tabs Navigation -->
-      <div style="display: flex; gap: 10px; border-bottom: 2px solid #becabe; padding-bottom: 8px; margin-bottom: 20px; flex-wrap: wrap;">
-        <button type="button" onclick="switchTab('tab-landing')" id="btn-tab-landing" class="tab-btn active" style="font-family: inherit; font-size: 13px; font-weight: 700; color: #008744; padding: 10px 18px; border-radius: 8px; cursor: pointer; transition: all 0.2s; border: 1px solid #becabe; background-color: #eef5ed; outline: none;">📝 Konten Landing</button>
-        <button type="button" onclick="switchTab('tab-programs')" id="btn-tab-programs" class="tab-btn" style="font-family: inherit; font-size: 13px; font-weight: 700; color: #475569; padding: 10px 18px; border-radius: 8px; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; background: none; outline: none;">🏫 Jalur Pendaftaran</button>
-      </div>
 
       <!-- TAB 1: KONTEN LANDING -->
       <div id="tab-landing" class="tab-pane active" style="display: flex; flex-direction: column; gap: 24px;">
@@ -276,10 +271,10 @@
                 </div>
               </div>
               
-              <div class="container7" style="border: none; padding: 0;">
+              <div class="container7" style="border: none; padding: 0; margin-top: 10px;">
                 <button type="submit" class="btn-submit" style="border: none;">
                   <img src="{{ asset('assets/admin/landing-manage/container7.svg') }}" alt="Save" />
-                  <span>Update Teks</span>
+                  <span>Update Teks Landing</span>
                 </button>
               </div>
             </form>
@@ -298,8 +293,20 @@
             
             <form action="{{ route('tata_usaha.content.update_terms') }}" method="POST" style="margin-top: 15px; width: 100%; display: flex; flex-direction: column; gap: 15px; align-self: stretch;">
               @csrf
-              <div class="textarea2">
-                <textarea name="terms_content" class="textarea-field" required style="height: 140px;">{{ $content['terms_content'] ?? "1. Fotocopy Akte Kelahiran (2 Lembar)\n2. Fotocopy Kartu Keluarga (2 Lembar)\n3. Pas Foto Berwarna 3x4 (4 Lembar)\n4. Surat Keterangan Sehat\n5. Berusia minimal 6 tahun per 1 Juli 2026" }}</textarea>
+              
+              <div class="form-group">
+                <label style="font-size: 11px; font-weight: bold; color: #064e3b; text-transform: uppercase;">1. Persyaratan Wajib Umum (Pisahkan dengan baris baru)</label>
+                <textarea name="terms_general" class="textarea-field" required style="height: 80px; width: 100%; box-sizing: border-box; margin-top: 5px;">{{ $content['terms_general'] ?? "Umur minimal 6 Tahun per Juli 2025\nMemiliki email Aktif" }}</textarea>
+              </div>
+
+              <div class="form-group">
+                <label style="font-size: 11px; font-weight: bold; color: #064e3b; text-transform: uppercase;">2. Persyaratan Wajib Dokumen (Pisahkan dengan baris baru)</label>
+                <textarea name="terms_documents" class="textarea-field" required style="height: 100px; width: 100%; box-sizing: border-box; margin-top: 5px;">{{ $content['terms_documents'] ?? "Pas Foto Berwarna (JPG, PNG dan JPEG)\nKartu Keluarga Asli (PDF)\nAkta Kelahiran Asli (PDF)\nKartu Identitas Anak (PDF)\nNISN (Dari TK asal)" }}</textarea>
+              </div>
+
+              <div class="form-group">
+                <label style="font-size: 11px; font-weight: bold; color: #064e3b; text-transform: uppercase;">3. Persyaratan Tambahan (Opsional) (Pisahkan dengan baris baru)</label>
+                <textarea name="terms_optional" class="textarea-field" required style="height: 80px; width: 100%; box-sizing: border-box; margin-top: 5px;">{{ $content['terms_optional'] ?? "Piagam Penghargaan Juara 1/2/3 minimal tingkat Kecamatan (Jika memiliki) (PDF)" }}</textarea>
               </div>
               
               <button type="submit" class="btn-submit" style="height: 40px; border: none; background: #064e3b; width: 100%;">
@@ -307,7 +314,7 @@
               </button>
             </form>
           </div>
-        </div></div>
+        </div>
 
         <div style="display: flex; flex-direction: row; gap: 24px; width: 100%; align-items: stretch; height: auto; flex-wrap: wrap;">
           <!-- Background customization form -->
@@ -423,158 +430,7 @@
           </div>
         </div>
       </div>
-
-      <!-- TAB 2: JALUR PENDAFTARAN -->
-      <div id="tab-programs" class="tab-pane" style="display: none; flex-direction: column; gap: 24px;">
-        <!-- Section 3: Kategori Program -->
-        <div class="section-3-study-program-categories" style="position: relative; top: auto; left: auto; right: auto; width: 100%; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05); margin: 0; padding-bottom: 20px; height: auto; min-height: auto;">
-          <div class="container13">
-            <div class="container14">
-              <img class="overlay3" src="{{ asset('assets/admin/landing-manage/overlay2.svg') }}" />
-              <div class="heading-33">
-                <div class="text" style="position: static;">Kategori Program Studi / Jalur</div>
-              </div>
-            </div>
-            <div class="button3" style="cursor: pointer;" onclick="openCreateProgramModal()">
-              <img class="container15" src="{{ asset('assets/admin/landing-manage/container16.svg') }}" />
-            </div>
-          </div>
-          
-          <div class="program-table-container">
-            <table class="program-table">
-              <thead>
-                <tr>
-                  <th style="width: 25%;">Nama Program</th>
-                  <th style="width: 45%;">Deskripsi / Persyaratan</th>
-                  <th style="width: 15%;">Kuota</th>
-                  <th style="width: 15%; text-align: center;">Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
-                @foreach($programs as $program)
-                  <tr>
-                    <td style="font-weight: bold; color: #121c2a;">{{ $program->nama_program }}</td>
-                    <td>{{ $program->persyaratan ?? 'Fokus pendalaman kurikulum.' }}</td>
-                    <td style="font-weight: bold; color: #298752;">{{ $program->kuota_program }} Siswa</td>
-                    <td>
-                      @php
-                        $pWeights = $program->dss_weights ?? [
-                            'hafalan' => 30,
-                            'wawancara' => 20,
-                            'calistung' => 20,
-                            'tasmi' => 15,
-                            'mandiri' => 15
-                        ];
-                      @endphp
-                      <div style="display: flex; gap: 12px; justify-content: center; align-items: center;">
-                        <button type="button" onclick="openEditProgramModal('{{ $program->id_program }}', '{{ addslashes($program->nama_program) }}', '{{ addslashes($program->persyaratan) }}', '{{ $program->kuota_program }}', '{{ $program->image ? asset($program->image) : '' }}', {{ $pWeights['hafalan'] }}, {{ $pWeights['wawancara'] }}, {{ $pWeights['calistung'] }}, {{ $pWeights['tasmi'] }}, {{ $pWeights['mandiri'] }})" style="color: #298752; font-weight: bold; cursor: pointer; background: none; border: none; font-family: inherit; font-size: 13px;">Edit</button>
-                        <button type="button" onclick="confirmDeleteProgram('{{ $program->id_program }}', '{{ addslashes($program->nama_program) }}')" style="color: #ef4444; font-weight: bold; cursor: pointer; background: none; border: none; font-family: inherit; font-size: 13px;">Hapus</button>
-                      </div>
-                    </td>
-                  </tr>
-                @endforeach
-              </tbody>
-            </table>
-        </div>
-      </div>
     </div>
-
-  <!-- Tambah Program Modal Form -->
-  <div class="modal" id="createProgramModal">
-    <div class="modal-content" style="width: 500px; max-height: 90vh; overflow-y: auto;">
-      <h3 style="font-weight: bold; color: #064e3b; margin-bottom: 20px; font-size: 16px;">Tambah Program Baru</h3>
-      
-      <form action="{{ route('tata_usaha.programs.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        
-        <div class="form-group">
-          <label for="nama_program">Nama Program</label>
-          <input type="text" name="nama_program" id="nama_program" required placeholder="Contoh: Program Unggulan / Sains">
-        </div>
-        
-        <div class="form-group">
-          <label for="persyaratan">Deskripsi / Persyaratan</label>
-          <textarea name="persyaratan" id="persyaratan" required placeholder="Deskripsi program..." style="height: 80px; resize: none;"></textarea>
-        </div>
-        
-        <div class="form-group">
-          <label for="kuota_program">Kuota (Siswa)</label>
-          <input type="number" name="kuota_program" id="kuota_program" required placeholder="Contoh: 50" min="0">
-        </div>
-        
-        <div class="form-group">
-          <label for="image">Foto / Image Program</label>
-          <input type="file" name="image" id="image" accept="image/*" style="padding: 6px 12px;">
-        </div>
- 
-        <div style="border-top: 1px solid #e5e7eb; padding-top: 15px; margin-top: 15px;">
-          <h4 style="font-size: 11px; font-weight: bold; color: #064e3b; margin-bottom: 10px; text-transform: uppercase;">Kriteria Persyaratan Kelulusan</h4>
-          <div id="createCriteriaContainer" style="display: flex; flex-direction: column; gap: 10px;">
-            <!-- Dynamic rows will be inserted here -->
-          </div>
-          <button type="button" onclick="addCriteriaRow('createCriteriaContainer')" style="margin-top: 10px; background: #eef5ed; color: #005b31; font-weight: bold; padding: 6px 12px; border: 1px dashed #005b31; border-radius: 6px; cursor: pointer; font-size: 11px; width: 100%;">+ Tambah Kriteria</button>
-        </div>
-        
-        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 25px;">
-          <button type="button" style="background: #f3f4f6; color: #4b5563; padding: 10px 15px; border-radius: 6px; cursor: pointer; border: 1px solid #d1d5db;" onclick="closeCreateProgramModal()">Batal</button>
-          <button type="submit" style="background: #298752; color: #ffffff; padding: 10px 15px; border-radius: 6px; cursor: pointer;">Simpan Program</button>
-        </div>
-      </form>
-    </div>
-  </div>
- 
-  <!-- Edit Program Modal Form -->
-  <div class="modal" id="editProgramModal">
-    <div class="modal-content" style="width: 500px; max-height: 90vh; overflow-y: auto;">
-      <h3 id="editProgramTitle" style="font-weight: bold; color: #064e3b; margin-bottom: 20px; font-size: 16px;">Ubah Program Pendidikan</h3>
-      
-      <form id="editProgramForm" method="POST" enctype="multipart/form-data">
-        @csrf
-        
-        <div class="form-group">
-          <label for="edit_nama_program">Nama Program</label>
-          <input type="text" name="nama_program" id="edit_nama_program" required placeholder="Nama Program">
-        </div>
-        
-        <div class="form-group">
-          <label for="edit_persyaratan">Deskripsi / Persyaratan</label>
-          <textarea name="persyaratan" id="edit_persyaratan" required placeholder="Deskripsi program..." style="height: 80px; resize: none;"></textarea>
-        </div>
-        
-        <div class="form-group">
-          <label for="edit_kuota_program">Kuota (Siswa)</label>
-          <input type="number" name="kuota_program" id="edit_kuota_program" required placeholder="Kuota" min="0">
-        </div>
-        
-        <div class="form-group">
-          <label for="edit_image">Foto / Image Program</label>
-          <input type="file" name="image" id="edit_image" accept="image/*" style="padding: 6px 12px;">
-          <div id="editProgramImageContainer" style="display: none; margin-top: 10px;">
-            <span style="font-size: 11px; color: #6b7280; display: block; margin-bottom: 4px;">Foto Saat Ini:</span>
-            <img id="editProgramImagePreview" src="" style="width: 100%; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid #becabe;">
-          </div>
-        </div>
- 
-        <div style="border-top: 1px solid #e5e7eb; padding-top: 15px; margin-top: 15px;">
-          <h4 style="font-size: 11px; font-weight: bold; color: #064e3b; margin-bottom: 10px; text-transform: uppercase;">Kriteria Persyaratan Kelulusan</h4>
-          <div id="editCriteriaContainer" style="display: flex; flex-direction: column; gap: 10px;">
-            <!-- Dynamic rows will be inserted here -->
-          </div>
-          <button type="button" onclick="addCriteriaRow('editCriteriaContainer')" style="margin-top: 10px; background: #eef5ed; color: #005b31; font-weight: bold; padding: 6px 12px; border: 1px dashed #005b31; border-radius: 6px; cursor: pointer; font-size: 11px; width: 100%;">+ Tambah Kriteria</button>
-        </div>
-        
-        <div style="display: flex; justify-content: justify-content-end; gap: 10px; margin-top: 25px;">
-          <button type="button" style="background: #f3f4f6; color: #4b5563; padding: 10px 15px; border-radius: 6px; cursor: pointer; border: 1px solid #d1d5db;" onclick="closeEditProgramModal()">Batal</button>
-          <button type="submit" style="background: #298752; color: #ffffff; padding: 10px 15px; border-radius: 6px; cursor: pointer;">Simpan Perubahan</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <!-- Form Hapus Program Tersembunyi -->
-  <form id="deleteProgramForm" method="POST" style="display: none;">
-    @csrf
-  </form>
 
   <!-- Edit Rundown Modal Form -->
   <div class="modal" id="editRundownModal">
@@ -873,8 +729,7 @@
 
     document.addEventListener('DOMContentLoaded', function() {
       let activeTab = 'tab-landing';
-      const hashTabMap = { '#program': 'tab-programs' };
-      activeTab = hashTabMap[window.location.hash] || localStorage.getItem('cms_active_tab') || 'tab-landing';
+      activeTab = localStorage.getItem('cms_active_tab') || 'tab-landing';
       switchTab(activeTab);
     });
   </script>

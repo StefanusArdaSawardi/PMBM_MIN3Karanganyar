@@ -91,7 +91,7 @@ class PeriodePendaftaranController extends Controller
         $validated['jumlah_program'] = count($request->input('id_programs', []));
 
         // Pastikan hanya satu periode aktif
-        if ($validated['status'] === 'aktif') {
+        if ($periode->status === 'aktif') {
             PeriodePendaftaran::where('status', 'aktif')->where('id', '!=', $periode->id)->update(['status' => 'nonaktif']);
         }
 

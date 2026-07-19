@@ -13,11 +13,14 @@
       <!-- Page Header -->
       <div class="flex flex-col gap-1">
         <div class="text-[#181c1c] text-[28px] font-bold tracking-[-0.56px]" style="font-family: 'Manrope-Bold', sans-serif;">Pendaftaran System</div>
-        <div class="text-[#3f4941] text-[14px]">Kelola dan pantau seluruh pendaftar calon siswa baru MIN 3 Karanganyar periode aktif.</div>
+        <div class="text-[#3f4941] text-[14px]">Kelola dan pantau seluruh pendaftar calon siswa baru MIN 3 Karanganyar periode {{ $activePeriod ? $activePeriod->tahun : 'aktif' }}.</div>
       </div>
 
       <!-- Filter Bento -->
       <form action="{{ route('scores.index') }}" method="GET" class="flex gap-4 max-[1024px]:flex-col flex-wrap w-full bg-white border border-[#bec9be] rounded-lg shadow-[0_1px_1px_rgba(0,0,0,0.05)] p-5 items-stretch">
+        @if(request()->filled('tahun'))
+          <input type="hidden" name="tahun" value="{{ request('tahun') }}">
+        @endif
         <!-- Search Input -->
         <div style="flex: 2; min-width: 250px; display: flex; flex-direction: column; gap: 8px;">
           <label class="text-[#3f4941] text-[12px] font-bold">Cari Calon Siswa</label>
@@ -96,20 +99,21 @@
       </script>
 
       <!-- Category Tabs -->
+      @php($queryParams = request()->only(['tahun']))
       <div class="flex gap-4 max-[900px]:flex-wrap">
         <div class="flex-1 bg-[#006a3c] border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center">
           <span class="text-white text-[18px] font-bold">Pendaftaran</span>
         </div>
-        <a href="{{ route('tata_usaha.grup_whatsapp') }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
+        <a href="{{ route('tata_usaha.grup_whatsapp', $queryParams) }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
           <span class="text-[#181c1c] text-[18px] font-bold">Grup WhatsApp</span>
         </a>
-        <a href="#" onclick="event.preventDefault(); alert('Pilih tab Pendaftaran dan cari nama murid untuk melakukan verifikasi berkas onsite.');" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
+        <a href="{{ route('tata_usaha.verifikasi_offline', $queryParams) }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
           <span class="text-[#181c1c] text-[18px] font-bold">Verifikasi Offline</span>
         </a>
-        <a href="#" onclick="event.preventDefault(); alert('Gunakan tab ini untuk melihat detail hasil Ujian dan Wawancara di profile murid.');" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
+        <a href="{{ route('tata_usaha.seleksi', $queryParams) }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
           <span class="text-[#181c1c] text-[18px] font-bold">Seleksi</span>
         </a>
-        <a href="#" onclick="event.preventDefault(); alert('Daftar ulang dikonfirmasi secara onsite setelah penetapan kelulusan.');" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
+        <a href="{{ route('tata_usaha.daftar_ulang', $queryParams) }}" class="flex-1 bg-white border border-[#bec9be] rounded-sm h-[66px] flex items-center justify-center no-underline hover:bg-gray-50">
           <span class="text-[#181c1c] text-[18px] font-bold">Daftar Ulang</span>
         </a>
       </div>

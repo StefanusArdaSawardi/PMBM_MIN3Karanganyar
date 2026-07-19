@@ -45,8 +45,11 @@
     <a href="{{ route('tata_usaha.periode.index') }}" class="{{ $activeFolder === 'periode' ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[70px] flex items-center pl-14 pr-9 no-underline">
       <span class="{{ $activeFolder === 'periode' ? 'text-white' : 'text-[#005b31]' }} text-[16px] font-bold">Data Periode</span>
     </a>
-    <a href="{{ route('tata_usaha.program.index') }}" class="{{ $activeFolder === 'program' || $activeFolder === 'landing-manage' ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[70px] flex items-center pl-14 pr-9 no-underline">
-      <span class="{{ $activeFolder === 'program' || $activeFolder === 'landing-manage' ? 'text-white' : 'text-[#005b31]' }} text-[16px] font-bold">Kelola Program</span>
+    <a href="{{ route('tata_usaha.program.index') }}" class="{{ $activeFolder === 'program' ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[70px] flex items-center pl-14 pr-9 no-underline">
+      <span class="{{ $activeFolder === 'program' ? 'text-white' : 'text-[#005b31]' }} text-[16px] font-bold">Kelola Program</span>
+    </a>
+    <a href="{{ route('tata_usaha.content') }}" class="{{ $activeFolder === 'landing-manage' ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[70px] flex items-center pl-14 pr-9 no-underline">
+      <span class="{{ $activeFolder === 'landing-manage' ? 'text-white' : 'text-[#005b31]' }} text-[16px] font-bold">Kelola CMS Utama</span>
     </a>
     <a href="{{ route('tata_usaha.guide') }}" class="{{ $activeFolder === 'guide-manage' ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[70px] flex items-center pl-14 pr-9 no-underline">
       <span class="{{ $activeFolder === 'guide-manage' ? 'text-white' : 'text-[#005b31]' }} text-[16px] font-bold">Guide Pendaftaran</span>

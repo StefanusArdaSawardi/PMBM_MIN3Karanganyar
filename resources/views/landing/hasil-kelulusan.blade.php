@@ -73,7 +73,7 @@
                 <span class="text-black font-bold">klik tombol di bawah</span>
                 untuk masuk ke grup WhatsApp resmi koordinasi wali murid baru.
               </p>
-              <a href="https://chat.whatsapp.com/ExampleLinkPMBMMIN3KRA" target="_blank"
+              <a href="{{ $landingContent['whatsapp_group_link'] ?? 'https://chat.whatsapp.com/ExampleLinkPMBMMIN3KRA' }}" target="_blank"
                  class="inline-flex items-center justify-center min-w-[248px] h-[54px] px-6 rounded-[10px] text-[14px] font-bold text-white no-underline border border-black/20 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_6px_14px_rgba(0,0,0,0.15)]"
                  style="font-family: 'PlusJakartaSans-Bold', sans-serif; background: #47a26a;">Masuk Ke Grup WhatsApp Resmi</a>
 
@@ -134,7 +134,7 @@
               @endif
 
               <div class="mt-5">
-                <a href="https://chat.whatsapp.com/ExampleLinkPMBMMIN3KRA" target="_blank"
+                <a href="{{ $landingContent['whatsapp_group_link'] ?? 'https://chat.whatsapp.com/ExampleLinkPMBMMIN3KRA' }}" target="_blank"
                    class="inline-flex items-center justify-center min-w-[248px] h-[54px] px-6 rounded-[10px] text-[14px] font-bold text-white no-underline border border-black/20 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_6px_14px_rgba(0,0,0,0.15)]"
                    style="font-family: 'PlusJakartaSans-Bold', sans-serif; background: #47a26a;">Masuk Ke Grup WhatsApp Terbaru</a>
               </div>

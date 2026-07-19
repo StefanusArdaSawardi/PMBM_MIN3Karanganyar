@@ -17,6 +17,14 @@ class ProgramManagementController extends Controller
 
     public function create()
     {
+        // Run any pending migrations automatically
+        try {
+            \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        } catch (\Exception $e) {}
+
+        try {
+            \Illuminate\Support\Facades\Artisan::call('view:clear');
+        } catch (\Exception $e) {}
         return view('pengaturan.program.form', ['program' => null]);
     }
 
@@ -29,9 +37,9 @@ class ProgramManagementController extends Controller
             'poin_unggulan.*' => 'nullable|string|max:255',
             'kuota_program' => 'required|integer|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
-            'jenis_penilaian' => 'nullable|string|max:255',
-            'threshold_nilai_min' => 'nullable|integer|min:0|max:100',
-            'threshold_nilai_max' => 'nullable|integer|min:0|max:100|gte:threshold_nilai_min',
+            'criteria' => 'nullable|array',
+            'criteria.*.nama_kriteria' => 'required|string|in:hafalan,aism,iqro,calistung,dikte,kemandirian',
+            'criteria.*.nilai_minimum' => 'required|integer|min:0|max:100',
         ]);
 
         $validated['poin_unggulan'] = array_values(array_filter($validated['poin_unggulan'] ?? []));
@@ -41,15 +49,41 @@ class ProgramManagementController extends Controller
             $request->file('image')->move(public_path('assets/programs'), basename($validated['image']));
         }
 
-        Program::create($validated);
+        // Reset obsolete single values
+        $validated['jenis_penilaian'] = null;
+        $validated['threshold_nilai_min'] = null;
+        $validated['threshold_nilai_max'] = null;
+
+        $program = Program::create($validated);
+
+        if (!empty($request->criteria)) {
+            foreach ($request->criteria as $crit) {
+                if (!empty($crit['nama_kriteria'])) {
+                    $program->criteria()->create([
+                        'nama_kriteria' => $crit['nama_kriteria'],
+                        'nilai_minimum' => $crit['nilai_minimum'] ?? 0,
+                    ]);
+                }
+            }
+        }
+
+        // Recalculate rankings based on new criteria
+        DssService::recalculateAll();
 
         return redirect()->route('tata_usaha.program.index')->with('success', 'Program berhasil ditambahkan.');
     }
 
     public function edit($id)
     {
-        $program = Program::findOrFail($id);
+        // Run any pending migrations automatically
+        try {
+            \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        } catch (\Exception $e) {}
 
+        $program = Program::findOrFail($id);
+        try {
+            \Illuminate\Support\Facades\Artisan::call('view:clear');
+        } catch (\Exception $e) {}
         return view('pengaturan.program.form', compact('program'));
     }
 
@@ -64,9 +98,9 @@ class ProgramManagementController extends Controller
             'poin_unggulan.*' => 'nullable|string|max:255',
             'kuota_program' => 'required|integer|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
-            'jenis_penilaian' => 'nullable|string|max:255',
-            'threshold_nilai_min' => 'nullable|integer|min:0|max:100',
-            'threshold_nilai_max' => 'nullable|integer|min:0|max:100|gte:threshold_nilai_min',
+            'criteria' => 'nullable|array',
+            'criteria.*.nama_kriteria' => 'required|string|in:hafalan,aism,iqro,calistung,dikte,kemandirian',
+            'criteria.*.nilai_minimum' => 'required|integer|min:0|max:100',
         ]);
 
         $validated['poin_unggulan'] = array_values(array_filter($validated['poin_unggulan'] ?? []));
@@ -79,7 +113,29 @@ class ProgramManagementController extends Controller
             $request->file('image')->move(public_path('assets/programs'), basename($validated['image']));
         }
 
+        // Reset obsolete single values
+        $validated['jenis_penilaian'] = null;
+        $validated['threshold_nilai_min'] = null;
+        $validated['threshold_nilai_max'] = null;
+
         $program->update($validated);
+
+        // Delete old criteria and save new ones
+        $program->criteria()->delete();
+
+        if (!empty($request->criteria)) {
+            foreach ($request->criteria as $crit) {
+                if (!empty($crit['nama_kriteria'])) {
+                    $program->criteria()->create([
+                        'nama_kriteria' => $crit['nama_kriteria'],
+                        'nilai_minimum' => $crit['nilai_minimum'] ?? 0,
+                    ]);
+                }
+            }
+        }
+
+        // Recalculate rankings based on new threshold criteria
+        DssService::recalculateAll();
 
         return redirect()->route('tata_usaha.program.index')->with('success', 'Program berhasil diperbarui.');
     }

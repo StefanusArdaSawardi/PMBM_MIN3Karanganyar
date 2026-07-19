@@ -111,20 +111,41 @@
         </div>
 
         <div class="p-8 flex flex-col gap-0">
+          @php
+            $termsGeneralRaw = $landingContent['terms_general'] ?? "Umur minimal 6 Tahun per Juli 2025\nMemiliki email Aktif";
+            $termsGeneral = array_filter(array_map('trim', explode("\n", str_replace("\r", "", $termsGeneralRaw))));
+
+            $termsDocumentsRaw = $landingContent['terms_documents'] ?? "Pas Foto Berwarna (JPG, PNG dan JPEG)\nKartu Keluarga Asli (PDF)\nAkta Kelahiran Asli (PDF)\nKartu Identitas Anak (PDF)\nNISN (Dari TK asal)";
+            $termsDocuments = array_filter(array_map('trim', explode("\n", str_replace("\r", "", $termsDocumentsRaw))));
+
+            $termsOptionalRaw = $landingContent['terms_optional'] ?? "Piagam Penghargaan Juara 1/2/3 minimal tingkat Kecamatan (Jika memiliki) (PDF)";
+            $termsOptional = array_filter(array_map('trim', explode("\n", str_replace("\r", "", $termsOptionalRaw))));
+          @endphp
+
+          <!-- 1. Persyaratan Wajib Umum -->
           <div class="bg-[#d9d9d9] border border-[#bdcab8] rounded-t-xl px-6 py-4 text-[#1c1b1b] text-[20px] font-semibold" style="font-family: 'HankenGrotesk-SemiBold', sans-serif;">Persyaratan Wajib Umum</div>
-          <div class="bg-[#d9d9d9]/80 border border-[#bdcab8] px-6 py-4 text-[#1c1b1b] text-[16px]" style="font-family: 'HankenGrotesk-Regular', sans-serif;">Umur minimal 6 Tahun per Juli 2025</div>
-          <div class="bg-[#d9d9d9] border border-[#bdcab8] rounded-b-xl px-6 py-4 text-[#1c1b1b] text-[16px]" style="font-family: 'HankenGrotesk-Regular', sans-serif;">Memiliki email Aktif</div>
+          @foreach($termsGeneral as $idx => $item)
+            @php
+              $isLast = ($idx === count($termsGeneral) - 1);
+            @endphp
+            <div class="bg-[#d9d9d9]/80 border border-[#bdcab8] px-6 py-4 text-[#1c1b1b] text-[16px] {{ $isLast ? 'rounded-b-xl' : '' }}" style="font-family: 'HankenGrotesk-Regular', sans-serif;">{{ $item }}</div>
+          @endforeach
 
-          <div class="bg-[#d9d9d9] border border-[#bdcab8] rounded-t-xl px-6 py-4 mt-6 text-[#1c1b1b] text-[20px] font-semibold" style="font-family: 'HankenGrotesk-SemiBold', sans-serif;">Persyaratan Wajib Umum</div>
-          <div class="bg-[#d9d9d9]/80 border border-[#bdcab8] px-6 py-4 text-black text-[16px]" style="font-family: 'HankenGrotesk-Regular', sans-serif;">Pas Foto Berwarna (JPG, PNG dan JPEG)</div>
-          <div class="bg-[#d9d9d9] border border-[#bdcab8] px-6 py-4 text-black text-[16px]" style="font-family: 'HankenGrotesk-Regular', sans-serif;">Kartu Keluarga Asli (PDF)</div>
-          <div class="bg-[#d9d9d9]/80 border border-[#bdcab8] px-6 py-4 text-black text-[16px]" style="font-family: 'HankenGrotesk-Regular', sans-serif;">Akta Kelahiran Asli (PDF)</div>
-          <div class="bg-[#d9d9d9] border border-[#bdcab8] px-6 py-4 text-black text-[16px]" style="font-family: 'HankenGrotesk-Regular', sans-serif;">Kartu Identitas Anak (PDF)</div>
-          <div class="bg-[#d9d9d9]/80 border border-[#bdcab8] rounded-b-xl px-6 py-4 text-black text-[16px]" style="font-family: 'HankenGrotesk-Regular', sans-serif;">NISN (Dari TK asal)</div>
+          <!-- 2. Persyaratan Wajib Dokumen -->
+          <div class="bg-[#d9d9d9] border border-[#bdcab8] rounded-t-xl px-6 py-4 mt-6 text-[#1c1b1b] text-[20px] font-semibold" style="font-family: 'HankenGrotesk-SemiBold', sans-serif;">Persyaratan Wajib Dokumen</div>
+          @foreach($termsDocuments as $idx => $item)
+            @php
+              $isLast = ($idx === count($termsDocuments) - 1);
+            @endphp
+            <div class="bg-[#d9d9d9]/80 border border-[#bdcab8] px-6 py-4 text-black text-[16px] {{ $isLast ? 'rounded-b-xl' : '' }}" style="font-family: 'HankenGrotesk-Regular', sans-serif;">{{ $item }}</div>
+          @endforeach
 
+          <!-- 3. Persyaratan Tambahan (Opsional) -->
           <div class="mt-6">
             <div class="text-[#1c1b1b] text-[20px] font-semibold mb-2" style="font-family: 'HankenGrotesk-SemiBold', sans-serif;">Persyaratan Tambahan (Opsional)</div>
-            <div class="text-[#1c1b1b] text-[16px]" style="font-family: 'HankenGrotesk-Regular', sans-serif;">Piagam Penghargaan Juara 1/2/3 minimal tingkat Kecamatan (Jika memiliki) (PDF)</div>
+            @foreach($termsOptional as $item)
+              <div class="text-[#1c1b1b] text-[16px] mb-1" style="font-family: 'HankenGrotesk-Regular', sans-serif;">• {{ $item }}</div>
+            @endforeach
           </div>
 
           <div class="flex gap-3 mt-8 justify-end max-[480px]:flex-col">

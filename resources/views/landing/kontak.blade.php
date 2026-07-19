@@ -21,6 +21,12 @@
       $addressContact = $schoolContacts->firstWhere('platform_name', 'Alamat');
       $phoneContact = $schoolContacts->firstWhere('platform_name', 'Telepon') ?? $schoolContacts->firstWhere('platform_name', 'WhatsApp');
       $emailContact = $schoolContacts->firstWhere('platform_name', 'Email');
+      
+      $displayedIds = collect([
+        $addressContact ? $addressContact->id : null,
+        $phoneContact ? $phoneContact->id : null,
+        $emailContact ? $emailContact->id : null,
+      ])->filter()->toArray();
     @endphp
 
     <section class="max-w-[1200px] mx-auto px-6 -mt-10 mb-16 relative z-[2]">
@@ -64,6 +70,29 @@
             </div>
           </a>
           @endif
+
+          <!-- Dynamic Social Media & Other Contacts -->
+          @foreach($schoolContacts as $contact)
+            @if(!in_array($contact->id, $displayedIds))
+              @php
+                $emoji = match(strtolower($contact->platform_name)) {
+                  'whatsapp' => '💬',
+                  'instagram' => '📸',
+                  'facebook' => '📘',
+                  'youtube' => '🎥',
+                  'tiktok' => '🎵',
+                  default => '🔗'
+                };
+              @endphp
+              <a href="{{ $contact->link }}" target="_blank" class="flex items-start gap-3 no-underline text-[#1c1b1b]">
+                <div class="w-7 h-7 flex items-center justify-center text-[18px] shrink-0 text-[#064e3b]">{{ $emoji }}</div>
+                <div>
+                  <div class="text-[16px] font-bold text-[#1c1b1b] mb-0.5" style="font-family: 'WorkSans-Bold', sans-serif;">{{ $contact->platform_name }}</div>
+                  <div class="text-[16px] text-[#1c1b1b]" style="font-family: 'WorkSans-Regular', sans-serif;">{{ $contact->value }}</div>
+                </div>
+              </a>
+            @endif
+          @endforeach
         </div>
 
         <!-- Kartu Peta -->

@@ -36,6 +36,14 @@ class LandingController extends Controller
      */
     public function programKhusus()
     {
+        $program = Program::where('nama_program', 'like', '%Tahfidz%')->first();
+        if ($program) {
+            return redirect()->route('landing.program-detail', $program->id_program);
+        }
+        $first = Program::first();
+        if ($first) {
+            return redirect()->route('landing.program-detail', $first->id_program);
+        }
         return view('landing.program-khusus');
     }
 
@@ -44,6 +52,14 @@ class LandingController extends Controller
      */
     public function programUnggulan()
     {
+        $program = Program::where('nama_program', 'like', '%Sains%')->first();
+        if ($program) {
+            return redirect()->route('landing.program-detail', $program->id_program);
+        }
+        $first = Program::first();
+        if ($first) {
+            return redirect()->route('landing.program-detail', $first->id_program);
+        }
         return view('landing.program-unggulan');
     }
 
@@ -52,7 +68,25 @@ class LandingController extends Controller
      */
     public function programFullday()
     {
+        $program = Program::where('nama_program', 'like', '%Fullday%')->first();
+        if ($program) {
+            return redirect()->route('landing.program-detail', $program->id_program);
+        }
+        $first = Program::first();
+        if ($first) {
+            return redirect()->route('landing.program-detail', $first->id_program);
+        }
         return view('landing.program-fullday');
+    }
+
+    /**
+     * Display the dynamic Program Detail page.
+     */
+    public function showProgramDetail($id)
+    {
+        $program = Program::findOrFail($id);
+        $programs = Program::all();
+        return view('landing.program-detail', compact('program', 'programs'));
     }
 
     /**
@@ -109,6 +143,14 @@ class LandingController extends Controller
             return back()->with('error', 'NISN atau Nama Calon Murid tidak ditemukan.');
         }
 
+        // Check if graduation results are published for the active period
+        $activePeriod = \App\Models\PeriodePendaftaran::where('status', 'aktif')->first();
+        $graduationPublished = $activePeriod && $activePeriod->graduation_published;
+        if (!$graduationPublished) {
+            // Hide graduation status on public check page if not published yet
+            $pendaftaran->status_kelulusan = null;
+        }
+
         // Store verification in session so they can edit their registration details securely
         session(['verified_pendaftaran_id' => $pendaftaran->id_pendaftaran]);
 
@@ -138,7 +180,7 @@ class LandingController extends Controller
             return redirect()->route('home')->with('error', "Pendaftaran sudah ditutup pada tanggal {$tanggalSelesai}.");
         }
 
-        $programs = Program::all();
+        $programs = $activePeriod->programs;
         return view('pendaftaran.register', compact('programs', 'activePeriod'));
     }
 
@@ -160,7 +202,10 @@ class LandingController extends Controller
         $student = $pendaftaran->calonMurid;
         $ayah = $student->ayah;
         $ibu = $student->ibu;
-        $programs = Program::all();
+
+        // Load programs from the applicant's registration period
+        $periode = $pendaftaran->periodePendaftaran;
+        $programs = $periode ? $periode->programs : Program::all();
  
         return view('pendaftaran.edit', compact('pendaftaran', 'student', 'ayah', 'ibu', 'programs'));
     }
@@ -180,13 +225,16 @@ class LandingController extends Controller
             abort(403, 'Pendaftaran Anda tidak dalam status Berkas Ditolak.');
         }
  
+        $periode = $pendaftaran->periodePendaftaran;
+        $validProgramIds = $periode ? $periode->programs->pluck('id_program')->toArray() : Program::pluck('id_program')->toArray();
+
         $request->validate([
             // Student Data
             'nama_murid' => ['required', 'string', 'min:3', 'max:255', 'regex:/^[a-zA-Z\s\.\,]+$/'],
             'nik' => ['required', 'string', 'size:16', 'regex:/^[0-9]{16}$/'],
             'jenis_kelamin' => ['required', 'in:L,P'],
             'nisn' => ['required', 'string', 'size:10', 'regex:/^[0-9]{10}$/'],
-            'id_program' => 'required|exists:programs,id_program',
+            'id_program' => ['required', \Illuminate\Validation\Rule::in($validProgramIds)],
             'tempat_lahir' => ['required', 'string', 'min:3', 'max:100', 'regex:/^[a-zA-Z\s]+$/'],
             'tanggal_lahir' => 'required|date|before:today',
             'alamat' => 'required|string|min:10',
@@ -308,18 +356,23 @@ class LandingController extends Controller
         return redirect()->route('landing.cek-kelulusan')->with('success_edit', 'Data pendaftaran Anda berhasil diperbarui dan berkas dikirim kembali untuk diverifikasi.');
     }
 
-    /**
-     * Store registration data.
-     */
     public function storeRegisterForm(Request $request)
     {
+        $activePeriod = PeriodePendaftaran::where('status', 'aktif')->first();
+
+        if (!$activePeriod || !$activePeriod->isOpen()) {
+            return redirect()->route('home')->with('error', 'Pendaftaran tidak dapat diproses karena tidak ada periode pendaftaran yang sedang dibuka.');
+        }
+
+        $validProgramIds = $activePeriod->programs->pluck('id_program')->toArray();
+
         $request->validate([
             // Student Data
             'nama_murid' => ['required', 'string', 'min:3', 'max:255', 'regex:/^[a-zA-Z\s\.\,]+$/'],
             'nik' => ['required', 'string', 'size:16', 'regex:/^[0-9]{16}$/'],
             'jenis_kelamin' => ['required', 'in:L,P'],
             'nisn' => ['required', 'string', 'size:10', 'regex:/^[0-9]{10}$/'],
-            'id_program' => 'required|exists:programs,id_program',
+            'id_program' => ['required', \Illuminate\Validation\Rule::in($validProgramIds)],
             'tempat_lahir' => ['required', 'string', 'min:3', 'max:100', 'regex:/^[a-zA-Z\s]+$/'],
             'tanggal_lahir' => 'required|date|before:today',
             'alamat' => 'required|string|min:10',
@@ -422,12 +475,7 @@ class LandingController extends Controller
             'kartu_identitas_anak' => $files['kartu_identitas_anak'],
         ]);
  
-        // Ambil periode aktif dan validasi
-        $activePeriod = PeriodePendaftaran::where('status', 'aktif')->first();
-
-        if (!$activePeriod || !$activePeriod->isOpen()) {
-            return redirect()->route('home')->with('error', 'Pendaftaran tidak dapat diproses karena tidak ada periode pendaftaran yang sedang dibuka.');
-        }
+        // Create Registration
 
         // Create Registration
         $pendaftaran = Pendaftaran::create([
