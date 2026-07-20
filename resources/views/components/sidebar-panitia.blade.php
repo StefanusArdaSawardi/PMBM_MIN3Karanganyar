@@ -45,7 +45,7 @@
       <!-- Menu 2: Hasil Nilai -->
       <a href="{{ route('panitia.hasil-nilai') }}" 
          class="flex items-center px-4 py-2.5 rounded-xl text-sm font-medium transition-colors no-underline font-sans {{ $activeFolder === 'result' ? 'bg-emerald-600 text-white shadow-sm font-semibold' : 'text-slate-600 hover:bg-slate-100 hover:text-emerald-600' }}">
-        Hasil Nilai
+        Hasil
       </a>
     </nav>
   </div>

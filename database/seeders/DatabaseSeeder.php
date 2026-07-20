@@ -39,7 +39,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 2. Seed Panitia account
+        // 2. Seed Panitia account (Default / Pengawas Ujian)
         PanitiaPmbm::firstOrCreate(
             ['email' => 'panitia@min3karanganyar.sch.id'],
             [
@@ -47,6 +47,19 @@ class DatabaseSeeder extends Seeder
                 'no_hp' => '089876543210',
                 'password' => Hash::make('Panitia@2026'),
                 'password_plain' => 'Panitia@2026',
+                // Tetap menggunakan default column value dari database (pengawas_ujian)
+            ]
+        );
+
+        // Tambahan: Akun Baru Khusus Petugas Wawancara
+        PanitiaPmbm::firstOrCreate(
+            ['email' => 'wawancara@min3karanganyar.sch.id'], // Email dibedakan
+            [
+                'nama_panitia' => 'Petugas Wawancara 1',
+                'no_hp' => '089876543211',
+                'role_panitia' => 'petugas_wawancara', // Set role khusus wawancara sesuai rute middleware web.php
+                'password' => Hash::make('Wawancara@2026'),
+                'password_plain' => 'Wawancara@2026',
             ]
         );
 

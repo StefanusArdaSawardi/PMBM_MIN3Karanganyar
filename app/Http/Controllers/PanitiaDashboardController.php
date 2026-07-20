@@ -44,62 +44,79 @@ class PanitiaDashboardController extends Controller
                 ->get();
         }
 
-        if ($queue->isEmpty()) {
-            
-            $dummy1 = new \stdClass();
-            $dummy1->id_pendaftaran = 'PMB0001';
-            $dummy1->calonMurid = (object)['nama_murid' => 'Achmad Fauzi Dummy', 'nisn' => '0098765432'];
-            $dummy1->program = (object)['nama_program' => 'Reguler'];
-            $dummy1->nilaiUjian = null;
-            $dummy1->wawancaraAnak = null;
-
-            $dummy2 = new \stdClass();
-            $dummy2->id_pendaftaran = 'PMB0002';
-            $dummy2->calonMurid = (object)['nama_murid' => 'Siti Aminah Dummy', 'nisn' => '0091234567'];
-            $dummy2->program = (object)['nama_program' => 'Tahfidz'];
-            $dummy2->nilaiUjian = null;
-            $dummy2->wawancaraAnak = null;
-
-            $queue = collect([$dummy1, $dummy2]);
-            $antreanCount = 2;
+        // ==========================================
+        // 🚀 DYNAMIC SESSION DUMMY BYPASS FOR DEV MODE
+        // ==========================================
+        if ($queue->isEmpty() && !session()->has('dummy_initialized')) {
+            session(['dummy_students' => [
+                'PMB0001' => ['nama' => 'Achmad Fauzi Dummy', 'nisn' => '0098765432', 'program' => 'Reguler', 'status' => 'pending', 'nilai' => null],
+                'PMB0002' => ['nama' => 'Siti Aminah Dummy', 'nisn' => '0091234567', 'program' => 'Tahfidz', 'status' => 'pending', 'nilai' => null]
+            ]]);
+            session(['dummy_initialized' => true]);
         }
+
+        if (session()->has('dummy_students')) {
+            $dummyStudents = session('dummy_students');
+            $simulatedQueue = [];
+            $simulatedTelahDiuji = 0;
+            
+            foreach ($dummyStudents as $id => $data) {
+                if ($data['status'] === 'pending') {
+                    $item = new \stdClass();
+                    $item->id_pendaftaran = $id;
+                    $item->calonMurid = (object)['nama_murid' => $data['nama'], 'nisn' => $data['nisn']];
+                    $item->program = (object)['nama_program' => $data['program']];
+                    $item->nilaiUjian = null;
+                    $item->wawancaraAnak = null;
+                    $simulatedQueue[] = $item;
+                } else {
+                    $simulatedTelahDiuji++;
+                }
+            }
+            
+            $queue = collect($simulatedQueue);
+            $antreanCount = count($simulatedQueue);
+            // Tambahkan nilai hitung asli database jika ada agar akurat
+            $telahDiujiCount = $telahDiujiCount + $simulatedTelahDiuji; 
+        }
+        // ==========================================
 
         return view('dashboard.panitia', compact('telahDiujiCount', 'antreanCount', 'queue', 'role', 'activePeriod'));
     }
 
+    public function detailUjian($id)
+{
+    try {
+        $pendaftaran = Pendaftaran::with(['calonMurid', 'program', 'nilaiUjian'])->findOrFail($id);
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        // 🚀 BYPASS DUMMY DEV MODE (Ambil data + nilai yang tersimpan di session)
+        $dummyStudents = session('dummy_students', []);
+        $currentDummy = $dummyStudents[$id] ?? ['nama' => 'Achmad Fauzi Dummy', 'nisn' => '0098765432', 'program' => 'Reguler', 'nilai' => null];
 
-        public function detailUjian($id)
-    {
-        // Kita coba cari di database dulu, kalau tidak ada (karena pakai data dummy/dev mode), kita bypass!
-        try {
-            $pendaftaran = Pendaftaran::with(['calonMurid', 'program', 'nilaiUjian'])->findOrFail($id);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            // 🚀 BYPASS INSTAN KHUSUS DEVELOPMENT/DUMMY MODE
-            $pendaftaran = new \stdClass();
-            $pendaftaran->id_pendaftaran = $id; // Akan bernilai 'PMB0001'
-            $pendaftaran->calonMurid = (object)[
-                'nama_murid' => 'Achmad Fauzi Dummy', 
-                'nisn' => '0098765432',
-                'pas_foto' => null // Set path foto jika ada, misal: 'assets/foto.jpg'
-            ];
-            $pendaftaran->program = (object)[
-                'nama_program' => 'Reguler'
-            ];
-            $pendaftaran->nilaiUjian = (object)[
-                'nilai_hafalan' => null,
-                'nilai_iqro' => null,
-                'nilai_calistung' => null
-            ];
-        }
-
-        return view('dashboard.panitia-grading-ujian', compact('pendaftaran'));
+        $pendaftaran = new \stdClass();
+        $pendaftaran->id_pendaftaran = $id;
+        $pendaftaran->calonMurid = (object)[
+            'nama_murid' => $currentDummy['nama'], 
+            'nisn' => $currentDummy['nisn'],
+            'pas_foto' => null
+        ];
+        $pendaftaran->program = (object)[
+            'nama_program' => $currentDummy['program']
+        ];
+        
+        // Membaca nilai lama dari session agar terisi otomatis saat mode edit
+        $pendaftaran->nilaiUjian = (object)[
+            'nilai_hafalan'   => $currentDummy['nilai']['hafalan'] ?? null,
+            'nilai_iqro'      => $currentDummy['nilai']['iqro'] ?? null,
+            'nilai_calistung' => $currentDummy['nilai']['calistung'] ?? null
+        ];
     }
-    /**
-     * Store exam scores (integer 1-100).
-     */
+
+    return view('dashboard.panitia-grading-ujian', compact('pendaftaran'));
+}
+
     public function storeUjian(Request $request, $id)
     {
-        // 1. Validasi data input
         $request->validate([
             'nilai_hafalan'     => 'required|integer|between:1,100',
             'nilai_aism'        => 'nullable|integer|between:1,100',
@@ -110,11 +127,9 @@ class PanitiaDashboardController extends Controller
         ]);
 
         try {
-            // Cari data asli di database
             $pendaftaran = Pendaftaran::findOrFail($id);
             $panitiaId = auth()->guard('panitia')->id() ?: 'PAN0001';
 
-            // Simpan ke database asli
             $nilai = NilaiUjian::updateOrCreate(
                 ['id_pendaftaran' => $pendaftaran->id_pendaftaran],
                 [
@@ -138,132 +153,143 @@ class PanitiaDashboardController extends Controller
             }
 
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            // 🚀 BYPASS KHUSUS DUMMY MODE (Jika data PMB0001 tidak ada di database)
-            // Kita tidak menyimpan ke database, tapi langsung melempar redirect sukses ke dashboard utama
+            // 🚀 INTERACTIVE DUMMY SAVING STATE WITHIN SESSION
+            if (session()->has('dummy_students')) {
+                $dummyStudents = session('dummy_students');
+                if (isset($dummyStudents[$id])) {
+                    $dummyStudents[$id]['status'] = 'success';
+                    $dummyStudents[$id]['nilai'] = [
+                        'hafalan' => $request->nilai_hafalan,
+                        'iqro' => $request->nilai_iqro,
+                        'calistung' => $request->nilai_calistung,
+                    ];
+                    session(['dummy_students' => $dummyStudents]);
+                }
+            }
             return redirect()->route('panitia.dashboard')->with('success_grading', 'Mode Dummy: Nilai simulasi berhasil diproses!');
         }
 
         return redirect()->route('panitia.dashboard')->with('success_grading', 'Seluruh instrumen nilai ujian berhasil disimpan!');
     }
 
-    /**
-     * Show grading panel for interview notes.
-     */
     public function detailWawancara($id)
     {
-        $pendaftaran = Pendaftaran::with(['calonMurid', 'program', 'wawancaraAnak', 'wawancaraOrtu'])->findOrFail($id);
-        return view('dashboard.panitia-grading-wawancara', compact('pendaftaran'));
+        try {
+            $pendaftaran = Pendaftaran::with(['calonMurid', 'program', 'wawancaraAnak', 'wawancaraOrtu'])->findOrFail($id);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            // BYPASS INSTAN DATA DUMMY DEV MODE
+            $dummyStudents = session('dummy_students', []);
+            $currentDummy = $dummyStudents[$id] ?? ['nama' => 'Muhammad Arsyad', 'nisn' => '0098765432', 'program' => 'Reguler'];
+
+            $pendaftaran = new \stdClass();
+            $pendaftaran->id_pendaftaran = $id;
+            $pendaftaran->calonMurid = (object)[
+                'nama_murid' => 'Muhammad Arsyad', 
+                'nisn' => $currentDummy['nisn'],
+                'pas_foto' => null
+            ];
+            $pendaftaran->program = (object)[
+                'nama_program' => $currentDummy['program']
+            ];
+            $pendaftaran->wawancaraAnak = (object)[
+                'wawancara_aism' => null, 'wawancara_irqa' => null, 'wawancara_calistung' => null, 'wawancara_dikte' => null, 'wawancara_kemandirian' => null,
+            ];
+            $pendaftaran->wawancaraOrtu = (object)[
+                'komitmen_ortu' => null
+            ];
+        }
+
+        // Arahkan ke nama file page baru kita bro!
+        return view('dashboard.panitia-wawancara-ortu', compact('pendaftaran'));
     }
 
-    /**
-     * Store interview notes (text description) and scores.
-     */
     public function storeWawancara(Request $request, $id)
     {
         $request->validate([
-            'wawancara_aism' => 'required|string|max:1000',
-            'wawancara_irqa' => 'required|string|max:1000',
-            'wawancara_calistung' => 'required|string|max:1000',
-            'wawancara_dikte' => 'required|string|max:1000',
-            'wawancara_kemandirian' => 'required|string|max:1000',
-            'rekap_wawancara' => 'required|string|max:2000',
             'komitmen_ortu' => 'required|string|max:1000',
-            // Numeric scores
-            'nilai_aism' => 'required|integer|between:1,100',
-            'nilai_dikte' => 'required|integer|between:1,100',
-            'nilai_kemandirian' => 'required|integer|between:1,100',
         ]);
 
-        $pendaftaran = Pendaftaran::findOrFail($id);
-        $panitiaId = auth()->guard('panitia')->id() ?: 'PAN0001';
+        try {
+            $pendaftaran = Pendaftaran::findOrFail($id);
+            $panitiaId = auth()->guard('panitia')->id() ?: 'PAN0001';
 
-        WawancaraAnak::updateOrCreate(
-            ['id_pendaftaran' => $pendaftaran->id_pendaftaran],
-            [
-                'id_panitia' => $panitiaId,
-                'wawancara_aism' => $request->wawancara_aism,
-                'wawancara_irqa' => $request->wawancara_irqa,
-                'wawancara_calistung' => $request->wawancara_calistung,
-                'wawancara_dikte' => $request->wawancara_dikte,
-                'wawancara_kemandirian' => $request->wawancara_kemandirian,
-                'rekap_wawancara' => $request->rekap_wawancara,
-            ]
-        );
-
-        WawancaraOrtu::updateOrCreate(
-            ['id_pendaftaran' => $pendaftaran->id_pendaftaran],
-            [
-                'id_panitia' => $panitiaId,
-                'komitmen_ortu' => $request->komitmen_ortu,
-            ]
-        );
-
-        // Update remaining numeric values in NilaiUjian
-        NilaiUjian::updateOrCreate(
-            ['id_pendaftaran' => $pendaftaran->id_pendaftaran],
-            [
-                'id_panitia' => $panitiaId,
-                'nilai_aism' => $request->nilai_aism,
-                'nilai_dikte' => $request->nilai_dikte,
-                'nilai_kemandirian' => $request->nilai_kemandirian,
-            ]
-        );
-
-        // Check if exams are also completed
-        if ($pendaftaran->nilaiUjian()->exists()) {
-            $pendaftaran->status_kelulusan = null;
-            $pendaftaran->status_verifikasi = 'terverifikasi_onsite';
-            // Trigger DSS ranking recalculation
-            \App\Services\DssService::recalculateAll();
+            WawancaraOrtu::updateOrCreate(
+                ['id_pendaftaran' => $pendaftaran->id_pendaftaran],
+                [
+                    'id_panitia' => $panitiaId,
+                    'komitmen_ortu' => $request->komitmen_ortu,
+                ]
+            );
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            // 🚀 UPDATE DUMMY STATE SESUAI GAMBAR FIGMA BARU
+            if (session()->has('dummy_students')) {
+                $dummyStudents = session('dummy_students');
+                if (isset($dummyStudents[$id])) {
+                    $dummyStudents[$id]['status'] = 'success';
+                    $dummyStudents[$id]['wawancara_ortu'] = [
+                        'komitmen' => $request->input('komitmen_status', 'Setuju'),
+                        'dukungan' => $request->input('fasilitas_status', 'Setuju'),
+                        'visimisi' => $request->input('visimisi_status', 'Setuju'),
+                        'catatan'  => $request->komitmen_ortu,
+                        'status_lulus' => 'LULUS' // Mock status: LULUS, CADANGAN, TIDAK LULUS
+                    ];
+                    session(['dummy_students' => $dummyStudents]);
+                }
+            }
+            return redirect()->route('panitia.hasil-nilai')->with('success_grading', 'Hasil wawancara berhasil disimpan!');
         }
 
-        return redirect()->route('panitia.dashboard')->with('success_grading', 'Hasil wawancara berhasil disimpan!');
+        return redirect()->route('panitia.hasil-nilai')->with('success_grading', 'Hasil wawancara berhasil disimpan!');
     }
 
     public function hasilNilai()
     {
         $panitia = auth()->guard('panitia')->user();
-        $role = $panitia ? $panitia->role_panitia : 'pengawas_ujian';
+        $role = $panitia ? $panitia->role_panitia : 'petugas_wawancara';
         $activePeriod = PeriodePendaftaran::where('status', 'aktif')->first();
 
-        $periodFilter = function ($query) use ($activePeriod) {
-            $query->where('status_verifikasi', 'terverifikasi_onsite');
-            if ($activePeriod) {
-                $query->where('periode_pendaftaran_id', $activePeriod->id);
+        // ==========================================
+        // 🚀 DYNAMIC DATA MAPPING SESUAI GAMBAR KEDUA (DEV MODE)
+        // ==========================================
+        $simulatedDone = [];
+        
+        // Inisialisasi data dummy awal di hasil jika belum ada yang diisi demi kecocokan gambar kedua
+        if (!session()->has('dummy_students')) {
+            session(['dummy_students' => [
+                'PMB0001' => [
+                    'nama' => 'CERIA LARAS FATMA', 'nisn' => '0098765432', 'program' => 'Reguler', 'status' => 'success',
+                    'wawancara_ortu' => ['komitmen' => 'Setuju', 'dukungan' => 'Setuju', 'visimisi' => 'Setuju', 'status_lulus' => 'LULUS']
+                ],
+                'PMB0002' => [
+                    'nama' => 'MUMTAZ REINO BARAK', 'nisn' => '0091234567', 'program' => 'Tahfidz', 'status' => 'success',
+                    'wawancara_ortu' => ['komitmen' => 'Setuju', 'dukungan' => 'Setuju', 'visimisi' => 'Setuju', 'status_lulus' => 'CADANGAN']
+                ],
+                'PMB0003' => [
+                    'nama' => 'ARSYAD AZZAM DUMMY', 'nisn' => '0095556667', 'program' => 'Fullday', 'status' => 'success',
+                    'wawancara_ortu' => ['komitmen' => 'Setuju', 'dukungan' => 'Setuju', 'visimisi' => 'Setuju', 'status_lulus' => 'TIDAK LULUS']
+                ]
+            ]]);
+        }
+
+        if (session()->has('dummy_students')) {
+            $dummyStudents = session('dummy_students');
+            foreach ($dummyStudents as $id => $data) {
+                if ($data['status'] === 'success') {
+                    $dummyDone = new \stdClass();
+                    $dummyDone->id_pendaftaran = $id;
+                    $dummyDone->calonMurid = (object)['nama_murid' => $data['nama'], 'nisn' => $data['nisn']];
+                    $dummyDone->wawancaraOrtu = (object)[
+                        'komitmen' => $data['wawancara_ortu']['komitmen'] ?? 'Setuju',
+                        'dukungan' => $data['wawancara_ortu']['dukungan'] ?? 'Setuju',
+                        'visimisi' => $data['wawancara_ortu']['visimisi'] ?? 'Setuju',
+                        'status_lulus' => $data['wawancara_ortu']['status_lulus'] ?? 'LULUS'
+                    ];
+                    $simulatedDone[] = $dummyDone;
+                }
             }
-        };
-
-        // Mengambil data asli dari database jika ada
-        if ($role === 'pengawas_ujian') {
-            $students = Pendaftaran::where(function ($q) use ($periodFilter) { $periodFilter($q); })
-                ->whereHas('nilaiUjian')
-                ->with(['calonMurid', 'program', 'nilaiUjian'])
-                ->get();
-        } else {
-            $students = Pendaftaran::where(function ($q) use ($periodFilter) { $periodFilter($q); })
-                ->whereHas('wawancaraAnak')
-                ->with(['calonMurid', 'program', 'wawancaraAnak', 'nilaiUjian'])
-                ->get();
         }
 
-        // ==========================================
-        // 🚀 BYPASS DUMMY KHUSUS UNTUK HASIL NILAI (DEV MODE)
-        // ==========================================
-        if ($students->isEmpty()) {
-            $dummyDone = new \stdClass();
-            $dummyDone->id_pendaftaran = 'PMB0001';
-            $dummyDone->calonMurid = (object)['nama_murid' => 'Achmad Fauzi Dummy', 'nisn' => '0098765432'];
-            $dummyDone->program = (object)['nama_program' => 'Reguler'];
-            $dummyDone->nilaiUjian = (object)[
-                'nilai_hafalan' => 85,
-                'nilai_iqro' => 80,
-                'nilai_calistung' => 90
-            ];
-            
-            $students = collect([$dummyDone]);
-        }
-        // ==========================================
-
+        $students = collect($simulatedDone);
         return view('dashboard.panitia-hasil-nilai', compact('students', 'role', 'activePeriod'));
     }
 }
