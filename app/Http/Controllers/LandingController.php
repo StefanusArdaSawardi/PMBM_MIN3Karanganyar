@@ -128,11 +128,6 @@ class LandingController extends Controller
         $nisn = trim($request->input('nisn'));
         $namaMurid = trim($request->input('nama_murid'));
 
-        // Run waitlist cleanup
-        \App\Models\Pendaftaran::where('status_kelulusan', 'cadangan')
-            ->where('updated_at', '<', now()->subWeek())
-            ->update(['status_kelulusan' => 'tidak_lulus']);
-
         $pendaftaran = Pendaftaran::whereHas('calonMurid', function ($query) use ($nisn, $namaMurid) {
                 $query->where('nisn', $nisn)
                     ->where('nama_murid', 'like', '%' . $namaMurid . '%');
@@ -143,19 +138,18 @@ class LandingController extends Controller
             return back()->with('error', 'NISN atau Nama Calon Murid tidak ditemukan.');
         }
 
-        // Check if graduation results are published for the active period
-        $activePeriod = \App\Models\PeriodePendaftaran::where('status', 'aktif')->first();
-        $graduationPublished = $activePeriod && $activePeriod->graduation_published;
-        if (!$graduationPublished) {
-            // Hide graduation status on public check page if not published yet
-            $pendaftaran->status_kelulusan = null;
-        }
-
         // Store verification in session so they can edit their registration details securely
         session(['verified_pendaftaran_id' => $pendaftaran->id_pendaftaran]);
 
         $student = $pendaftaran->calonMurid;
-        return view('landing.hasil-kelulusan', compact('pendaftaran', 'student'));
+
+        $contentPath = storage_path('app/landing_content.json');
+        $landingContent = [];
+        if (file_exists($contentPath)) {
+            $landingContent = json_decode(file_get_contents($contentPath), true) ?? [];
+        }
+
+        return view('landing.hasil-kelulusan', compact('pendaftaran', 'student', 'landingContent'));
     }
 
     /**

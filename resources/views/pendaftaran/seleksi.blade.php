@@ -58,6 +58,50 @@
             @endforeach
           </div>
         </div>
+
+        <!-- Status Filter -->
+        <div style="flex: 1.5; min-width: 200px; display: flex; flex-direction: column; gap: 8px; position: relative;">
+          <label class="text-[#3f4941] text-[12px] font-bold">Status Kelulusan</label>
+          <input type="hidden" name="status" id="statusFilterInput" value="{{ request('status') }}">
+          <button type="button" id="statusFilterTrigger" onclick="document.getElementById('statusFilterDropdown').classList.toggle('hidden')"
+                  class="bg-[#f1f4f3] border border-[#bec9be] rounded px-3 py-2.5 text-[14px] text-[#181c1c] outline-none cursor-pointer flex items-center justify-between gap-2" style="height: 40px; width: 100%;">
+            <span id="statusFilterLabel" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+              <?php
+                $statusLabel = match(request('status')) {
+                    'lulus' => 'Lulus',
+                    'cadangan' => 'Cadangan',
+                    'tidak_lulus' => 'Gagal',
+                    'belum_ditetapkan' => 'Belum Ditetapkan',
+                    default => 'Semua Status',
+                };
+              ?>
+              {{ $statusLabel }}
+            </span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div id="statusFilterDropdown" class="hidden absolute left-0 right-0 top-full mt-1 bg-white border border-[#bec9be] rounded shadow-lg z-30 overflow-hidden">
+            <button type="button" onclick="selectStatusFilter('', 'Semua Status')"
+                    class="w-full text-left px-3 py-2 text-[14px] {{ !request('status') ? 'bg-[#005b31] text-white' : 'bg-[#f1f4f3] text-[#181c1c]' }} hover:opacity-90 border-none cursor-pointer">
+              Semua Status
+            </button>
+            <button type="button" onclick="selectStatusFilter('lulus', 'Lulus')"
+                    class="w-full text-left px-3 py-2 text-[14px] {{ request('status') === 'lulus' ? 'bg-[#005b31] text-white' : 'bg-[#f1f4f3] text-[#181c1c]' }} hover:opacity-90 border-none cursor-pointer">
+              Lulus
+            </button>
+            <button type="button" onclick="selectStatusFilter('cadangan', 'Cadangan')"
+                    class="w-full text-left px-3 py-2 text-[14px] {{ request('status') === 'cadangan' ? 'bg-[#005b31] text-white' : 'bg-[#f1f4f3] text-[#181c1c]' }} hover:opacity-90 border-none cursor-pointer">
+              Cadangan
+            </button>
+            <button type="button" onclick="selectStatusFilter('tidak_lulus', 'Gagal')"
+                    class="w-full text-left px-3 py-2 text-[14px] {{ request('status') === 'tidak_lulus' ? 'bg-[#005b31] text-white' : 'bg-[#f1f4f3] text-[#181c1c]' }} hover:opacity-90 border-none cursor-pointer">
+              Gagal
+            </button>
+            <button type="button" onclick="selectStatusFilter('belum_ditetapkan', 'Belum Ditetapkan')"
+                    class="w-full text-left px-3 py-2 text-[14px] {{ request('status') === 'belum_ditetapkan' ? 'bg-[#005b31] text-white' : 'bg-[#f1f4f3] text-[#181c1c]' }} hover:opacity-90 border-none cursor-pointer">
+              Belum Ditetapkan
+            </button>
+          </div>
+        </div>
       </form>
 
       <script>
@@ -67,11 +111,22 @@
           document.getElementById('programFilterDropdown').classList.add('hidden');
           document.getElementById('programFilterInput').closest('form').submit();
         }
+        function selectStatusFilter(id, label) {
+          document.getElementById('statusFilterInput').value = id;
+          document.getElementById('statusFilterLabel').textContent = label;
+          document.getElementById('statusFilterDropdown').classList.add('hidden');
+          document.getElementById('statusFilterInput').closest('form').submit();
+        }
         document.addEventListener('click', function (e) {
-          const dropdown = document.getElementById('programFilterDropdown');
-          const trigger = document.getElementById('programFilterTrigger');
-          if (dropdown && !dropdown.contains(e.target) && !trigger.contains(e.target)) {
-            dropdown.classList.add('hidden');
+          const progDropdown = document.getElementById('programFilterDropdown');
+          const progTrigger = document.getElementById('programFilterTrigger');
+          if (progDropdown && !progDropdown.contains(e.target) && !progTrigger.contains(e.target)) {
+            progDropdown.classList.add('hidden');
+          }
+          const statusDropdown = document.getElementById('statusFilterDropdown');
+          const statusTrigger = document.getElementById('statusFilterTrigger');
+          if (statusDropdown && !statusDropdown.contains(e.target) && !statusTrigger.contains(e.target)) {
+            statusDropdown.classList.add('hidden');
           }
         });
       </script>

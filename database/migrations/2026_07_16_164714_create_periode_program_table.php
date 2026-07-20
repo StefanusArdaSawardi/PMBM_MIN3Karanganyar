@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('periode_program', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('periode_pendaftaran_id')->constrained('periode_pendaftarans')->cascadeOnDelete();
+            $table->string('periode_pendaftaran_id', 10);
             $table->string('id_program', 10); // varchar FK referencing programs
             $table->timestamps();
 
+            $table->foreign('periode_pendaftaran_id')->references('id')->on('periode_pendaftarans')->cascadeOnDelete();
             $table->foreign('id_program')->references('id_program')->on('programs')->cascadeOnDelete();
         });
     }

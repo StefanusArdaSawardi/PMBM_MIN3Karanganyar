@@ -66,14 +66,23 @@
                style="font-family: 'PlusJakartaSans-Bold', sans-serif; background: #2563eb;">Tanyakan Jadwal Ujian</a>
 
           @elseif($pendaftaran->status_kelulusan === 'lulus')
+            @php
+              $programName = $pendaftaran->program_kelulusan ?: ($pendaftaran->program->nama_program ?? '-');
+            @endphp
             @if($pendaftaran->status_konfirmasi === 'terkonfirmasi')
-              <div class="font-bold tracking-[-0.4px] mb-3 text-[22px]" style="font-family: 'Roboto-Regular', sans-serif; color: #047857;">SELAMAT ANDA TELAH DITERIMA &amp; DAFTAR ULANG</div>
+              @php
+                $waLinkDiterima = !empty($landingContent['whatsapp_group_diterima_link']) 
+                  ? $landingContent['whatsapp_group_diterima_link'] 
+                  : (!empty($landingContent['whatsapp_group_lulus_link']) ? $landingContent['whatsapp_group_lulus_link'] : ($landingContent['whatsapp_group_link'] ?? '#'));
+              @endphp
+              <div class="font-bold tracking-[-0.4px] mb-1 text-[22px]" style="font-family: 'Roboto-Regular', sans-serif; color: #047857;">SELAMAT ANDA TELAH DITERIMA &amp; DAFTAR ULANG</div>
+              <div class="text-[#047857] font-bold text-[16px] mb-3" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Program: {{ $programName }}</div>
               <p class="text-black/55 text-[16px] leading-[1.6] mx-auto mb-6 max-w-[560px]" style="font-family: 'Roboto-Regular', sans-serif;">
-                Selamat! Anda telah resmi dinyatakan diterima dan menyelesaikan proses daftar ulang di MIN 3 Karanganyar. Silakan
+                Selamat! Anda telah resmi dinyatakan diterima dan menyelesaikan proses daftar ulang di MIN 3 Karanganyar pada program <strong class="text-black font-bold">{{ $programName }}</strong>. Silakan
                 <span class="text-black font-bold">klik tombol di bawah</span>
                 untuk masuk ke grup WhatsApp resmi koordinasi wali murid baru.
               </p>
-              <a href="{{ $landingContent['whatsapp_group_link'] ?? 'https://chat.whatsapp.com/ExampleLinkPMBMMIN3KRA' }}" target="_blank"
+              <a href="{{ $waLinkDiterima }}" target="_blank"
                  class="inline-flex items-center justify-center min-w-[248px] h-[54px] px-6 rounded-[10px] text-[14px] font-bold text-white no-underline border border-black/20 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_6px_14px_rgba(0,0,0,0.15)]"
                  style="font-family: 'PlusJakartaSans-Bold', sans-serif; background: #47a26a;">Masuk Ke Grup WhatsApp Resmi</a>
 
@@ -88,53 +97,21 @@
                  style="font-family: 'PlusJakartaSans-Bold', sans-serif; background: #6b7280;">Hubungi Kontak Sekolah</a>
 
             @else
-              <div class="font-bold tracking-[-0.4px] mb-3 text-[22px]" style="font-family: 'Roboto-Regular', sans-serif; color: #047857;">SELAMAT ANDA LULUS SELEKSI</div>
+              @php
+                $waLinkLulus = !empty($landingContent['whatsapp_group_lulus_link']) 
+                  ? $landingContent['whatsapp_group_lulus_link'] 
+                  : ($landingContent['whatsapp_group_link'] ?? '#');
+              @endphp
+              <div class="font-bold tracking-[-0.4px] mb-1 text-[22px]" style="font-family: 'Roboto-Regular', sans-serif; color: #047857;">SELAMAT ANDA LULUS SELEKSI</div>
+              <div class="text-[#047857] font-bold text-[16px] mb-3" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Program: {{ $programName }}</div>
               <p class="text-black/55 text-[16px] leading-[1.6] mx-auto mb-6 max-w-[560px]" style="font-family: 'Roboto-Regular', sans-serif;">
-                Selamat! Anda dinyatakan LULUS seleksi penerimaan siswa baru MIN 3 Karanganyar. Harap segera melakukan proses
+                Selamat! Anda dinyatakan LULUS seleksi penerimaan siswa baru MIN 3 Karanganyar pada program <strong class="text-black font-bold">{{ $programName }}</strong>. Harap segera melakukan proses
                 <span class="text-black font-bold">daftar ulang secara onsite</span>
-                ke sekolah sebelum batas waktu habis.
+                ke sekolah.
               </p>
 
-              @php
-                $kelulusanTime = $pendaftaran->tanggal_kelulusan ? \Carbon\Carbon::parse($pendaftaran->tanggal_kelulusan) : \Carbon\Carbon::parse($pendaftaran->updated_at);
-                $deadline = $kelulusanTime->addDays(7);
-                $now = \Carbon\Carbon::now();
-                $diffInSeconds = (int) $now->diffInSeconds($deadline, false);
-              @endphp
-
-              @if($diffInSeconds > 0)
-                <div id="countdown-timer" class="mt-4 mx-auto max-w-[420px] font-bold text-[14px] bg-red-50 border border-red-100 p-3 rounded-lg" style="color: #ef4444;">
-                  ⏳ SISA WAKTU KONFIRMASI DAFTAR ULANG ONSITE: <span id="timer-display" class="font-mono text-[15px]">--:--:--</span>
-                </div>
-                <script>
-                  (function() {
-                      let diff = {{ $diffInSeconds }};
-                      function updateDisplay() {
-                          if (diff <= 0) {
-                              document.getElementById('timer-display').innerText = "Waktu Habis (Dianggap Mengundurkan Diri)";
-                              return;
-                          }
-                          let days = Math.floor(diff / (3600 * 24));
-                          let hours = Math.floor((diff % (3600 * 24)) / 3600);
-                          let minutes = Math.floor((diff % 3600) / 60);
-                          let seconds = diff % 60;
-
-                          let text = "";
-                          if (days > 0) text += days + " hari ";
-                          text += String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0') + ":" + String(seconds).padStart(2, '0');
-                          document.getElementById('timer-display').innerText = text;
-                          diff--;
-                          setTimeout(updateDisplay, 1000);
-                      }
-                      updateDisplay();
-                  })();
-                </script>
-              @else
-                <div class="mt-4 mx-auto max-w-[420px] font-bold text-[14px] bg-red-50 border border-red-100 p-3 rounded-lg" style="color: #ef4444;">⚠️ Batas waktu konfirmasi daftar ulang onsite telah habis. Status Anda dianggap Mengundurkan Diri.</div>
-              @endif
-
               <div class="mt-5">
-                <a href="{{ $landingContent['whatsapp_group_link'] ?? 'https://chat.whatsapp.com/ExampleLinkPMBMMIN3KRA' }}" target="_blank"
+                <a href="{{ $waLinkLulus }}" target="_blank"
                    class="inline-flex items-center justify-center min-w-[248px] h-[54px] px-6 rounded-[10px] text-[14px] font-bold text-white no-underline border border-black/20 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_6px_14px_rgba(0,0,0,0.15)]"
                    style="font-family: 'PlusJakartaSans-Bold', sans-serif; background: #47a26a;">Masuk Ke Grup WhatsApp Terbaru</a>
               </div>
@@ -143,9 +120,8 @@
           @elseif($pendaftaran->status_kelulusan === 'cadangan')
             <div class="font-bold tracking-[-0.4px] mb-3 text-[22px]" style="font-family: 'Roboto-Regular', sans-serif; color: #d97706;">STATUS: LULUS CADANGAN</div>
             <p class="text-black/55 text-[16px] leading-[1.6] mx-auto mb-6 max-w-[560px]" style="font-family: 'Roboto-Regular', sans-serif;">
-              Anda dinyatakan sebagai calon siswa CADANGAN dengan peringkat antrean:
-              <span class="text-black font-bold">Peringkat Cadangan Ke-{{ $pendaftaran->peringkat_cadangan ?? 1 }}</span><br>
-              Peringkat Anda dapat naik menjadi Lulus apabila terdapat calon siswa utama yang mengundurkan diri atau tidak mendaftar ulang hingga batas waktu konfirmasi onsite yang telah ditentukan.
+              Anda dinyatakan sebagai calon siswa CADANGAN.<br>
+              Status Anda dapat naik menjadi Lulus apabila terdapat calon siswa utama yang mengundurkan diri atau tidak mendaftar ulang hingga batas waktu konfirmasi onsite yang telah ditentukan.
             </p>
             <a href="{{ route('landing.kontak') }}"
                class="inline-flex items-center justify-center min-w-[248px] h-[54px] px-6 rounded-[10px] text-[14px] font-bold text-white no-underline border border-black/20 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_6px_14px_rgba(0,0,0,0.15)]"

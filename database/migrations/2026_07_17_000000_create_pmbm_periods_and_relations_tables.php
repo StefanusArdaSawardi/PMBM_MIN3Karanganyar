@@ -13,7 +13,7 @@ return new class extends Migration
     {
         // Hubungkan pendaftarans ke periode_pendaftarans & tambahkan program kelulusan
         Schema::table('pendaftarans', function (Blueprint $table) {
-            $table->unsignedBigInteger('periode_pendaftaran_id')->nullable()->after('id_pendaftaran');
+            $table->string('periode_pendaftaran_id', 10)->nullable()->after('id_pendaftaran');
             $table->string('program_kelulusan')->nullable()->after('status_kelulusan');
             $table->timestamp('batas_konfirmasi')->nullable()->after('tanggal_konfirmasi'); // deadline untuk daftar ulang
             

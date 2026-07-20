@@ -299,6 +299,16 @@ class AdminDashboardController extends Controller
             $query->where('pendaftarans.id_program', $request->program);
         }
 
+        // Apply status filter
+        if ($request->filled('status')) {
+            $status = $request->status;
+            if ($status === 'belum_ditetapkan') {
+                $query->whereNull('pendaftarans.status_kelulusan');
+            } elseif (in_array($status, ['lulus', 'cadangan', 'tidak_lulus'])) {
+                $query->where('pendaftarans.status_kelulusan', $status);
+            }
+        }
+
         $pendaftarans = $query->orderBy('pendaftarans.tanggal_pendaftaran', 'desc')->get();
 
         return view('pendaftaran.seleksi', compact('pendaftarans', 'programs', 'activePeriod'));
@@ -486,8 +496,10 @@ class AdminDashboardController extends Controller
             $landingContent = json_decode(file_get_contents($contentPath), true) ?? [];
         }
         $whatsappGroupLink = $landingContent['whatsapp_group_link'] ?? '';
+        $whatsappGroupLulusLink = $landingContent['whatsapp_group_lulus_link'] ?? '';
+        $whatsappGroupDiterimaLink = $landingContent['whatsapp_group_diterima_link'] ?? '';
 
-        return view('master.contacts', compact('contacts', 'whatsappGroupLink'));
+        return view('master.contacts', compact('contacts', 'whatsappGroupLink', 'whatsappGroupLulusLink', 'whatsappGroupDiterimaLink'));
     }
 
     /**
@@ -505,14 +517,7 @@ class AdminDashboardController extends Controller
     public function showDssConfig()
     {
         $dssConfig = \App\Services\DssService::getConfig();
-        $predikats = $dssConfig['predikats'] ?? [];
-        
-        $sangatCakap = collect($predikats)->firstWhere('label', 'Sangat Cakap') ?? ['min' => 85, 'max' => 100];
-        $cakap = collect($predikats)->firstWhere('label', 'Cakap') ?? ['min' => 70, 'max' => 84];
-        $cukupCakap = collect($predikats)->firstWhere('label', 'Cukup Cakap') ?? ['min' => 60, 'max' => 69];
-        $butuhPerhatian = collect($predikats)->firstWhere('label', 'Butuh Perhatian') ?? ['min' => 1, 'max' => 59];
-
-        return view('master.dss', compact('dssConfig', 'sangatCakap', 'cakap', 'cukupCakap', 'butuhPerhatian'));
+        return view('master.dss', compact('dssConfig'));
     }
 
     /**
@@ -537,6 +542,8 @@ class AdminDashboardController extends Controller
             'main_heading' => 'nullable|string',
             'sub_heading' => 'nullable|string',
             'whatsapp_group_link' => 'nullable|url',
+            'whatsapp_group_lulus_link' => 'nullable|url',
+            'whatsapp_group_diterima_link' => 'nullable|url',
         ]);
 
         $contentPath = storage_path('app/landing_content.json');
@@ -551,8 +558,14 @@ class AdminDashboardController extends Controller
         if ($request->filled('sub_heading')) {
             $content['sub_heading'] = strip_tags($request->sub_heading);
         }
-        if ($request->filled('whatsapp_group_link')) {
+        if ($request->has('whatsapp_group_link')) {
             $content['whatsapp_group_link'] = strip_tags($request->whatsapp_group_link);
+        }
+        if ($request->has('whatsapp_group_lulus_link')) {
+            $content['whatsapp_group_lulus_link'] = strip_tags($request->whatsapp_group_lulus_link);
+        }
+        if ($request->has('whatsapp_group_diterima_link')) {
+            $content['whatsapp_group_diterima_link'] = strip_tags($request->whatsapp_group_diterima_link);
         }
 
         file_put_contents($contentPath, json_encode($content, JSON_PRETTY_PRINT));
@@ -700,6 +713,7 @@ class AdminDashboardController extends Controller
                 'email' => $tu->email,
                 'role' => 'tata_usaha',
                 'role_label' => $tu->role === 'super admin' ? 'Super Admin' : 'Tata Usaha / Admin',
+                'is_super_admin' => ($tu->role === 'super admin'),
             ];
         }
 
@@ -710,6 +724,7 @@ class AdminDashboardController extends Controller
                 'email' => $panitia->email,
                 'role' => 'panitia',
                 'role_label' => $panitia->role_panitia === 'petugas_wawancara' ? 'Panitia Wawancara' : 'Panitia Pengawas Ujian',
+                'is_super_admin' => false,
             ];
         }
 
@@ -934,9 +949,11 @@ class AdminDashboardController extends Controller
 
         if ($role === 'tata_usaha') {
             $user = PengurusTataUsaha::findOrFail($id);
-            // Protect current logged-in user from self-deletion
+            if ($user->role === 'super admin') {
+                return back()->with('error', 'Akun Super Admin tidak dapat dihapus.');
+            }
             if (auth()->guard('tata_usaha')->id() == $id) {
-                return back()->withErrors(['error' => 'Anda tidak bisa menghapus akun Anda sendiri yang sedang digunakan.']);
+                return back()->with('error', 'Anda tidak bisa menghapus akun Anda sendiri yang sedang digunakan.');
             }
             $user->delete();
         } elseif ($role === 'panitia') {
@@ -1073,16 +1090,6 @@ class AdminDashboardController extends Controller
     public function updateDssConfig(Request $request)
     {
         $request->validate([
-            // Predikats
-            'pred_sangat_cakap_min' => 'required|integer|min:0|max:100',
-            'pred_sangat_cakap_max' => 'required|integer|min:0|max:100',
-            'pred_cakap_min' => 'required|integer|min:0|max:100',
-            'pred_cakap_max' => 'required|integer|min:0|max:100',
-            'pred_cukup_cakap_min' => 'required|integer|min:0|max:100',
-            'pred_cukup_cakap_max' => 'required|integer|min:0|max:100',
-            'pred_perhatian_min' => 'required|integer|min:0|max:100',
-            'pred_perhatian_max' => 'required|integer|min:0|max:100',
-            // Weights
             'weight_hafalan' => 'required|integer|min:0|max:100',
             'weight_aism' => 'required|integer|min:0|max:100',
             'weight_iqro' => 'required|integer|min:0|max:100',
@@ -1119,28 +1126,6 @@ class AdminDashboardController extends Controller
                 'calistung' => $wCalistung,
                 'dikte' => $wDikte,
                 'kemandirian' => $wKemandirian,
-            ],
-            'predikats' => [
-                [
-                    'min' => (int) $request->pred_sangat_cakap_min,
-                    'max' => (int) $request->pred_sangat_cakap_max,
-                    'label' => 'Sangat Cakap',
-                ],
-                [
-                    'min' => (int) $request->pred_cakap_min,
-                    'max' => (int) $request->pred_cakap_max,
-                    'label' => 'Cakap',
-                ],
-                [
-                    'min' => (int) $request->pred_cukup_cakap_min,
-                    'max' => (int) $request->pred_cukup_cakap_max,
-                    'label' => 'Cukup Cakap',
-                ],
-                [
-                    'min' => (int) $request->pred_perhatian_min,
-                    'max' => (int) $request->pred_perhatian_max,
-                    'label' => 'Butuh Perhatian',
-                ],
             ]
         ];
         
@@ -1255,24 +1240,9 @@ class AdminDashboardController extends Controller
         return PeriodePendaftaran::where('status', 'aktif')->first();
     }
 
-    /**
-     * Auto expire waitlisted (Cadangan) candidates and unconfirmed Lulus candidates.
-     */
     private function autoExpireWaitlists()
     {
-        // Lulus candidates who do not confirm in 1 week automatically expire to 'mengundurkan_diri'
-        Pendaftaran::where('status_kelulusan', 'lulus')
-            ->where(function($q) {
-                $q->whereNull('status_konfirmasi')
-                  ->orWhere('status_konfirmasi', 'belum_konfirmasi');
-            })
-            ->where('tanggal_kelulusan', '<', now()->subWeek())
-            ->update(['status_konfirmasi' => 'mengundurkan_diri']);
- 
-        // Cadangan candidates who are not promoted automatically expire to 'tidak_lulus'
-        Pendaftaran::where('status_kelulusan', 'cadangan')
-            ->where('updated_at', '<', now()->subWeek())
-            ->update(['status_kelulusan' => 'tidak_lulus']);
+        // Disabling 7-day automatic countdown expiration for re-registration
     }
  
     /**

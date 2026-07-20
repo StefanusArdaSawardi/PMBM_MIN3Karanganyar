@@ -67,24 +67,7 @@ class Pendaftaran extends Model
             return 'Berkas Diterima';
         }
 
-        // Cek apakah hasil kelulusan sudah dipublikasikan oleh Tata Usaha untuk periode ini
-        $isPublished = false;
-        if ($this->periodePendaftaran) {
-            $isPublished = (bool) $this->periodePendaftaran->graduation_published;
-        }
-
-        // Jika kelulusan BELUM dipublikasikan, sembunyikan status kelulusan dari publik
-        if (!$isPublished) {
-            if ($this->status_verifikasi === 'terverifikasi_onsite') {
-                if ($this->calonMurid && $this->calonMurid->hasil()->exists()) {
-                    return 'Siap Seleksi';
-                }
-                return 'Berkas Onsite Diterima';
-            }
-            return 'Pending';
-        }
-
-        // Jika kelulusan SUDAH dipublikasikan, tampilkan status kelulusan ril
+        // Jika status kelulusan sudah diatur, tampilkan status kelulusan ril
         if ($this->status_kelulusan === 'lulus') {
             if ($this->status_konfirmasi === 'terkonfirmasi') {
                 return 'Diterima (Daftar Ulang)';

@@ -255,29 +255,40 @@
           </div>
         </div>
 
-        <p style="font-size: 12px; color: #6b7280; margin: 0;">Tautan ini akan ditampilkan kepada calon siswa setelah pendaftaran berhasil dan pada halaman hasil kelulusan.</p>
+        <p style="font-size: 12px; color: #6b7280; margin: 0;">Kelola tautan grup WhatsApp yang akan ditampilkan kepada calon siswa pada tahap pendaftaran awal, saat lulus seleksi, dan saat konfirmasi ulang (diterima).</p>
 
-        <form action="{{ route('tata_usaha.content.update_text') }}" method="POST" style="display: flex; flex-direction: column; gap: 12px;">
+        <form action="{{ route('tata_usaha.content.update_text') }}" method="POST" style="display: flex; flex-direction: column; gap: 16px;">
           @csrf
-          <div style="display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;">
-            <div style="flex: 1; min-width: 300px;">
-              <label style="font-size: 11px; font-weight: bold; color: #4b5563; text-transform: uppercase; display: block; margin-bottom: 4px;">Tautan Grup WhatsApp PMBM</label>
-              <input type="url" name="whatsapp_group_link" value="{{ $whatsappGroupLink }}" required placeholder="Contoh: https://chat.whatsapp.com/grup-link-anda"
-                     style="width: 100%; padding: 10px 14px; border: 1px solid #becabe; border-radius: 8px; font-size: 13px; outline: none; font-family: inherit; box-sizing: border-box;">
-            </div>
-            <button type="submit" style="background: #064e3b; color: #ffffff; padding: 10px 20px; border-radius: 8px; cursor: pointer; border: none; font-weight: bold; font-size: 13px; font-family: inherit; white-space: nowrap; height: 42px;">
-              Simpan Link
+          
+          <!-- Link 1: Pendaftaran Awal -->
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <label style="font-size: 11px; font-weight: bold; color: #4b5563; text-transform: uppercase; display: block;">1. Tautan Grup WhatsApp PMBM (Pendaftaran Awal)</label>
+            <input type="url" name="whatsapp_group_link" value="{{ $whatsappGroupLink ?? '' }}" placeholder="Contoh: https://chat.whatsapp.com/grup-pendaftaran"
+                   style="width: 100%; padding: 10px 14px; border: 1px solid #becabe; border-radius: 8px; font-size: 13px; outline: none; font-family: inherit; box-sizing: border-box;">
+            <span style="font-size: 11px; color: #6b7280;">Diberikan kepada pendaftar baru setelah berhasil mengisi formulir pendaftaran online.</span>
+          </div>
+
+          <!-- Link 2: Lulus Seleksi -->
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <label style="font-size: 11px; font-weight: bold; color: #047857; text-transform: uppercase; display: block;">2. Tautan Grup WhatsApp Lulus Seleksi</label>
+            <input type="url" name="whatsapp_group_lulus_link" value="{{ $whatsappGroupLulusLink ?? '' }}" placeholder="Contoh: https://chat.whatsapp.com/grup-lulus-seleksi"
+                   style="width: 100%; padding: 10px 14px; border: 1px solid #becabe; border-radius: 8px; font-size: 13px; outline: none; font-family: inherit; box-sizing: border-box;">
+            <span style="font-size: 11px; color: #6b7280;">Diberikan pada halaman Cek Status Kelulusan bagi pendaftar dengan status <strong>Lulus Seleksi</strong> (sebelum daftar ulang).</span>
+          </div>
+
+          <!-- Link 3: Diterima / Konfirmasi Ulang -->
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <label style="font-size: 11px; font-weight: bold; color: #1e40af; text-transform: uppercase; display: block;">3. Tautan Grup WhatsApp Resmi / Konfirmasi Ulang (Diterima)</label>
+            <input type="url" name="whatsapp_group_diterima_link" value="{{ $whatsappGroupDiterimaLink ?? '' }}" placeholder="Contoh: https://chat.whatsapp.com/grup-resmi-murid-baru"
+                   style="width: 100%; padding: 10px 14px; border: 1px solid #becabe; border-radius: 8px; font-size: 13px; outline: none; font-family: inherit; box-sizing: border-box;">
+            <span style="font-size: 11px; color: #6b7280;">Diberikan pada halaman Cek Status Kelulusan bagi siswa yang telah <strong>Diterima &amp; Selesai Daftar Ulang</strong>.</span>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; margin-top: 4px;">
+            <button type="submit" style="background: #064e3b; color: #ffffff; padding: 10px 24px; border-radius: 8px; cursor: pointer; border: none; font-weight: bold; font-size: 13px; font-family: inherit; white-space: nowrap;">
+              Simpan Semua Link Grup WhatsApp
             </button>
           </div>
-          @if($whatsappGroupLink)
-            <div style="font-size: 12px; color: #298752; display: flex; align-items: center; gap: 6px;">
-              <span>✅</span> Link aktif saat ini: <a href="{{ $whatsappGroupLink }}" target="_blank" style="color: #298752; text-decoration: underline; word-break: break-all;">{{ $whatsappGroupLink }}</a>
-            </div>
-          @else
-            <div style="font-size: 12px; color: #ef4444; display: flex; align-items: center; gap: 6px;">
-              <span>⚠️</span> Belum ada tautan grup WhatsApp yang diatur.
-            </div>
-          @endif
         </form>
       </div>
 

@@ -103,37 +103,6 @@
         </div>
       @endif
 
-      <!-- Publish Announcement Card -->
-      <div style="background-color: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 12px; padding: 24px; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;">
-        <div>
-          <div style="font-weight: bold; font-size: 16px; color: #1e293b; display: flex; align-items: center; gap: 8px;">
-            📢 Publikasi Hasil Kelulusan Seleksi PMBM
-          </div>
-          <div style="font-size: 13px; color: #475569; margin-top: 4px;">
-            Status saat ini: 
-            @if($activePeriod && $activePeriod->graduation_published)
-              <span class="font-bold text-[#166534] bg-green-100 px-2 py-0.5 rounded">SUDAH DIPUBLIKASIKAN (Wali murid dapat mengecek status kelulusan mereka)</span>
-            @else
-              <span class="font-bold text-[#991b1b] bg-red-100 px-2 py-0.5 rounded">BELUM DIPUBLIKASIKAN (Status kelulusan masih disembunyikan)</span>
-            @endif
-          </div>
-        </div>
-        <div>
-          <form action="{{ route('tata_usaha.periode.publish') }}" method="POST" style="margin: 0; padding: 0;">
-            @csrf
-            @if($activePeriod && $activePeriod->graduation_published)
-              <button type="submit" class="bg-[#ba1a1a] hover:bg-[#93000a] text-white font-bold px-6 py-3 rounded-lg text-[14px] cursor-pointer border-none transition-colors">
-                ✕ Batalkan Pengumuman
-              </button>
-            @else
-              <button type="submit" class="bg-[#005b31] hover:bg-[#064e3b] text-white font-bold px-6 py-3 rounded-lg text-[14px] cursor-pointer border-none transition-colors">
-                📢 Umumkan Kelulusan Serentak
-              </button>
-            @endif
-          </form>
-        </div>
-      </div>
-
       <!-- Applicants Table -->
       <div class="bg-white border border-[#bec9be] rounded-xl overflow-hidden mb-10">
         <div class="bg-[#eff4ff] grid grid-cols-5 gap-4 px-6 py-4 max-[900px]:hidden" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;">

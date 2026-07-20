@@ -166,12 +166,18 @@
                       </a>
 
                       <!-- Delete Form -->
-                      <form action="{{ route('tata_usaha.accounts.delete', [$acc['role'], $acc['id']]) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus akun {{ $acc['name'] }}?')">
-                        @csrf
-                        <button type="submit" style="color: #ef4444; font-weight: bold; cursor: pointer; border: none; background: none; font-size: 12px; padding: 0; outline: none;">
-                          Hapus
-                        </button>
-                      </form>
+                      @if(!empty($acc['is_super_admin']))
+                        <span style="color: #9ca3af; font-size: 11px; font-weight: bold; font-style: italic; cursor: not-allowed;" title="Akun Super Admin Utama tidak dapat dihapus">
+                          (Super Admin)
+                        </span>
+                      @else
+                        <form action="{{ route('tata_usaha.accounts.delete', [$acc['role'], $acc['id']]) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus akun {{ $acc['name'] }}?')">
+                          @csrf
+                          <button type="submit" style="color: #ef4444; font-weight: bold; cursor: pointer; border: none; background: none; font-size: 12px; padding: 0; outline: none;">
+                            Hapus
+                          </button>
+                        </form>
+                      @endif
                     </div>
                   </div>
                 @endforeach

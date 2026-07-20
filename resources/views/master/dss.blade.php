@@ -65,7 +65,7 @@
       @endif
       
       <!-- Section: Konfigurasi Parameter DSS Seleksi PMBM -->
-      <div style="background: #ffffff; border-radius: 12px; border: 1px solid #becabe; padding: 24px; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; gap: 20px;">
+      <div style="background: #ffffff; border-radius: 12px; border: 1px solid #becabe; padding: 24px; box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05); display: flex; flex-direction: column; gap: 20px; max-width: 750px; width: 100%;">
         <div style="display: flex; align-items: center; border-bottom: 2px solid #f0fdf4; padding-bottom: 12px;">
           <div style="font-weight: bold; font-family: 'PlusJakartaSans-Bold', sans-serif; font-size: 16px; color: #064e3b; display: flex; align-items: center; gap: 8px;">
             <span>⚙️</span> Konfigurasi Parameter DSS Seleksi PMBM (Sistem Cerdas)
@@ -74,11 +74,17 @@
 
         <form action="{{ route('tata_usaha.dss.update') }}" method="POST" style="display: flex; flex-direction: column; gap: 24px;">
           @csrf
-          <div style="display: flex; flex-direction: row; gap: 24px; width: 100%; align-items: stretch; justify-content: center; flex-wrap: wrap;">
+          <div style="display: flex; flex-direction: column; gap: 16px; width: 100%;">
             
-            <!-- Column 1: Bobot Kriteria Perhitungan -->
-            <div style="flex: 1; min-width: 320px; background: #f9fafb; padding: 20px; border-radius: 8px; border: 1px solid #e5e7eb; display: flex; flex-direction: column; gap: 12px;">
-              <div style="font-weight: bold; font-size: 13px; color: #374151; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px;">Bobot Kriteria Penilaian DSS (%)</div>
+            <!-- Bobot Kriteria Perhitungan -->
+            <div style="background: #f9fafb; padding: 20px; border-radius: 8px; border: 1px solid #e5e7eb; display: flex; flex-direction: column; gap: 14px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; border-bottom: 1px dashed #d1d5db; padding-bottom: 10px;">
+                <div style="font-weight: bold; font-size: 13px; color: #374151; text-transform: uppercase; letter-spacing: 0.5px;">Bobot Kriteria Penilaian DSS (%)</div>
+                <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: bold;">
+                  <span style="color: #4b5563;">Total Bobot saat ini:</span>
+                  <span id="totalWeightBadge" style="padding: 4px 10px; border-radius: 20px; font-size: 13px; font-weight: bold; background: #dcfce7; color: #166534; transition: all 0.2s;">100%</span>
+                </div>
+              </div>
               
               @php
                 $rawWeights = $dssConfig['weights'] ?? [];
@@ -92,89 +98,46 @@
                 ];
               @endphp
 
-              <div>
-                <label style="font-size: 11px; font-weight: 700; color: #4b5563;">HAFALAN</label>
-                <input type="number" name="weight_hafalan" class="input-field" value="{{ old('weight_hafalan', $weights['hafalan']) }}" required min="0" max="100">
-              </div>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                <div>
+                  <label style="font-size: 11px; font-weight: 700; color: #4b5563;">HAFALAN (%)</label>
+                  <input type="number" name="weight_hafalan" class="input-field dss-weight-input" value="{{ old('weight_hafalan', $weights['hafalan']) }}" required min="0" max="100">
+                </div>
 
-              <div>
-                <label style="font-size: 11px; font-weight: 700; color: #4b5563;">AISM</label>
-                <input type="number" name="weight_aism" class="input-field" value="{{ old('weight_aism', $weights['aism']) }}" required min="0" max="100">
-              </div>
+                <div>
+                  <label style="font-size: 11px; font-weight: 700; color: #4b5563;">AISM (%)</label>
+                  <input type="number" name="weight_aism" class="input-field dss-weight-input" value="{{ old('weight_aism', $weights['aism']) }}" required min="0" max="100">
+                </div>
 
-              <div>
-                <label style="font-size: 11px; font-weight: 700; color: #4b5563;">IQRO</label>
-                <input type="number" name="weight_iqro" class="input-field" value="{{ old('weight_iqro', $weights['iqro']) }}" required min="0" max="100">
-              </div>
+                <div>
+                  <label style="font-size: 11px; font-weight: 700; color: #4b5563;">IQRO (%)</label>
+                  <input type="number" name="weight_iqro" class="input-field dss-weight-input" value="{{ old('weight_iqro', $weights['iqro']) }}" required min="0" max="100">
+                </div>
 
-              <div>
-                <label style="font-size: 11px; font-weight: 700; color: #4b5563;">CALISTUNG</label>
-                <input type="number" name="weight_calistung" class="input-field" value="{{ old('weight_calistung', $weights['calistung']) }}" required min="0" max="100">
-              </div>
+                <div>
+                  <label style="font-size: 11px; font-weight: 700; color: #4b5563;">CALISTUNG (%)</label>
+                  <input type="number" name="weight_calistung" class="input-field dss-weight-input" value="{{ old('weight_calistung', $weights['calistung']) }}" required min="0" max="100">
+                </div>
 
-              <div>
-                <label style="font-size: 11px; font-weight: 700; color: #4b5563;">DIKTE</label>
-                <input type="number" name="weight_dikte" class="input-field" value="{{ old('weight_dikte', $weights['dikte']) }}" required min="0" max="100">
-              </div>
+                <div>
+                  <label style="font-size: 11px; font-weight: 700; color: #4b5563;">DIKTE (%)</label>
+                  <input type="number" name="weight_dikte" class="input-field dss-weight-input" value="{{ old('weight_dikte', $weights['dikte']) }}" required min="0" max="100">
+                </div>
 
-              <div>
-                <label style="font-size: 11px; font-weight: 700; color: #4b5563;">KEMANDIRIAN</label>
-                <input type="number" name="weight_kemandirian" class="input-field" value="{{ old('weight_kemandirian', $weights['kemandirian']) }}" required min="0" max="100">
-              </div>
-
-              <small style="font-size: 10px; color: #ef4444; display: block; margin-top: 5px; font-weight: bold;">
-                * Jumlah total keenam bobot kriteria wajib sama dengan 100%.
-              </small>
-            </div>
-
-            <!-- Column 2: Predikat Batas Angka -->
-            <div style="flex: 1; min-width: 320px; background: #f9fafb; padding: 20px; border-radius: 8px; border: 1px solid #e5e7eb; display: flex; flex-direction: column; gap: 12px;">
-              <div style="font-weight: bold; font-size: 13px; color: #374151; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px;">Predikat Batas Angka DSS (Global)</div>
-              
-              <!-- Sangat Cakap -->
-              <div>
-                <label style="font-size: 11px; font-weight: 700; color: #047857; text-transform: uppercase;">Sangat Cakap</label>
-                <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
-                  <input type="number" name="pred_sangat_cakap_min" class="input-field" style="width: 100%;" value="{{ old('pred_sangat_cakap_min', $sangatCakap['min']) }}" required placeholder="Min">
-                  <span style="font-size: 12px; color: #9ca3af;">s.d</span>
-                  <input type="number" name="pred_sangat_cakap_max" class="input-field" style="width: 100%;" value="{{ old('pred_sangat_cakap_max', $sangatCakap['max']) }}" required placeholder="Max">
+                <div>
+                  <label style="font-size: 11px; font-weight: 700; color: #4b5563;">KEMANDIRIAN (%)</label>
+                  <input type="number" name="weight_kemandirian" class="input-field dss-weight-input" value="{{ old('weight_kemandirian', $weights['kemandirian']) }}" required min="0" max="100">
                 </div>
               </div>
 
-              <!-- Cakap -->
-              <div>
-                <label style="font-size: 11px; font-weight: 700; color: #2563eb; text-transform: uppercase;">Cakap</label>
-                <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
-                  <input type="number" name="pred_cakap_min" class="input-field" style="width: 100%;" value="{{ old('pred_cakap_min', $cakap['min']) }}" required placeholder="Min">
-                  <span style="font-size: 12px; color: #9ca3af;">s.d</span>
-                  <input type="number" name="pred_cakap_max" class="input-field" style="width: 100%;" value="{{ old('pred_cakap_max', $cakap['max']) }}" required placeholder="Max">
-                </div>
-              </div>
-
-              <!-- Cukup Cakap -->
-              <div>
-                <label style="font-size: 11px; font-weight: 700; color: #d97706; text-transform: uppercase;">Cukup Cakap</label>
-                <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
-                  <input type="number" name="pred_cukup_cakap_min" class="input-field" style="width: 100%;" value="{{ old('pred_cukup_cakap_min', $cukupCakap['min']) }}" required placeholder="Min">
-                  <span style="font-size: 12px; color: #9ca3af;">s.d</span>
-                  <input type="number" name="pred_cukup_cakap_max" class="input-field" style="width: 100%;" value="{{ old('pred_cukup_cakap_max', $cukupCakap['max']) }}" required placeholder="Max">
-                </div>
-              </div>
-
-              <!-- Butuh Perhatian -->
-              <div>
-                <label style="font-size: 11px; font-weight: 700; color: #b91c1c; text-transform: uppercase;">Butuh Perhatian</label>
-                <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
-                  <input type="number" name="pred_perhatian_min" class="input-field" style="width: 100%;" value="{{ old('pred_perhatian_min', $butuhPerhatian['min']) }}" required placeholder="Min">
-                  <span style="font-size: 12px; color: #9ca3af;">s.d</span>
-                  <input type="number" name="pred_perhatian_max" class="input-field" style="width: 100%;" value="{{ old('pred_perhatian_max', $butuhPerhatian['max']) }}" required placeholder="Max">
-                </div>
+              <div id="weightValidationMessage" style="font-size: 11px; color: #059669; margin-top: 4px; font-weight: bold; display: flex; align-items: center; gap: 6px;">
+                <span>✅</span> Total distribusi bobot valid (100%).
               </div>
             </div>
           </div>
 
-          <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
-            <button type="submit" class="btn-submit">
+          <div style="display: flex; justify-content: flex-end; margin-top: 5px;">
+            <button type="submit" class="btn-submit" id="btnSubmitDss">
               Simpan Konfigurasi &amp; Rekalkulasi DSS
             </button>
           </div>
@@ -182,4 +145,42 @@
       </div>
     </div>
   </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const weightInputs = document.querySelectorAll('.dss-weight-input');
+      const badge = document.getElementById('totalWeightBadge');
+      const msg = document.getElementById('weightValidationMessage');
+      const submitBtn = document.getElementById('btnSubmitDss');
+
+      function calculateTotal() {
+        let total = 0;
+        weightInputs.forEach(input => {
+          total += parseInt(input.value) || 0;
+        });
+
+        badge.textContent = total + '%';
+        if (total === 100) {
+          badge.style.background = '#dcfce7';
+          badge.style.color = '#166534';
+          msg.innerHTML = '<span>✅</span> Total distribusi bobot valid (100%).';
+          msg.style.color = '#059669';
+          submitBtn.disabled = false;
+          submitBtn.style.opacity = '1';
+          submitBtn.style.cursor = 'pointer';
+        } else {
+          badge.style.background = '#fee2e2';
+          badge.style.color = '#991b1b';
+          msg.innerHTML = '<span>⚠️</span> Total distribusi bobot harus persis 100%. (Selisih: ' + (100 - total) + '%)';
+          msg.style.color = '#dc2626';
+        }
+      }
+
+      weightInputs.forEach(input => {
+        input.addEventListener('input', calculateTotal);
+      });
+
+      calculateTotal();
+    });
+  </script>
 @endsection
