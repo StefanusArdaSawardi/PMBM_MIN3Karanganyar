@@ -56,8 +56,35 @@
         </div>
       </div>
 
-      <!-- Active Queue List Data Table -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden mb-6">
+      <!-- Active Queue List Data Table Card with Live Search Filter -->
+      <div class="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden mb-6" x-data="{ search: '' }">
+        
+        <!-- Header Filter & Search Input Area -->
+        <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between gap-4 flex-wrap">
+          <div class="relative flex-1 min-w-[260px] max-w-md">
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
+              </svg>
+            </div>
+            <input type="text" 
+                   x-model="search" 
+                   placeholder="Cari nama siswa, NISN, atau No. Reg..." 
+                   class="w-full pl-10 pr-4 py-2 text-xs text-slate-800 bg-white border border-slate-200 rounded-lg outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all shadow-sm">
+            
+            <!-- Clear Search Button -->
+            <button x-show="search.length > 0" 
+                    @click="search = ''" 
+                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 text-xs font-bold">
+              ✕
+            </button>
+          </div>
+
+          <div class="text-xs text-slate-400 font-medium">
+            Ketik kata kunci untuk menyaring daftar
+          </div>
+        </div>
+
         <div class="overflow-x-auto">
           <table class="w-full border-collapse text-left text-sm whitespace-nowrap">
             <thead class="bg-slate-50 border-b border-slate-100 text-slate-500 text-[11px] font-bold uppercase tracking-wider">
@@ -72,7 +99,15 @@
             </thead>
             <tbody class="divide-y divide-slate-100 text-slate-700">
               @forelse($queue as $item)
-                <tr class="hover:bg-slate-50/80 transition-colors duration-150">
+                @php
+                  $searchHaystack = strtolower(
+                    'PMB-2026-' . substr($item->id_pendaftaran, 3) . ' ' . 
+                    ($item->calonMurid->nama_murid ?? '') . ' ' . 
+                    ($item->calonMurid->nisn ?? '')
+                  );
+                @endphp
+                <tr class="hover:bg-slate-50/80 transition-colors duration-150"
+                    x-show="search === '' || '{{ $searchHaystack }}'.includes(search.toLowerCase())">
                   <td class="py-4 px-4 font-medium text-slate-900">
                     PMB-2026-{{ substr($item->id_pendaftaran, 3) }}
                   </td>
@@ -147,8 +182,10 @@
       </div>
 
     </div>
-
-
-
   </div>
+@endsection
+
+@section('styles')
+  <!-- Library Alpine.js untuk fitur Live Search tanpa reload -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 @endsection

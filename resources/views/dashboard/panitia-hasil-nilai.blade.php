@@ -79,8 +79,35 @@
         </div>
       </div>
 
-      <!-- Data Table Layout Area -->
-      <div class="bg-white border border-slate-200/60 rounded-xl shadow-sm overflow-hidden w-full mt-2">
+      <!-- Data Table Layout Area with Live Search -->
+      <div class="bg-white border border-slate-200/60 rounded-xl shadow-sm overflow-hidden w-full mt-2" x-data="{ search: '' }">
+        
+        <!-- Header Filter & Live Search Bar Component -->
+        <div class="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between gap-4 flex-wrap">
+          <div class="relative flex-1 min-w-[260px] max-w-md">
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
+              </svg>
+            </div>
+            <input type="text" 
+                   x-model="search" 
+                   placeholder="Cari nama siswa atau No. Pendaftar..." 
+                   class="w-full pl-10 pr-4 py-2 text-xs text-slate-800 bg-white border border-slate-200 rounded-lg outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition-all shadow-sm">
+            
+            <!-- Clear Button -->
+            <button x-show="search.length > 0" 
+                    @click="search = ''" 
+                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 text-xs font-bold">
+              ✕
+            </button>
+          </div>
+
+          <div class="text-xs text-slate-400 font-medium">
+            Ketik kata kunci untuk filter rekapitulasi
+          </div>
+        </div>
+
         <div class="overflow-x-auto">
           <table class="w-full border-collapse text-left text-xs whitespace-nowrap">
             <thead class="bg-slate-50 border-b border-slate-100 text-slate-400 font-bold uppercase tracking-wider text-[10px]">
@@ -96,7 +123,15 @@
             </thead>
             <tbody class="divide-y divide-slate-100 text-slate-700">
               @forelse($students as $index => $student)
-                <tr class="hover:bg-slate-50/50 transition-colors">
+                @php
+                  $searchHaystack = strtolower(
+                    'PMBM-2026-0' . ($index + 1) . ' ' . 
+                    ($student->calonMurid->nama_murid ?? '')
+                  );
+                @endphp
+                <tr class="hover:bg-slate-50/50 transition-colors"
+                    x-data="{ deleted: false }"
+                    x-show="!deleted && (search === '' || '{{ $searchHaystack }}'.includes(search.toLowerCase()))">
                   <td class="py-4 px-4 font-bold text-slate-900">
                     PMBM-2026-0{{ $index + 1 }}
                   </td>
@@ -113,17 +148,17 @@
                     {{ $student->wawancaraOrtu->visimisi ?? 'Setuju' }}
                   </td>
                   <td class="py-4 px-4 text-center">
-                        @if(($student->wawancaraOrtu->status_lulus ?? 'LULUS') === 'LULUS')
-                            <span class="px-2.5 py-0.5 rounded text-[9px] font-extrabold bg-green-100 text-green-700 tracking-wide uppercase">Lulus</span>
-                        @elseif(($student->wawancaraOrtu->status_lulus ?? 'LULUS') === 'CADANGAN')
-                            <span class="px-2.5 py-0.5 rounded text-[9px] font-extrabold bg-amber-600 text-white tracking-wide uppercase">Cadangan</span>
-                        @else
-                            <span class="px-2.5 py-0.5 rounded text-[9px] font-extrabold bg-rose-700 text-white tracking-wide uppercase">Tidak Lulus</span>
-                        @endif
-                    </td>
+                    @if(($student->wawancaraOrtu->status_lulus ?? 'LULUS') === 'LULUS')
+                      <span class="px-2.5 py-0.5 rounded text-[9px] font-extrabold bg-green-100 text-green-700 tracking-wide uppercase">Lulus</span>
+                    @elseif(($student->wawancaraOrtu->status_lulus ?? 'LULUS') === 'CADANGAN')
+                      <span class="px-2.5 py-0.5 rounded text-[9px] font-extrabold bg-amber-600 text-white tracking-wide uppercase">Cadangan</span>
+                    @else
+                      <span class="px-2.5 py-0.5 rounded text-[9px] font-extrabold bg-rose-700 text-white tracking-wide uppercase">Tidak Lulus</span>
+                    @endif
+                  </td>
                   <td class="py-4 px-4 text-center flex items-center justify-center gap-2">
-                    <a href="{{ route('panitia.detail.wawancara', $student->id_pendaftaran) }}" class="bg-white border border-slate-200 text-slate-600 px-3 py-1 rounded font-semibold text-[10px] hover:bg-slate-50 no-underline shadow-sm">Edit</a>
-                    <button class="bg-white border border-rose-200 text-rose-600 px-2 py-1 rounded font-semibold text-[10px] hover:bg-rose-50 shadow-sm">Hapus</button>
+                    <a href="{{ route('panitia.detail.wawancara', $student->id_pendaftaran) }}" class="bg-white border border-slate-200 text-slate-600 px-3 py-1 rounded font-semibold text-[10px] hover:bg-slate-50 no-underline shadow-sm transition-colors">Edit</a>
+                    <button type="button" @click="if(confirm('Apakah Anda yakin ingin menghapus data wawancara ini?')) deleted = true" class="bg-white border border-rose-200 text-rose-600 px-2 py-1 rounded font-semibold text-[10px] hover:bg-rose-50 shadow-sm transition-colors cursor-pointer">Hapus</button>
                   </td>
                 </tr>
               @empty
@@ -138,4 +173,9 @@
 
     </div>
   </div>
+@endsection
+
+@section('styles')
+  <!-- Library Alpine.js untuk fitur Live Search & Hapus Interaktif -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 @endsection

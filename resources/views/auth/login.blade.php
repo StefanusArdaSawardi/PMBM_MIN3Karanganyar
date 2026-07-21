@@ -21,7 +21,6 @@
         <form action="{{ route('login') }}" method="POST" class="flex flex-col gap-6">
           @csrf
 
-          <!-- Error Flash Message -->
           @if($errors->any())
             <div class="p-3 bg-red-100 border border-red-300 text-red-700 text-[12px] rounded-lg leading-4">
               {{ $errors->first() }}
