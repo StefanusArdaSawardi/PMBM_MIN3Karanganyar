@@ -5,39 +5,8 @@
 @section('content')
   <div class="relative min-h-screen bg-slate-50/10 antialiased pb-12">
     
-    <!-- CUSTOM SIDEBAR KIRI SESUAI GAMBAR FIGMA -->
-    <aside class="fixed top-0 left-0 bottom-0 w-[260px] bg-white border-r border-slate-200/60 flex flex-col justify-between p-6 shadow-sm z-50 max-[1024px]:w-[220px] max-[768px]:hidden transition-all">
-      <div class="flex flex-col gap-6">
-        <!-- Logo & Title -->
-        <div class="flex items-center gap-3 px-2 py-2">
-          <div class="bg-emerald-800 rounded-lg p-2 shrink-0">
-            <span class="text-white text-lg">🏫</span>
-          </div>
-          <span class="text-slate-900 font-bold tracking-tight text-sm font-sans leading-tight">Panitia Wawancara</span>
-        </div>
-
-        <!-- Menu Navigation Vertikal -->
-        <nav class="flex flex-col gap-1 mt-4">
-          <a href="#" class="flex items-center px-4 py-3 bg-emerald-900 text-white rounded-xl text-sm font-bold shadow-sm no-underline font-sans transition-all">
-            Wawancara
-          </a>
-          <a href="{{ route('panitia.hasil-nilai') }}" class="flex items-center px-4 py-3 text-emerald-850 hover:bg-slate-50 rounded-xl text-sm font-bold no-underline font-sans transition-all mt-1">
-            Hasil Wawancara
-          </a>
-        </nav>
-      </div>
-
-      <!-- Logout Button at Bottom -->
-      <button onclick="event.preventDefault(); document.getElementById('panitia-logout-form').submit();" 
-              class="w-full flex items-center justify-start px-4 py-3 text-rose-600 hover:bg-rose-50 rounded-xl text-sm font-bold transition-all no-underline font-sans">
-        Logout
-      </button>
-    </aside>
-
-    <!-- Hidden Logout Form -->
-    <form id="panitia-logout-form" action="{{ route('panitia.logout') }}" method="POST" class="hidden">
-      @csrf
-    </form>
+    <!-- Panitia Sidebar Included -->
+    @include('components.sidebar-panitia', ['activeFolder' => 'queue'])
 
     <!-- MAIN CONTENT CONTAINER (Shifted Right) -->
     <div class="relative pt-8 pb-12 pr-6 pl-[280px] max-[1024px]:pl-[240px] max-[1024px]:pr-6 flex flex-col gap-6 max-[768px]:pt-20 max-[768px]:px-4 w-full transition-all">
@@ -46,8 +15,12 @@
       <div class="flex justify-between items-center w-full border-b border-slate-200/40 pb-4">
         <h1 class="text-slate-900 text-lg font-bold font-sans">Penilaian Wawancara</h1>
         <div class="flex flex-col items-end text-right">
-          <span class="text-slate-900 text-sm font-bold font-sans">Admin Portal</span>
-          <span class="text-slate-400 text-[11px] font-medium font-sans">Super Admin</span>
+          <span class="text-slate-900 text-sm font-bold font-sans">
+            {{ auth()->guard('panitia')->user()->nama_panitia ?? 'Panitia PMBM' }}
+          </span>
+          <span class="text-slate-400 text-[11px] font-semibold tracking-wide uppercase font-sans">
+            {{ str_replace('_', ' ', auth()->guard('panitia')->user()->role_panitia ?? 'PETUGAS WAWANCARA') }}
+          </span>
         </div>
       </div>
       

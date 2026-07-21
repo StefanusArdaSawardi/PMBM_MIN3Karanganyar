@@ -5,35 +5,8 @@
 @section('content')
   <div class="relative min-h-screen bg-slate-50/10 antialiased pb-12">
     
-    <!-- SIDEBAR KIRI SESUAI GAMBAR FIGMA KEDUA -->
-    <aside class="fixed top-0 left-0 bottom-0 w-[260px] bg-white border-r border-slate-200/60 flex flex-col justify-between p-6 shadow-sm z-50 max-[1024px]:w-[220px] max-[768px]:hidden transition-all">
-      <div class="flex flex-col gap-6">
-        <div class="flex items-center gap-3 px-2 py-2">
-          <div class="bg-emerald-800 rounded-lg p-2 shrink-0">
-            <span class="text-white text-lg">🏫</span>
-          </div>
-          <span class="text-slate-900 font-bold tracking-tight text-sm font-sans leading-tight">Panitia Penilaian</span>
-        </div>
-
-        <nav class="flex flex-col gap-1 mt-4">
-          <a href="{{ route('panitia.dashboard') }}" class="flex items-center px-4 py-3 text-slate-600 hover:bg-slate-50 rounded-xl text-sm font-bold no-underline font-sans transition-all">
-            Penilaian
-          </a>
-          <a href="#" class="flex items-center px-4 py-3 bg-emerald-900 text-white rounded-xl text-sm font-bold shadow-sm no-underline font-sans transition-all mt-1">
-            Keterangan wawancara
-          </a>
-        </nav>
-      </div>
-
-      <button onclick="event.preventDefault(); document.getElementById('panitia-logout-form').submit();" 
-              class="w-full flex items-center justify-start px-4 py-3 text-rose-600 hover:bg-rose-50 rounded-xl text-sm font-bold transition-all no-underline font-sans">
-        Logout
-      </button>
-    </aside>
-
-    <form id="panitia-logout-form" action="{{ route('panitia.logout') }}" method="POST" class="hidden">
-      @csrf
-    </form>
+    <!-- Panitia Sidebar Included -->
+    @include('components.sidebar-panitia', ['activeFolder' => 'result'])
 
     <!-- MAIN CONTENT AREA -->
     <div class="relative pt-8 pb-12 pr-6 pl-[280px] max-[1024px]:pl-[240px] max-[1024px]:pr-6 flex flex-col gap-6 max-[768px]:pt-20 max-[768px]:px-4 w-full transition-all">
@@ -42,38 +15,42 @@
       <div class="flex justify-between items-center w-full border-b border-slate-200/40 pb-4">
         <h1 class="text-slate-900 text-lg font-bold font-sans">Penilaian</h1>
         <div class="flex flex-col items-end text-right">
-          <span class="text-slate-900 text-sm font-bold font-sans">Admin Portal</span>
-          <span class="text-slate-400 text-[11px] font-medium font-sans">Super Admin</span>
+          <span class="text-slate-900 text-sm font-bold font-sans">
+            {{ auth()->guard('panitia')->user()->nama_panitia ?? 'Panitia PMBM' }}
+          </span>
+          <span class="text-slate-400 text-[11px] font-semibold tracking-wide uppercase font-sans">
+            {{ str_replace('_', ' ', auth()->guard('panitia')->user()->role_panitia ?? 'PETUGAS WAWANCARA') }}
+          </span>
         </div>
       </div>
 
       <!-- Stats Summary Row Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
-        <div class="bg-rose-50 border border-rose-100 rounded-xl p-4 flex justify-between items-center">
+        <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-4 flex justify-between items-center">
           <div>
             <span class="text-slate-400 text-[11px] font-semibold block">Total Pendaftar</span>
-            <span class="text-slate-800 text-xl font-bold mt-1 block">124</span>
+            <span class="text-slate-800 text-xl font-bold mt-1 block">{{ $totalPendaftar }}</span>
           </div>
           <span class="text-lg bg-white p-2 rounded-lg shadow-sm">👥</span>
         </div>
         <div class="bg-emerald-50 border border-emerald-100 rounded-xl p-4 flex justify-between items-center">
           <div>
             <span class="text-slate-400 text-[11px] font-semibold block">Lulus Seleksi</span>
-            <span class="text-emerald-700 text-xl font-bold mt-1 block">86</span>
+            <span class="text-emerald-700 text-xl font-bold mt-1 block">{{ $lulusCount }}</span>
           </div>
           <span class="text-lg bg-white p-2 rounded-lg shadow-sm">✓</span>
         </div>
         <div class="bg-amber-50 border border-amber-100 rounded-xl p-4 flex justify-between items-center">
           <div>
             <span class="text-slate-400 text-[11px] font-semibold block">Cadangan</span>
-            <span class="text-amber-700 text-xl font-bold mt-1 block">24</span>
+            <span class="text-amber-700 text-xl font-bold mt-1 block">{{ $cadanganCount }}</span>
           </div>
           <span class="text-lg bg-white p-2 rounded-lg shadow-sm">📋</span>
         </div>
         <div class="bg-rose-50 border border-rose-100 rounded-xl p-4 flex justify-between items-center">
           <div>
             <span class="text-slate-400 text-[11px] font-semibold block">Tidak Lulus</span>
-            <span class="text-rose-700 text-xl font-bold mt-1 block">14</span>
+            <span class="text-rose-700 text-xl font-bold mt-1 block">{{ $tidakLulusCount }}</span>
           </div>
           <span class="text-lg bg-white p-2 rounded-lg shadow-sm">✕</span>
         </div>
@@ -157,7 +134,8 @@
                     @endif
                   </td>
                   <td class="py-4 px-4 text-center flex items-center justify-center gap-2">
-                    <a href="{{ route('panitia.detail.wawancara', $student->id_pendaftaran) }}" class="bg-white border border-slate-200 text-slate-600 px-3 py-1 rounded font-semibold text-[10px] hover:bg-slate-50 no-underline shadow-sm transition-colors">Edit</a>
+                    <a href="{{ $role === 'pengawas_ujian' ? route('panitia.detail.ujian', $student->id_pendaftaran) : route('panitia.detail.wawancara', $student->id_pendaftaran) }}" class="bg-emerald-50 border border-emerald-300 text-emerald-700 px-3 py-1 rounded font-bold text-[10px] hover:bg-emerald-100 no-underline shadow-sm transition-colors">Detail</a>
+                    <a href="{{ $role === 'pengawas_ujian' ? route('panitia.detail.ujian', $student->id_pendaftaran) : route('panitia.detail.wawancara', $student->id_pendaftaran) }}" class="bg-white border border-slate-200 text-slate-600 px-3 py-1 rounded font-semibold text-[10px] hover:bg-slate-50 no-underline shadow-sm transition-colors">Edit</a>
                     <button type="button" @click="if(confirm('Apakah Anda yakin ingin menghapus data wawancara ini?')) deleted = true" class="bg-white border border-rose-200 text-rose-600 px-2 py-1 rounded font-semibold text-[10px] hover:bg-rose-50 shadow-sm transition-colors cursor-pointer">Hapus</button>
                   </td>
                 </tr>

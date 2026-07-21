@@ -416,86 +416,109 @@
               ];
             @endphp
             @foreach($scores as $score)
-              <div class="bg-white border border-black/5 shadow-sm rounded-xl p-6 flex flex-col gap-1">
-                <div class="bg-[#93f4b0]/30 rounded-lg size-10 flex items-center justify-center text-[#004228]">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5-2v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V8l8-4 8 4z"/></svg>
+              <div class="bg-white border border-[#bec9be] shadow-sm rounded-2xl p-6 flex flex-col justify-between gap-3">
+                <div class="flex items-center justify-between">
+                  <div class="bg-[#e8f5e9] border border-[#c8e6c9] rounded-xl w-10 h-10 flex items-center justify-center text-[#006a3c]">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5-2v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V8l8-4 8 4z"/></svg>
+                  </div>
                 </div>
-                <div class="text-[#3f4942] text-[12px] font-semibold uppercase tracking-wide pt-3">{{ $score['label'] }}</div>
-                <div class="flex items-baseline gap-1 pb-3">
-                  <span class="text-[#004228] text-[30px] font-bold">{{ $score['value'] }}</span>
-                  <span class="text-[#3f4942] text-[14px]">/ 100</span>
+                <div class="text-[#3f4942] text-[11px] font-bold uppercase tracking-wider">{{ $score['label'] }}</div>
+                <div class="flex items-baseline gap-1">
+                  <span class="text-[#181c1c] text-[28px] font-bold" style="font-family: 'Manrope-Bold', sans-serif;">{{ $score['value'] }}</span>
+                  <span class="text-[#6f7a71] text-[14px]">/ 100</span>
                 </div>
-                <div class="bg-[#ebeeed] h-1.5 rounded-full w-full overflow-hidden">
-                  <div class="bg-[#006d3a] h-full rounded-full" style="width: {{ min(100, $score['value']) }}%"></div>
+                <div class="bg-[#ebeeed] h-2 rounded-full w-full overflow-hidden mt-1">
+                  <div class="bg-[#006a3c] h-full rounded-full" style="width: {{ min(100, max(0, $score['value'])) }}%"></div>
                 </div>
               </div>
             @endforeach
           </div>
 
-          @if($hasil)
           <!-- Interview Summaries -->
-          <div class="grid grid-cols-2 gap-6 max-[900px]:grid-cols-1">
-            <div class="bg-white border border-black/5 shadow-sm rounded-xl p-6 flex flex-col gap-4">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2 text-[#004228] text-[18px] font-semibold">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.97-4.03 9-9 9a9 9 0 01-4-.93L3 21l1.07-3.2A8.96 8.96 0 013 12c0-4.97 4.03-9 9-9s9 4.03 9 9z"/></svg>
-                  Ringkasan Wawancara
+          @if($pendaftaran->wawancaraOrtu || $pendaftaran->wawancaraAnak)
+            <div class="grid grid-cols-2 gap-6 max-[900px]:grid-cols-1 mt-6" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;">
+              <!-- Wawancara & Observasi Anak -->
+              <div class="bg-white border border-[#bec9be] shadow-sm rounded-xl p-6 flex flex-col gap-4">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2 text-[#004228] text-[18px] font-semibold">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.97-4.03 9-9 9a9 9 0 01-4-.93L3 21l1.07-3.2A8.96 8.96 0 013 12c0-4.97 4.03-9 9-9s9 4.03 9 9z"/></svg>
+                    Wawancara &amp; Observasi Anak
+                  </div>
+                  <span class="text-[#3f4942] text-[12px] italic">
+                    {{ $pendaftaran->wawancaraAnak ? $pendaftaran->wawancaraAnak->created_at->format('d M Y') : 'Terdata' }}
+                  </span>
                 </div>
-                <span class="text-[#3f4942] text-[12px] italic">{{ $hasil->created_at->format('d M Y') }}</span>
+                <div class="bg-[#f1f4f3] rounded-xl p-4 flex flex-col gap-2.5">
+                  <div class="text-[#004228] text-[12px] font-bold uppercase tracking-wide">Status Evaluasi &amp; Catatan Khusus Anak</div>
+                  @php
+                    $wan = $pendaftaran->wawancaraAnak;
+                    $hasNotes = $wan && ($wan->wawancara_irqa || $wan->wawancara_aism || $wan->wawancara_calistung || $wan->wawancara_dikte || $wan->wawancara_kemandirian || $wan->rekap_wawancara);
+                  @endphp
+                  @if($hasNotes)
+                    <div class="flex flex-col gap-1.5 text-[13px] text-[#181c1c]">
+                      @if($wan->rekap_wawancara)
+                        <div class="font-medium text-slate-800 italic">"{{ $wan->rekap_wawancara }}"</div>
+                      @endif
+                      @if($wan->wawancara_irqa)
+                        <div><strong class="text-[#004228]">Catatan Hafalan &amp; Iqro:</strong> {{ $wan->wawancara_irqa }}</div>
+                      @endif
+                      @if($wan->wawancara_aism)
+                        <div><strong class="text-[#004228]">Catatan AISM:</strong> {{ $wan->wawancara_aism }}</div>
+                      @endif
+                      @if($wan->wawancara_calistung)
+                        <div><strong class="text-[#004228]">Catatan Calistung:</strong> {{ $wan->wawancara_calistung }}</div>
+                      @endif
+                      @if($wan->wawancara_dikte)
+                        <div><strong class="text-[#004228]">Catatan Dikte:</strong> {{ $wan->wawancara_dikte }}</div>
+                      @endif
+                      @if($wan->wawancara_kemandirian)
+                        <div><strong class="text-[#004228]">Catatan Kemandirian:</strong> {{ $wan->wawancara_kemandirian }}</div>
+                      @endif
+                    </div>
+                  @else
+                    <div class="text-[#181c1c] text-[14px]">
+                      Observasi dan evaluasi 6 instrumen kemampuan anak telah selesai diuji &amp; terdata oleh Panitia Penguji PMBM.
+                    </div>
+                  @endif
+                </div>
               </div>
-              <div class="bg-[#f1f4f3] rounded-xl p-4 flex flex-col gap-1">
-                <div class="text-[#004228] text-[12px] font-bold uppercase tracking-wide">Catatan Observasi</div>
-                <div class="text-[#181c1c] text-[14px] italic">{{ $hasil->catatan ?? 'Belum ada catatan observasi dari panitia.' }}</div>
-              </div>
-            </div>
 
-            <div class="bg-white border border-black/5 shadow-sm rounded-xl p-6 flex flex-col gap-4">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2 text-[#004228] text-[18px] font-semibold">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m5-4.13a4 4 0 100-8 4 4 0 000 8zm6 8v-2a4 4 0 00-3-3.87"/></svg>
-                  Wawancara Orang Tua
+              <!-- Catatan Wawancara Orang Tua -->
+              <div class="bg-white border border-black/5 shadow-sm rounded-xl p-6 flex flex-col gap-4">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-2 text-[#004228] text-[18px] font-semibold">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m5-4.13a4 4 0 100-8 4 4 0 000 8zm6 8v-2a4 4 0 00-3-3.87"/></svg>
+                    Catatan Wawancara Orang Tua
+                  </div>
+                  <span class="text-[#3f4942] text-[12px] italic">
+                    {{ $pendaftaran->wawancaraOrtu ? $pendaftaran->wawancaraOrtu->created_at->format('d M Y') : '-' }}
+                  </span>
                 </div>
-                <span class="text-[#3f4942] text-[12px] italic">Status: Selesai</span>
-              </div>
-              <div class="flex gap-4 max-[600px]:flex-col">
-                <div class="flex-1 border border-[#bfc9c0] rounded-xl p-4">
-                  <div class="text-[#3f4942] text-[10px] font-bold uppercase">Rating Dukungan Ortu</div>
-                  <div class="text-[#181c1c] text-[14px] font-medium">{{ $hasil->rating_ortu }} / 10</div>
-                </div>
-              </div>
-              @if($hasil->catatan_manual || $hasil->catatan_otomatis)
                 <div class="bg-[#f1f4f3] border border-[#bfc9c0] rounded-xl p-4 flex flex-col gap-2">
-                  <div class="text-[#004228] text-[12px] font-bold">Catatan Administratif:</div>
-                  <div class="text-[#3f4942] text-[14px]">{{ $hasil->catatan_manual ?? $hasil->catatan_otomatis }}</div>
+                  <div class="text-[#004228] text-[12px] font-bold">Komitmen &amp; Catatan Orang Tua:</div>
+                  <div class="text-[#181c1c] text-[14px] leading-relaxed font-medium">
+                    {{ $pendaftaran->wawancaraOrtu->komitmen_ortu ?? 'Belum ada catatan komitmen dari orang tua.' }}
+                  </div>
                 </div>
-              @endif
+              </div>
+            </div>
+          @else
+            <div class="bg-amber-50 border border-amber-200 rounded-xl p-6 text-amber-700 text-center text-[14px] mt-6">
+              ⚠️ Data wawancara dan observasi belum diinput oleh panitia.
+            </div>
+          @endif
+
+          <!-- Action Footer -->
+          <div class="bg-[#e6e9e8] border border-[#bfc9c0] rounded-xl p-6 flex items-center justify-between gap-4 max-[700px]:flex-col mt-6">
+            <div class="flex items-center gap-4 text-[#3f4942] text-[14px]">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 16v-4m0-4h.01"/></svg>
+              <div>Laporan ini dibuat secara otomatis oleh <strong>Pusat Evaluasi Terpadu</strong>. Perubahan data harus seizin Panitia Inti Seleksi.</div>
+            </div>
+            <div class="flex gap-4 shrink-0">
+              <button type="button" onclick="window.print()" class="border border-[#004228] text-[#004228] rounded-lg px-6 py-3 text-[16px] font-bold cursor-pointer bg-white">Cetak Laporan</button>
             </div>
           </div>
-          @else
-          <div class="bg-amber-50 border border-amber-200 rounded-xl p-6 text-amber-700 text-center text-[14px]">
-            ⚠️ Data wawancara dan observasi belum diinput oleh panitia.
-          </div>
-          @endif
         @endif
-
-        <!-- Action Footer -->
-        <div class="bg-[#e6e9e8] border border-[#bfc9c0] rounded-xl p-6 flex items-center justify-between gap-4 max-[700px]:flex-col">
-          <div class="flex items-center gap-4 text-[#3f4942] text-[14px]">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="shrink-0"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 16v-4m0-4h.01"/></svg>
-            <div>Laporan ini dibuat secara otomatis oleh <strong>Pusat Evaluasi Terpadu</strong>. Perubahan data harus seizin Panitia Inti Seleksi.</div>
-          </div>
-          <div class="flex gap-4 shrink-0">
-            <button type="button" onclick="window.print()" class="border border-[#004228] text-[#004228] rounded-lg px-6 py-3 text-[16px] font-bold cursor-pointer bg-white">Cetak Laporan</button>
-            @if($hasil && !$step3Completed)
-              <form action="{{ route('tata_usaha.status', $pendaftaran->id_pendaftaran) }}" method="POST">
-                @csrf
-                <input type="hidden" name="action" value="penetapan_kelulusan">
-                <input type="hidden" name="status_kelulusan" value="lulus">
-                <button type="submit" class="bg-[#004228] text-white rounded-lg px-6 py-3 text-[16px] font-bold cursor-pointer shadow-lg">Lanjut ke Daftar Ulang →</button>
-              </form>
-            @endif
-          </div>
-        </div>
       @endif
     </div>
   </div>
