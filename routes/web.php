@@ -126,6 +126,9 @@ Route::middleware('auth:tata_usaha')->prefix('tata-usaha')->group(function () {
 Route::middleware('auth:panitia')->prefix('panitia')->group(function () {
     Route::get('/dashboard', [PanitiaDashboardController::class, 'index'])->name('panitia.dashboard');
     
+    // Tambahan: Rute Hasil Nilai (Bisa diakses oleh semua role panitia)
+    Route::get('/hasil-nilai', [PanitiaDashboardController::class, 'hasilNilai'])->name('panitia.hasil-nilai');
+    
     // Rute khusus Pengawas Ujian
     Route::middleware('panitia.role:pengawas_ujian')->group(function () {
         Route::get('/grading/ujian/{id}', [PanitiaDashboardController::class, 'detailUjian'])->name('panitia.detail.ujian');
