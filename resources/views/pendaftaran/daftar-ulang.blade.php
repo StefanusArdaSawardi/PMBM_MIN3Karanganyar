@@ -58,6 +58,30 @@
             @endforeach
           </div>
         </div>
+
+        <!-- Status Konfirmasi Filter -->
+        <div style="flex: 1.2; min-width: 170px; display: flex; flex-direction: column; gap: 8px;">
+          <label class="text-[#3f4941] text-[12px] font-bold">Status Konfirmasi</label>
+          <select name="status" onchange="this.form.submit()" class="bg-[#f1f4f3] border border-[#bec9be] rounded px-3 py-2.5 text-[14px] text-[#181c1c] outline-none cursor-pointer" style="height: 40px;">
+            <option value="" {{ !request('status') ? 'selected' : '' }}>Semua Status</option>
+            <option value="belum_konfirmasi" {{ request('status') == 'belum_konfirmasi' ? 'selected' : '' }}>Belum Konfirmasi</option>
+            <option value="terkonfirmasi" {{ request('status') == 'terkonfirmasi' ? 'selected' : '' }}>Daftar Ulang (Terkonfirmasi)</option>
+            <option value="mengundurkan_diri" {{ request('status') == 'mengundurkan_diri' ? 'selected' : '' }}>Mengundurkan Diri</option>
+          </select>
+        </div>
+
+        <!-- Limit Filter -->
+        <div style="flex: 0.8; min-width: 110px; display: flex; flex-direction: column; gap: 8px;">
+          <label class="text-[#3f4941] text-[12px] font-bold">Tampilkan</label>
+          <select name="limit" onchange="this.form.submit()" class="bg-[#f1f4f3] border border-[#bec9be] rounded px-3 py-2.5 text-[14px] text-[#181c1c] outline-none cursor-pointer" style="height: 40px;">
+            <option value="5" {{ request('limit') == 5 ? 'selected' : '' }}>5 Baris</option>
+            <option value="10" {{ !request('limit') || request('limit') == 10 ? 'selected' : '' }}>10 Baris</option>
+            <option value="20" {{ request('limit') == 20 ? 'selected' : '' }}>20 Baris</option>
+            <option value="30" {{ request('limit') == 30 ? 'selected' : '' }}>30 Baris</option>
+            <option value="50" {{ request('limit') == 50 ? 'selected' : '' }}>50 Baris</option>
+            <option value="0" {{ request('limit') === '0' ? 'selected' : '' }}>Semua Data</option>
+          </select>
+        </div>
       </form>
 
       <script>

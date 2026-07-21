@@ -262,9 +262,23 @@
           
           <!-- Link 1: Pendaftaran Awal -->
           <div style="display: flex; flex-direction: column; gap: 4px;">
-            <label style="font-size: 11px; font-weight: bold; color: #4b5563; text-transform: uppercase; display: block;">1. Tautan Grup WhatsApp PMBM (Pendaftaran Awal)</label>
-            <input type="url" name="whatsapp_group_link" value="{{ $whatsappGroupLink ?? '' }}" placeholder="Contoh: https://chat.whatsapp.com/grup-pendaftaran"
-                   style="width: 100%; padding: 10px 14px; border: 1px solid #becabe; border-radius: 8px; font-size: 13px; outline: none; font-family: inherit; box-sizing: border-box;">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 4px;">
+              <label style="font-size: 11px; font-weight: bold; color: #4b5563; text-transform: uppercase; display: block;">1. Tautan Grup WhatsApp PMBM (Pendaftaran Awal)</label>
+              @if(!empty($whatsappGroupLink))
+                <a href="{{ $whatsappGroupLink }}" target="_blank" style="font-size: 11px; font-weight: bold; color: #005b31; text-decoration: underline; display: inline-flex; align-items: center; gap: 3px;">
+                  ↗ Buka Link Grup WA Pendaftaran Awal
+                </a>
+              @endif
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <input type="url" id="wa_group_link_1" name="whatsapp_group_link" value="{{ $whatsappGroupLink ?? '' }}" placeholder="Contoh: https://chat.whatsapp.com/grup-pendaftaran"
+                     style="flex: 1; width: 100%; padding: 10px 14px; border: 1px solid #becabe; border-radius: 8px; font-size: 13px; outline: none; font-family: inherit; box-sizing: border-box;">
+              @if(!empty($whatsappGroupLink))
+                <a href="{{ $whatsappGroupLink }}" target="_blank" style="background: #005b31; color: white; padding: 10px 16px; border-radius: 8px; font-size: 12px; font-weight: bold; text-decoration: none; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px;">
+                  ↗ Kunjungi Link
+                </a>
+              @endif
+            </div>
             <span style="font-size: 11px; color: #6b7280;">Diberikan kepada pendaftar baru setelah berhasil mengisi formulir pendaftaran online.</span>
           </div>
 

@@ -21,8 +21,8 @@ class AdminDashboardController extends Controller
     {
         $this->autoExpireWaitlists();
 
-        $programs = Program::all();
         $activePeriod = PeriodePendaftaran::where('status', 'aktif')->first();
+        $programs = $this->getActivePrograms($activePeriod);
 
         $query = Pendaftaran::query();
 
@@ -68,9 +68,35 @@ class AdminDashboardController extends Controller
                 ->count();
         }
 
-        $recentApplicants = (clone $query)->with(['calonMurid', 'program'])
+        // Recent Applicants Query with Search & Filters
+        $recentQuery = (clone $query)->with(['calonMurid', 'program']);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $recentQuery->whereHas('calonMurid', function ($q) use ($search) {
+                $q->where('nama_murid', 'like', "%{$search}%")
+                  ->orWhere('nisn', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('status')) {
+            $status = $request->status;
+            if (in_array($status, ['menunggu_verifikasi', 'ditolak', 'terverifikasi', 'terverifikasi_onsite'])) {
+                $recentQuery->where('status_verifikasi', $status);
+            } elseif (in_array($status, ['lulus', 'tidak_lulus', 'cadangan'])) {
+                $recentQuery->where('status_kelulusan', $status);
+            } elseif (in_array($status, ['belum_konfirmasi', 'terkonfirmasi', 'mengundurkan_diri'])) {
+                $recentQuery->where('status_konfirmasi', $status);
+            }
+        }
+
+        if ($request->filled('program_kelulusan')) {
+            $recentQuery->where('program_kelulusan', $request->program_kelulusan);
+        }
+
+        $recentApplicants = $recentQuery
             ->orderBy('created_at', 'desc')
-            ->take(5)
+            ->take(10)
             ->get();
 
         return view('dashboard.admin', compact(
@@ -85,8 +111,8 @@ class AdminDashboardController extends Controller
     public function applicants(Request $request)
     {
         $this->autoExpireWaitlists();
-        $programs = Program::all();
         $activePeriod = $this->resolvePeriod($request);
+        $programs = $this->getActivePrograms($activePeriod);
         
         $query = Pendaftaran::with(['calonMurid.ayah', 'calonMurid.ibu', 'program'])
             ->join('calon_murids', 'pendaftarans.id_murid', '=', 'calon_murids.id_murid')
@@ -98,7 +124,7 @@ class AdminDashboardController extends Controller
         } else {
             $query->whereRaw('1 = 0');
         }
- 
+
         // Search filter (name, nisn, or parent name)
         if ($request->filled('search')) {
             $search = $request->search;
@@ -117,15 +143,25 @@ class AdminDashboardController extends Controller
         // Filter by Status
         if ($request->filled('status')) {
             $status = $request->status;
-            if (in_array($status, ['menunggu_verifikasi', 'ditolak', 'terverifikasi', 'terverifikasi_onsite'])) {
+            if ($status === 'belum_konfirmasi') {
+                $query->where(function($q) {
+                    $q->where('pendaftarans.status_verifikasi', 'menunggu_verifikasi')
+                      ->orWhere('pendaftarans.status_konfirmasi', 'belum_konfirmasi');
+                });
+            } elseif ($status === 'terkonfirmasi') {
+                $query->where(function($q) {
+                    $q->where('pendaftarans.status_verifikasi', 'terverifikasi')
+                      ->orWhere('pendaftarans.status_konfirmasi', 'terkonfirmasi');
+                });
+            } elseif (in_array($status, ['menunggu_verifikasi', 'ditolak', 'terverifikasi', 'terverifikasi_onsite'])) {
                 $query->where('pendaftarans.status_verifikasi', $status);
             } elseif (in_array($status, ['lulus', 'tidak_lulus', 'cadangan'])) {
                 $query->where('pendaftarans.status_kelulusan', $status);
-            } elseif (in_array($status, ['belum_konfirmasi', 'terkonfirmasi', 'mengundurkan_diri'])) {
+            } elseif (in_array($status, ['mengundurkan_diri'])) {
                 $query->where('pendaftarans.status_konfirmasi', $status);
             }
         }
- 
+
         // Filter by Program Study
         if ($request->filled('program')) {
             $query->where('pendaftarans.id_program', $request->program);
@@ -142,15 +178,15 @@ class AdminDashboardController extends Controller
         } else {
             $query->orderBy('pendaftarans.tanggal_pendaftaran', 'desc');
         }
- 
+
         // Limit results
         $limit = $request->integer('limit', 10);
-        if (!in_array($limit, [5, 10, 20, 30])) {
-            $limit = 10;
+        if ($limit > 0) {
+            $pendaftarans = $query->take($limit)->get();
+        } else {
+            $pendaftarans = $query->get();
         }
- 
-        $pendaftarans = $query->take($limit)->get();
- 
+
         return view('pendaftaran.index', compact('pendaftarans', 'programs', 'limit', 'activePeriod', 'sort'));
     }
 
@@ -160,8 +196,8 @@ class AdminDashboardController extends Controller
     public function grupWhatsapp(Request $request)
     {
         $this->autoExpireWaitlists();
-        $programs = Program::all();
         $activePeriod = $this->resolvePeriod($request);
+        $programs = $this->getActivePrograms($activePeriod);
 
         $query = Pendaftaran::with(['calonMurid.ibu', 'program']);
 
@@ -172,6 +208,14 @@ class AdminDashboardController extends Controller
             $query->whereRaw('1 = 0');
         }
 
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->whereHas('calonMurid', function ($q) use ($search) {
+                $q->where('nama_murid', 'like', "%{$search}%")
+                  ->orWhere('nisn', 'like', "%{$search}%");
+            });
+        }
+
         if ($request->filled('status')) {
             $query->where('status_grup_wa', $request->status);
         }
@@ -180,9 +224,14 @@ class AdminDashboardController extends Controller
             $query->where('id_program', $request->program);
         }
 
-        $pendaftarans = $query->orderBy('created_at', 'desc')->get();
+        $limit = $request->integer('limit', 10);
+        if ($limit > 0) {
+            $pendaftarans = $query->orderBy('created_at', 'desc')->take($limit)->get();
+        } else {
+            $pendaftarans = $query->orderBy('created_at', 'desc')->get();
+        }
 
-        return view('pendaftaran.grup-whatsapp', compact('pendaftarans', 'programs', 'activePeriod'));
+        return view('pendaftaran.grup-whatsapp', compact('pendaftarans', 'programs', 'activePeriod', 'limit'));
     }
 
     /**
@@ -219,7 +268,7 @@ class AdminDashboardController extends Controller
             ->findOrFail($id);
         
         $student = $pendaftaran->calonMurid;
- 
+
         return view('profile.show', compact('pendaftaran', 'student'));
     }
 
@@ -228,8 +277,8 @@ class AdminDashboardController extends Controller
      */
     public function verifikasiOffline(Request $request)
     {
-        $programs = Program::all();
         $activePeriod = $this->resolvePeriod($request);
+        $programs = $this->getActivePrograms($activePeriod);
 
         $query = Pendaftaran::with(['calonMurid.ayah', 'calonMurid.ibu', 'program'])
             ->join('calon_murids', 'pendaftarans.id_murid', '=', 'calon_murids.id_murid')
@@ -241,8 +290,12 @@ class AdminDashboardController extends Controller
             $query->whereRaw('1 = 0');
         }
 
-        // Show students who are in offline verification stage (online verified but not onsite verified)
-        $query->where('pendaftarans.status_verifikasi', 'terverifikasi');
+        // Show students who are in offline verification stage
+        if ($request->filled('status')) {
+            $query->where('pendaftarans.status_verifikasi', $request->status);
+        } else {
+            $query->whereIn('pendaftarans.status_verifikasi', ['terverifikasi', 'terverifikasi_onsite']);
+        }
 
         // Apply search if present
         if ($request->filled('search')) {
@@ -257,9 +310,14 @@ class AdminDashboardController extends Controller
             $query->where('pendaftarans.id_program', $request->program);
         }
 
-        $pendaftarans = $query->orderBy('pendaftarans.tanggal_pendaftaran', 'desc')->get();
+        $limit = $request->integer('limit', 10);
+        if ($limit > 0) {
+            $pendaftarans = $query->orderBy('pendaftarans.tanggal_pendaftaran', 'desc')->take($limit)->get();
+        } else {
+            $pendaftarans = $query->orderBy('pendaftarans.tanggal_pendaftaran', 'desc')->get();
+        }
 
-        return view('pendaftaran.verifikasi-offline', compact('pendaftarans', 'programs', 'activePeriod'));
+        return view('pendaftaran.verifikasi-offline', compact('pendaftarans', 'programs', 'activePeriod', 'limit'));
     }
 
     /**
@@ -270,8 +328,8 @@ class AdminDashboardController extends Controller
         // Recalculate rankings and DSS recommendations
         \App\Services\DssService::recalculateAll();
 
-        $programs = Program::all();
         $activePeriod = $this->resolvePeriod($request);
+        $programs = $this->getActivePrograms($activePeriod);
 
         $query = Pendaftaran::with(['calonMurid.ayah', 'calonMurid.ibu', 'program', 'nilaiUjian', 'dssRanking'])
             ->join('calon_murids', 'pendaftarans.id_murid', '=', 'calon_murids.id_murid')
@@ -309,9 +367,14 @@ class AdminDashboardController extends Controller
             }
         }
 
-        $pendaftarans = $query->orderBy('pendaftarans.tanggal_pendaftaran', 'desc')->get();
+        $limit = $request->integer('limit', 10);
+        if ($limit > 0) {
+            $pendaftarans = $query->orderBy('pendaftarans.tanggal_pendaftaran', 'desc')->take($limit)->get();
+        } else {
+            $pendaftarans = $query->orderBy('pendaftarans.tanggal_pendaftaran', 'desc')->get();
+        }
 
-        return view('pendaftaran.seleksi', compact('pendaftarans', 'programs', 'activePeriod'));
+        return view('pendaftaran.seleksi', compact('pendaftarans', 'programs', 'activePeriod', 'limit'));
     }
 
     /**
@@ -319,8 +382,8 @@ class AdminDashboardController extends Controller
      */
     public function daftarUlang(Request $request)
     {
-        $programs = Program::all();
         $activePeriod = $this->resolvePeriod($request);
+        $programs = $this->getActivePrograms($activePeriod);
 
         $query = Pendaftaran::with(['calonMurid.ayah', 'calonMurid.ibu', 'program'])
             ->join('calon_murids', 'pendaftarans.id_murid', '=', 'calon_murids.id_murid')
@@ -348,9 +411,18 @@ class AdminDashboardController extends Controller
             $query->where('pendaftarans.id_program', $request->program);
         }
 
-        $pendaftarans = $query->orderBy('pendaftarans.tanggal_pendaftaran', 'desc')->get();
+        if ($request->filled('status')) {
+            $query->where('pendaftarans.status_konfirmasi', $request->status);
+        }
 
-        return view('pendaftaran.daftar-ulang', compact('pendaftarans', 'programs', 'activePeriod'));
+        $limit = $request->integer('limit', 10);
+        if ($limit > 0) {
+            $pendaftarans = $query->orderBy('pendaftarans.tanggal_pendaftaran', 'desc')->take($limit)->get();
+        } else {
+            $pendaftarans = $query->orderBy('pendaftarans.tanggal_pendaftaran', 'desc')->get();
+        }
+
+        return view('pendaftaran.daftar-ulang', compact('pendaftarans', 'programs', 'activePeriod', 'limit'));
     }
 
     /**
@@ -1238,6 +1310,17 @@ class AdminDashboardController extends Controller
             return PeriodePendaftaran::where('tahun', $request->tahun)->first();
         }
         return PeriodePendaftaran::where('status', 'aktif')->first();
+    }
+
+    /**
+     * Get programs that belong to the active/selected period, or all programs if none specified.
+     */
+    private function getActivePrograms(?PeriodePendaftaran $activePeriod)
+    {
+        if ($activePeriod && $activePeriod->programs()->count() > 0) {
+            return $activePeriod->programs;
+        }
+        return Program::all();
     }
 
     private function autoExpireWaitlists()

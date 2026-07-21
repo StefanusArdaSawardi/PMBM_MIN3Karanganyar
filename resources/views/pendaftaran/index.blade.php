@@ -119,18 +119,19 @@
       </div>
 
       <!-- Status Sub-Filter -->
+      @php($curStatus = request('status'))
       <div class="flex gap-4 max-[640px]:flex-wrap">
-        <a href="{{ route('scores.index', array_merge(request()->except('status'), ['status' => 'belum_konfirmasi'])) }}"
-           class="rounded px-6 py-2 no-underline {{ request('status') == 'belum_konfirmasi' ? 'bg-[#109aaa]' : 'bg-white' }}">
-          <span class="{{ request('status') == 'belum_konfirmasi' ? 'text-white' : 'text-[#109aaa]' }} text-[16px]">Belum Terkonfirmasi</span>
+        <a href="{{ route('scores.index', array_merge(request()->except('status'), ['status' => 'menunggu_verifikasi'])) }}"
+           class="rounded px-6 py-2 no-underline {{ in_array($curStatus, ['menunggu_verifikasi', 'belum_konfirmasi']) ? 'bg-[#109aaa]' : 'bg-white border border-[#bec9be]' }}">
+          <span class="{{ in_array($curStatus, ['menunggu_verifikasi', 'belum_konfirmasi']) ? 'text-white' : 'text-[#109aaa]' }} text-[16px] font-medium">Belum Terkonfirmasi</span>
         </a>
         <a href="{{ route('scores.index', array_merge(request()->except('status'), ['status' => 'ditolak'])) }}"
-           class="rounded px-6 py-2 no-underline {{ request('status') == 'ditolak' ? 'bg-[#ba1a1a]' : 'bg-white' }}">
-          <span class="{{ request('status') == 'ditolak' ? 'text-white' : 'text-[#ba1a1a]' }} text-[16px]">Tolak</span>
+           class="rounded px-6 py-2 no-underline {{ $curStatus == 'ditolak' ? 'bg-[#ba1a1a]' : 'bg-white border border-[#bec9be]' }}">
+          <span class="{{ $curStatus == 'ditolak' ? 'text-white' : 'text-[#ba1a1a]' }} text-[16px] font-medium">Tolak</span>
         </a>
-        <a href="{{ route('scores.index', array_merge(request()->except('status'), ['status' => 'terkonfirmasi'])) }}"
-           class="rounded px-6 py-2 no-underline {{ request('status') == 'terkonfirmasi' ? 'bg-[#006a3c]' : 'bg-white' }}">
-          <span class="{{ request('status') == 'terkonfirmasi' ? 'text-white' : 'text-[#006a3c]' }} text-[16px]">Terima</span>
+        <a href="{{ route('scores.index', array_merge(request()->except('status'), ['status' => 'terverifikasi'])) }}"
+           class="rounded px-6 py-2 no-underline {{ in_array($curStatus, ['terverifikasi', 'terkonfirmasi']) ? 'bg-[#006a3c]' : 'bg-white border border-[#bec9be]' }}">
+          <span class="{{ in_array($curStatus, ['terverifikasi', 'terkonfirmasi']) ? 'text-white' : 'text-[#006a3c]' }} text-[16px] font-medium">Terima</span>
         </a>
         @if(request()->filled('status') || request()->filled('search'))
           <a href="{{ route('scores.index') }}" class="rounded px-6 py-2 no-underline flex items-center">

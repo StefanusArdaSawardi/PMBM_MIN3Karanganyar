@@ -21,6 +21,10 @@ class PeriodePendaftaranController extends Controller
             });
         }
 
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
         $periodes = $query->orderBy('tahun', 'desc')->get();
 
         return view('pengaturan.periode.index', compact('periodes'));

@@ -96,25 +96,130 @@
         </a>
       </div>
 
+      <!-- Recent Applicants Filter & Search Bar -->
+      <form action="{{ route('tata_usaha.dashboard') }}" method="GET" class="flex gap-4 max-[1024px]:flex-col flex-wrap w-full bg-white border border-[#bec9be] rounded-lg shadow-[0_1px_1px_rgba(0,0,0,0.05)] p-4 items-end">
+        @if(request()->filled('program'))
+          <input type="hidden" name="program" value="{{ request('program') }}">
+        @endif
+
+        <!-- Search Input -->
+        <div style="flex: 2; min-width: 220px; display: flex; flex-direction: column; gap: 6px;">
+          <label class="text-[#3f4941] text-[12px] font-bold">Cari Calon Siswa</label>
+          <div style="position: relative; display: flex; align-items: center; width: 100%;">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama murid atau NISN..." 
+                   class="bg-[#f1f4f3] border border-[#bec9be] rounded px-3 py-2 text-[13px] text-[#181c1c] outline-none w-full" style="height: 38px; box-sizing: border-box;">
+            <button type="submit" style="position: absolute; right: 8px; background: none; border: none; cursor: pointer; color: #005b31;">
+              🔍
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter Status Pendaftaran -->
+        <div style="flex: 1.2; min-width: 170px; display: flex; flex-direction: column; gap: 6px;">
+          <label class="text-[#3f4941] text-[12px] font-bold">Status Pendaftaran</label>
+          <select name="status" onchange="this.form.submit()" class="bg-[#f1f4f3] border border-[#bec9be] rounded px-3 py-2 text-[13px] text-[#181c1c] outline-none cursor-pointer" style="height: 38px;">
+            <option value="" {{ !request('status') ? 'selected' : '' }}>Semua Status</option>
+            <option value="menunggu_verifikasi" {{ request('status') == 'menunggu_verifikasi' ? 'selected' : '' }}>Menunggu Verifikasi</option>
+            <option value="terverifikasi" {{ request('status') == 'terverifikasi' ? 'selected' : '' }}>Terverifikasi (Berkas)</option>
+            <option value="terverifikasi_onsite" {{ request('status') == 'terverifikasi_onsite' ? 'selected' : '' }}>Verifikasi Fisik</option>
+            <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+            <option value="lulus" {{ request('status') == 'lulus' ? 'selected' : '' }}>Lulus Seleksi</option>
+            <option value="cadangan" {{ request('status') == 'cadangan' ? 'selected' : '' }}>Cadangan</option>
+            <option value="tidak_lulus" {{ request('status') == 'tidak_lulus' ? 'selected' : '' }}>Tidak Lulus</option>
+            <option value="terkonfirmasi" {{ request('status') == 'terkonfirmasi' ? 'selected' : '' }}>Diterima (Daftar Ulang)</option>
+            <option value="mengundurkan_diri" {{ request('status') == 'mengundurkan_diri' ? 'selected' : '' }}>Mengundurkan Diri</option>
+          </select>
+        </div>
+
+        <!-- Filter Program Kelulusan / Pilihan -->
+        <div style="flex: 1.5; min-width: 190px; display: flex; flex-direction: column; gap: 6px;">
+          <label class="text-[#3f4941] text-[12px] font-bold">Program Kelulusan / Pilihan</label>
+          <select name="program_kelulusan" onchange="this.form.submit()" class="bg-[#f1f4f3] border border-[#bec9be] rounded px-3 py-2 text-[13px] text-[#181c1c] outline-none cursor-pointer" style="height: 38px;">
+            <option value="" {{ !request('program_kelulusan') ? 'selected' : '' }}>Semua Program Kelulusan</option>
+            @foreach($programs as $prog)
+              <option value="{{ $prog->nama_program }}" {{ request('program_kelulusan') == $prog->nama_program ? 'selected' : '' }}>
+                {{ $prog->nama_program }}
+              </option>
+            @endforeach
+          </select>
+        </div>
+
+        @if(request()->filled('search') || request()->filled('status') || request()->filled('program_kelulusan'))
+          <div>
+            <a href="{{ route('tata_usaha.dashboard') }}" class="bg-gray-200 text-[#3f4941] hover:bg-gray-300 text-[12px] font-bold px-3 py-2 rounded no-underline flex items-center h-[38px] box-sizing-border">
+              Reset Filter
+            </a>
+          </div>
+        @endif
+      </form>
+
       <!-- Recent Applicants Table -->
       <div class="bg-white border border-[#bec9be] rounded-xl overflow-hidden mb-10">
-        <div class="bg-[#eff4ff] grid grid-cols-5 gap-4 px-6 py-4 max-[900px]:hidden">
+        <div class="bg-[#eff4ff] grid grid-cols-6 gap-4 px-6 py-4 max-[900px]:hidden">
           <div class="text-black text-[12px] font-medium tracking-[1.2px] uppercase">No Pendaftar</div>
           <div class="text-black text-[12px] font-medium tracking-[1.2px] uppercase">Nama Lengkap</div>
           <div class="text-black text-[12px] font-medium tracking-[1.2px] uppercase">NISN</div>
           <div class="text-black text-[12px] font-medium tracking-[1.2px] uppercase">Jenis Kelamin</div>
+          <div class="text-black text-[12px] font-medium tracking-[1.2px] uppercase">Status</div>
           <div class="text-black text-[12px] font-medium tracking-[1.2px] uppercase">Program</div>
         </div>
 
         <div class="flex flex-col gap-4 p-6">
           @forelse($recentApplicants as $item)
-            <div class="border border-[#bec9be] rounded-lg p-6 grid grid-cols-5 gap-4 items-center max-[900px]:grid-cols-1 max-[900px]:gap-2">
+            <div class="border border-[#bec9be] rounded-lg p-6 grid grid-cols-6 gap-4 items-center max-[900px]:grid-cols-1 max-[900px]:gap-2">
               <div class="text-[#181c1c] text-[14px] font-bold">PMBM-2026-{{ str_pad($item->id_pendaftaran, 2, '0', STR_PAD_LEFT) }}</div>
               <div class="text-[#181c1c] text-[16px] font-bold uppercase">{{ $item->calonMurid->nama_murid }}</div>
               <div class="text-[#3f4941] text-[14px]">{{ $item->calonMurid->nisn }}</div>
               <div class="text-[#3f4941] text-[14px] uppercase">{{ $item->calonMurid->jenis_kelamin == 'L' ? 'Laki-laki' : 'Perempuan' }}</div>
+              
+              <!-- Status Column Badge -->
+              <div>
+                <?php
+                  if ($item->status_konfirmasi === 'terkonfirmasi') {
+                      $statusLabel = 'Diterima';
+                      $statusBg = '#d9e6da';
+                      $statusColor = '#004228';
+                  } elseif ($item->status_konfirmasi === 'mengundurkan_diri') {
+                      $statusLabel = 'Mundur';
+                      $statusBg = '#fee2e2';
+                      $statusColor = '#991b1b';
+                  } elseif ($item->status_kelulusan === 'lulus') {
+                      $statusLabel = 'Lulus';
+                      $statusBg = '#dcfce7';
+                      $statusColor = '#166534';
+                  } elseif ($item->status_kelulusan === 'tidak_lulus') {
+                      $statusLabel = 'Tidak Lulus';
+                      $statusBg = '#fee2e2';
+                      $statusColor = '#991b1b';
+                  } elseif ($item->status_kelulusan === 'cadangan') {
+                      $statusLabel = 'Cadangan';
+                      $statusBg = '#fef3c7';
+                      $statusColor = '#92400e';
+                  } elseif ($item->status_verifikasi === 'terverifikasi_onsite') {
+                      $statusLabel = 'Verifikasi Fisik';
+                      $statusBg = '#dbeafe';
+                      $statusColor = '#1e40af';
+                  } elseif ($item->status_verifikasi === 'terverifikasi') {
+                      $statusLabel = 'Terverifikasi';
+                      $statusBg = '#e0f2fe';
+                      $statusColor = '#075985';
+                  } elseif ($item->status_verifikasi === 'ditolak') {
+                      $statusLabel = 'Ditolak';
+                      $statusBg = '#fee2e2';
+                      $statusColor = '#ba1a1a';
+                  } else {
+                      $statusLabel = 'Menunggu';
+                      $statusBg = '#f3f4f6';
+                      $statusColor = '#374151';
+                  }
+                ?>
+                <span class="text-[11px] font-bold px-2.5 py-1 rounded-full" style="background-color: {{ $statusBg }}; color: {{ $statusColor }}; white-space: nowrap;">
+                  {{ $statusLabel }}
+                </span>
+              </div>
+
               <div class="flex items-center justify-between gap-3">
-                <span class="text-[10px] uppercase px-3 py-1 rounded-full" style="background: {{ $item->program->badge_color['bg'] ?? '#ffdcc3' }}; color: {{ $item->program->badge_color['text'] ?? '#2f1500' }};">{{ $item->program->nama_program ?? '-' }}</span>
+                <span class="text-[10px] uppercase px-3 py-1 rounded-full" style="background: {{ $item->program->badge_color['bg'] ?? '#ffdcc3' }}; color: {{ $item->program->badge_color['text'] ?? '#2f1500' }}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $item->program->nama_program ?? '-' }}</span>
                 <a href="{{ route('tata_usaha.detail', $item->id_pendaftaran) }}" class="bg-[#006a3c] text-white text-[16px] px-6 py-2 rounded no-underline hover:bg-[#064e3b]">Detail</a>
               </div>
             </div>

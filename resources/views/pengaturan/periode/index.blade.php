@@ -23,14 +23,38 @@
       @endif
 
       <!-- Filter + Add Button -->
-      <form action="{{ route('tata_usaha.periode.index') }}" method="GET" class="flex items-end gap-4 max-[700px]:flex-col max-[700px]:items-stretch">
-        <div class="flex-1 bg-white border border-[#bec9be] rounded-lg shadow-[0_1px_1px_rgba(0,0,0,0.05)] px-[17px] pt-[22px] pb-[17px] flex flex-col gap-2.5">
-          <label class="text-[#3f4941] text-[12px] font-bold">Daftar Periode Pendaftaran</label>
-          <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Berdasarkan Periode"
-                 class="bg-[#f1f4f3] border border-[#bec9be] rounded px-3 py-2 text-[14px] text-[#181c1c] outline-none w-full max-w-[528px]"
-                 onchange="this.form.submit()">
+      <form action="{{ route('tata_usaha.periode.index') }}" method="GET" class="flex gap-4 max-[700px]:flex-col flex-wrap w-full bg-white border border-[#bec9be] rounded-lg shadow-[0_1px_1px_rgba(0,0,0,0.05)] p-5 items-end">
+        <!-- Search Input (Tahun atau Judul PMBM) -->
+        <div style="flex: 2; min-width: 250px; display: flex; flex-direction: column; gap: 8px;">
+          <label class="text-[#3f4941] text-[12px] font-bold">Cari Periode Pendaftaran</label>
+          <div style="position: relative; display: flex; align-items: center; width: 100%;">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari berdasarkan tahun (misal: 2026) atau judul PMBM..."
+                   class="bg-[#f1f4f3] border border-[#bec9be] rounded px-4 py-2.5 text-[14px] text-[#181c1c] outline-none w-full" style="height: 40px; box-sizing: border-box;">
+            <button type="submit" style="position: absolute; right: 10px; background: none; border: none; cursor: pointer; color: #005b31;">
+              🔍
+            </button>
+          </div>
         </div>
-        <a href="{{ route('tata_usaha.periode.create') }}" class="bg-[#006a3c] text-white text-[16px] px-6 py-2 rounded no-underline hover:bg-[#064e3b] shrink-0 h-fit">Tambah</a>
+
+        <!-- Filter Status Periode -->
+        <div style="flex: 1; min-width: 160px; display: flex; flex-direction: column; gap: 8px;">
+          <label class="text-[#3f4941] text-[12px] font-bold">Status Periode</label>
+          <select name="status" onchange="this.form.submit()" class="bg-[#f1f4f3] border border-[#bec9be] rounded px-3 py-2.5 text-[14px] text-[#181c1c] outline-none cursor-pointer" style="height: 40px;">
+            <option value="" {{ !request('status') ? 'selected' : '' }}>Semua Status</option>
+            <option value="aktif" {{ request('status') == 'aktif' ? 'selected' : '' }}>Aktif (Terbuka)</option>
+            <option value="nonaktif" {{ request('status') == 'nonaktif' ? 'selected' : '' }}>Nonaktif (Tutup)</option>
+          </select>
+        </div>
+
+        @if(request()->filled('search') || request()->filled('status'))
+          <div>
+            <a href="{{ route('tata_usaha.periode.index') }}" class="bg-gray-200 text-[#3f4941] hover:bg-gray-300 text-[13px] font-bold px-3 py-2 rounded no-underline flex items-center h-[40px] box-sizing-border">
+              Reset
+            </a>
+          </div>
+        @endif
+
+        <a href="{{ route('tata_usaha.periode.create') }}" class="bg-[#006a3c] text-white text-[16px] px-6 py-2 rounded no-underline hover:bg-[#064e3b] shrink-0 h-[40px] flex items-center justify-center font-bold ml-auto">Tambah Periode</a>
       </form>
 
       <!-- Periode Table -->
