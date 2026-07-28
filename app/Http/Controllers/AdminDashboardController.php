@@ -264,7 +264,7 @@ class AdminDashboardController extends Controller
             // Ignore if fails
         }
 
-        $pendaftaran = Pendaftaran::with(['calonMurid.ayah', 'calonMurid.ibu', 'program'])
+        $pendaftaran = Pendaftaran::with(['calonMurid.ayah', 'calonMurid.ibu', 'program', 'nilaiUjian', 'wawancaraAnak', 'wawancaraOrtu', 'dssRanking'])
             ->findOrFail($id);
         
         $student = $pendaftaran->calonMurid;
@@ -341,8 +341,8 @@ class AdminDashboardController extends Controller
             $query->whereRaw('1 = 0');
         }
 
-        // Show students who have completed offline verification and are ready for selection
-        $query->whereIn('pendaftarans.status_verifikasi', ['terverifikasi_onsite']);
+        // Show students who are verified and ready for selection
+        $query->whereIn('pendaftarans.status_verifikasi', ['terverifikasi', 'terverifikasi_onsite']);
 
         // Apply search if present
         if ($request->filled('search')) {

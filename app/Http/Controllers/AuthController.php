@@ -38,17 +38,21 @@ class AuthController extends Controller
             'password' => $credentials['password']
         ];
 
+        // 1. Try selected guard first
         if (Auth::guard($guard)->attempt($authData)) {
             $request->session()->regenerate();
-            
-            if ($guard === 'tata_usaha') {
-                return redirect()->route('tata_usaha.dashboard');
-            }
-            return redirect()->route('panitia.dashboard');
+            return redirect()->route($guard === 'tata_usaha' ? 'tata_usaha.dashboard' : 'panitia.dashboard');
+        }
+
+        // 2. Fallback: Try the alternative guard if email belongs to other table
+        $fallbackGuard = ($guard === 'tata_usaha') ? 'panitia' : 'tata_usaha';
+        if (Auth::guard($fallbackGuard)->attempt($authData)) {
+            $request->session()->regenerate();
+            return redirect()->route($fallbackGuard === 'tata_usaha' ? 'tata_usaha.dashboard' : 'panitia.dashboard');
         }
 
         return back()->withErrors([
-            'email' => 'Email atau Kata Sandi salah untuk hak akses yang dipilih.',
+            'email' => 'Email atau Kata Sandi salah.',
         ])->onlyInput('email');
     }
 

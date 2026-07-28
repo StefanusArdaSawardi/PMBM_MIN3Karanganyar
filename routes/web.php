@@ -125,18 +125,14 @@ Route::middleware('auth:tata_usaha')->prefix('tata-usaha')->group(function () {
 // 4. Panitia (Interview) Dashboard Area
 Route::middleware('auth:panitia')->prefix('panitia')->group(function () {
     Route::get('/dashboard', [PanitiaDashboardController::class, 'index'])->name('panitia.dashboard');
+    Route::get('/hasil-nilai', [PanitiaDashboardController::class, 'hasilNilai'])->name('panitia.hasil-nilai');
     
-    // Rute khusus Pengawas Ujian
-    Route::middleware('panitia.role:pengawas_ujian')->group(function () {
-        Route::get('/grading/ujian/{id}', [PanitiaDashboardController::class, 'detailUjian'])->name('panitia.detail.ujian');
-        Route::post('/grading/ujian/{id}', [PanitiaDashboardController::class, 'storeUjian'])->name('panitia.grading.ujian');
-    });
+    // Rute Ujian & Wawancara (Dapat diakses oleh seluruh role panitia untuk detail & penilaian)
+    Route::get('/grading/ujian/{id}', [PanitiaDashboardController::class, 'detailUjian'])->name('panitia.detail.ujian');
+    Route::post('/grading/ujian/{id}', [PanitiaDashboardController::class, 'storeUjian'])->name('panitia.grading.ujian');
 
-    // Rute khusus Petugas Wawancara
-    Route::middleware('panitia.role:petugas_wawancara')->group(function () {
-        Route::get('/grading/wawancara/{id}', [PanitiaDashboardController::class, 'detailWawancara'])->name('panitia.detail.wawancara');
-        Route::post('/grading/wawancara/{id}', [PanitiaDashboardController::class, 'storeWawancara'])->name('panitia.grading.wawancara');
-    });
+    Route::get('/grading/wawancara/{id}', [PanitiaDashboardController::class, 'detailWawancara'])->name('panitia.detail.wawancara');
+    Route::post('/grading/wawancara/{id}', [PanitiaDashboardController::class, 'storeWawancara'])->name('panitia.grading.wawancara');
 
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('panitia.logout');
