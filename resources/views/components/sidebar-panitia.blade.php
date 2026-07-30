@@ -1,5 +1,5 @@
 <!-- Panitia Left Sidebar Component -->
-<aside class="fixed top-0 left-0 bottom-0 w-[260px] bg-white/70 backdrop-blur-md border-r border-slate-200/50 flex flex-col justify-between p-6 shadow-sm z-50 max-[1024px]:w-[220px] max-[768px]:hidden transition-all">
+<aside class="fixed top-0 left-0 bottom-0 w-[260px] bg-white/70 backdrop-blur-md border-r border-slate-200/50 flex flex-col justify-between p-6 shadow-sm z-50 max-[1024px]:w-[220px] max-[768px]:hidden transition-all print:hidden">
   
   <div class="flex flex-col gap-6">
     <!-- Profile Section -->
@@ -47,6 +47,12 @@
          class="flex items-center px-4 py-2.5 rounded-xl text-sm font-medium transition-colors no-underline font-sans {{ $activeFolder === 'result' ? 'bg-emerald-600 text-white shadow-sm font-semibold' : 'text-slate-600 hover:bg-slate-100 hover:text-emerald-600' }}">
         Hasil
       </a>
+
+      <!-- Menu 3: Tutorial Penggunaan -->
+      <a href="{{ route('panitia.tutorial.view') }}" 
+         class="flex items-center px-4 py-2.5 rounded-xl text-sm font-medium transition-colors no-underline font-sans {{ $activeFolder === 'tutorial' ? 'bg-emerald-600 text-white shadow-sm font-semibold' : 'text-slate-600 hover:bg-slate-100 hover:text-emerald-600' }}">
+        Tutorial Penggunaan
+      </a>
     </nav>
   </div>
 
@@ -61,14 +67,15 @@
 </aside>
 
 <!-- Mobile Topbar Navigation Fallback (Hanya muncul di layar HP) -->
-<nav class="hidden max-[768px]:flex fixed top-0 left-0 right-0 h-16 bg-white border-b border-slate-200 items-center justify-between px-4 z-50">
+<nav class="hidden max-[768px]:flex fixed top-0 left-0 right-0 h-16 bg-white border-b border-slate-200 items-center justify-between px-4 z-50 print:hidden">
   <div class="flex items-center gap-2">
     <img class="w-8 h-8 object-cover" src="{{ asset('assets/panitia/queue/whats-app-image-2026-06-17-at-23-30-06-removebg-preview-10.png') }}" alt="Logo">
     <span class="text-slate-900 font-bold text-sm">PMBM</span>
   </div>
-  <div class="flex gap-4 text-xs font-bold">
+  <div class="flex gap-3 text-[11px] font-bold items-center flex-wrap">
     <a href="{{ route('panitia.dashboard') }}" class="{{ $activeFolder === 'queue' ? 'text-emerald-600' : 'text-slate-500' }} no-underline">Penilaian</a>
     <a href="{{ route('panitia.hasil-nilai') }}" class="{{ $activeFolder === 'result' ? 'text-emerald-600' : 'text-slate-500' }} no-underline">Hasil</a>
+    <a href="{{ route('panitia.tutorial.view') }}" class="{{ $activeFolder === 'tutorial' ? 'text-emerald-600' : 'text-slate-500' }} no-underline">Tutorial</a>
     <a href="#" onclick="event.preventDefault(); document.getElementById('panitia-logout-form').submit();" class="text-rose-500 no-underline">Keluar</a>
   </div>
 </nav>

@@ -110,18 +110,23 @@ class PanitiaDashboardController extends Controller
 
     public function storeWawancara(Request $request, $id)
     {
+        $pendaftaran = Pendaftaran::findOrFail($id);
+
         $request->validate([
-            'komitmen_ortu' => 'required|string|max:1000',
+            'komitmen_ortu' => 'nullable|string',
+            'komitmen_ortu_status' => 'nullable|string|in:setuju,tidak',
+            'dukungan_fasilitas_status' => 'nullable|string|in:setuju,tidak',
+            'visi_misi_status' => 'nullable|string|in:setuju,tidak',
         ]);
 
-        $pendaftaran = Pendaftaran::findOrFail($id);
-        $panitiaId = auth()->guard('panitia')->id() ?: 'PAN0001';
-
-        WawancaraOrtu::updateOrCreate(
+        $wawancara = WawancaraOrtu::updateOrCreate(
             ['id_pendaftaran' => $pendaftaran->id_pendaftaran],
             [
-                'id_panitia' => $panitiaId,
+                'id_panitia' => auth()->guard('panitia')->id() ?? $pendaftaran->wawancaraOrtu->id_panitia ?? null,
                 'komitmen_ortu' => $request->komitmen_ortu,
+                'komitmen_ortu_status' => $request->komitmen_ortu_status,
+                'dukungan_fasilitas_status' => $request->dukungan_fasilitas_status,
+                'visi_misi_status' => $request->visi_misi_status,
             ]
         );
 
@@ -164,5 +169,25 @@ class PanitiaDashboardController extends Controller
         return view('dashboard.panitia-hasil-nilai', compact(
             'students', 'role', 'activePeriod', 'totalPendaftar', 'lulusCount', 'cadanganCount', 'tidakLulusCount'
         ));
+    }
+
+    public function showTutorial()
+    {
+        $contentPath = storage_path('app/landing_content.json');
+        $content = [];
+        if (file_exists($contentPath)) {
+            $content = json_decode(file_get_contents($contentPath), true);
+        }
+        return view('dashboard.panitia-tutorial', compact('content'));
+    }
+
+    public function detailApplicant($id)
+    {
+        $pendaftaran = Pendaftaran::with(['calonMurid.ayah', 'calonMurid.ibu', 'program', 'nilaiUjian', 'wawancaraAnak', 'wawancaraOrtu', 'dssRanking'])
+            ->findOrFail($id);
+        
+        $student = $pendaftaran->calonMurid;
+
+        return view('dashboard.panitia-applicant-detail', compact('pendaftaran', 'student'));
     }
 }

@@ -36,7 +36,8 @@ class ProgramManagementController extends Controller
             'poin_unggulan' => 'nullable|array',
             'poin_unggulan.*' => 'nullable|string|max:255',
             'kuota_program' => 'required|integer|min:0',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+            'images' => 'nullable|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg|max:5120',
             'criteria' => 'nullable|array',
             'criteria.*.nama_kriteria' => 'required|string|in:hafalan,aism,iqro,calistung,dikte,kemandirian',
             'criteria.*.nilai_minimum' => 'required|integer|min:0|max:100',
@@ -44,10 +45,15 @@ class ProgramManagementController extends Controller
 
         $validated['poin_unggulan'] = array_values(array_filter($validated['poin_unggulan'] ?? []));
 
-        if ($request->hasFile('image')) {
-            $validated['image'] = 'assets/programs/' . uniqid() . '.' . $request->file('image')->getClientOriginalExtension();
-            $request->file('image')->move(public_path('assets/programs'), basename($validated['image']));
+        $newImages = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                $path = 'assets/programs/' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('assets/programs'), basename($path));
+                $newImages[] = $path;
+            }
         }
+        $validated['image'] = count($newImages) > 0 ? json_encode($newImages) : null;
 
         // Reset obsolete single values
         $validated['jenis_penilaian'] = null;
@@ -91,27 +97,45 @@ class ProgramManagementController extends Controller
     {
         $program = Program::findOrFail($id);
 
-        $validated = $request->validate([
+        $request->validate([
             'nama_program' => 'required|string|max:255',
             'persyaratan' => 'required|string',
             'poin_unggulan' => 'nullable|array',
             'poin_unggulan.*' => 'nullable|string|max:255',
             'kuota_program' => 'required|integer|min:0',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+            'images' => 'nullable|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg|max:5120',
             'criteria' => 'nullable|array',
             'criteria.*.nama_kriteria' => 'required|string|in:hafalan,aism,iqro,calistung,dikte,kemandirian',
             'criteria.*.nilai_minimum' => 'required|integer|min:0|max:100',
         ]);
 
+        $validated = $request->only(['nama_program', 'persyaratan', 'poin_unggulan', 'kuota_program']);
         $validated['poin_unggulan'] = array_values(array_filter($validated['poin_unggulan'] ?? []));
 
-        if ($request->hasFile('image')) {
-            if ($program->image && file_exists(public_path($program->image))) {
-                @unlink(public_path($program->image));
+        // Preserve current images
+        $existing = $request->input('existing_images', []);
+        
+        // Find deleted images and clean from disk
+        $oldImages = $program->images;
+        $deletedImages = array_diff($oldImages, $existing);
+        foreach ($deletedImages as $delImg) {
+            if ($delImg && file_exists(public_path($delImg))) {
+                @unlink(public_path($delImg));
             }
-            $validated['image'] = 'assets/programs/' . uniqid() . '.' . $request->file('image')->getClientOriginalExtension();
-            $request->file('image')->move(public_path('assets/programs'), basename($validated['image']));
         }
+
+        $newImages = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                $path = 'assets/programs/' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('assets/programs'), basename($path));
+                $newImages[] = $path;
+            }
+        }
+
+        $finalImages = array_merge($existing, $newImages);
+        $validated['image'] = count($finalImages) > 0 ? json_encode($finalImages) : null;
 
         // Reset obsolete single values
         $validated['jenis_penilaian'] = null;
@@ -144,8 +168,10 @@ class ProgramManagementController extends Controller
     {
         $program = Program::findOrFail($id);
 
-        if ($program->image && file_exists(public_path($program->image))) {
-            @unlink(public_path($program->image));
+        foreach ($program->images as $img) {
+            if ($img && file_exists(public_path($img))) {
+                @unlink(public_path($img));
+            }
         }
 
         $program->delete();

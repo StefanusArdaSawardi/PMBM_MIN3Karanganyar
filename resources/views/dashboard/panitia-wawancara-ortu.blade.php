@@ -64,35 +64,35 @@
             </div>
 
             <!-- Block 1: Komitmen Orang Tua -->
-            <div class="flex flex-col gap-2" x-data="{ selected: 'setuju' }">
-              <input type="hidden" name="komitmen_status" :value="selected">
+            <div class="flex flex-col gap-2" x-data="{ selected: '{{ $pendaftaran->wawancaraOrtu->komitmen_ortu_status ?? '' }}' }">
+              <input type="hidden" name="komitmen_ortu_status" :value="selected">
               <h4 class="text-slate-900 text-sm font-bold font-sans">Komitmen Orang Tua</h4>
               <p class="text-slate-400 text-xs font-sans">Sejauh mana kesediaan orang tua dalam mendukung proses belajar dan peraturan.</p>
               <div class="flex items-center gap-3 mt-1">
-                <button type="button" @click="selected = 'setuju'" :class="selected === 'setuju' ? 'bg-emerald-900 text-white' : 'bg-slate-100 text-slate-600'" class="px-5 py-2 rounded-lg text-xs font-bold transition-all shadow-sm">Setuju</button>
-                <button type="button" @click="selected = 'tidak'" :class="selected === 'tidak' ? 'bg-slate-300 text-slate-700' : 'bg-slate-100 text-slate-400'" class="px-5 py-2 rounded-lg text-xs font-bold transition-all shadow-sm">Tidak</button>
+                <button type="button" @click="selected = 'setuju'" :class="selected === 'setuju' ? 'bg-[#005b31] text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'" class="px-5 py-2 rounded-lg text-xs font-bold transition-all shadow-sm">Setuju</button>
+                <button type="button" @click="selected = 'tidak'" :class="selected === 'tidak' ? 'bg-[#005b31] text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'" class="px-5 py-2 rounded-lg text-xs font-bold transition-all shadow-sm">Tidak</button>
               </div>
             </div>
 
             <!-- Block 2: Dukungan Fasilitas -->
-            <div class="flex flex-col gap-2 pt-2 border-t border-slate-100" x-data="{ selected: 'setuju' }">
-              <input type="hidden" name="fasilitas_status" :value="selected">
+            <div class="flex flex-col gap-2 pt-2 border-t border-slate-100" x-data="{ selected: '{{ $pendaftaran->wawancaraOrtu->dukungan_fasilitas_status ?? '' }}' }">
+              <input type="hidden" name="dukungan_fasilitas_status" :value="selected">
               <h4 class="text-slate-900 text-sm font-bold font-sans">Dukungan Fasilitas</h4>
               <p class="text-slate-400 text-xs font-sans">Ketersediaan sarana pendukung Fasilitas</p>
               <div class="flex items-center gap-3 mt-1">
-                <button type="button" @click="selected = 'setuju'" :class="selected === 'setuju' ? 'bg-emerald-900 text-white' : 'bg-slate-100 text-slate-600'" class="px-5 py-2 rounded-lg text-xs font-bold transition-all shadow-sm">Setuju</button>
-                <button type="button" @click="selected = 'tidak'" :class="selected === 'tidak' ? 'bg-slate-300 text-slate-700' : 'bg-slate-100 text-slate-400'" class="px-5 py-2 rounded-lg text-xs font-bold transition-all shadow-sm">Tidak</button>
+                <button type="button" @click="selected = 'setuju'" :class="selected === 'setuju' ? 'bg-[#005b31] text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'" class="px-5 py-2 rounded-lg text-xs font-bold transition-all shadow-sm">Setuju</button>
+                <button type="button" @click="selected = 'tidak'" :class="selected === 'tidak' ? 'bg-[#005b31] text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'" class="px-5 py-2 rounded-lg text-xs font-bold transition-all shadow-sm">Tidak</button>
               </div>
             </div>
 
             <!-- Block 3: Visi Misi Keluarga -->
-            <div class="flex flex-col gap-2 pt-2 border-t border-slate-100" x-data="{ selected: 'setuju' }">
-              <input type="hidden" name="visimisi_status" :value="selected">
+            <div class="flex flex-col gap-2 pt-2 border-t border-slate-100" x-data="{ selected: '{{ $pendaftaran->wawancaraOrtu->visi_misi_status ?? '' }}' }">
+              <input type="hidden" name="visi_misi_status" :value="selected">
               <h4 class="text-slate-900 text-sm font-bold font-sans">Visi Misi Keluarga</h4>
               <p class="text-slate-400 text-xs font-sans">Keselarasan nilai-nilai keluarga dengan visi misi pengembangan karakter Anak+</p>
               <div class="flex items-center gap-3 mt-1">
-                <button type="button" @click="selected = 'setuju'" :class="selected === 'setuju' ? 'bg-emerald-900 text-white' : 'bg-slate-100 text-slate-600'" class="px-5 py-2 rounded-lg text-xs font-bold transition-all shadow-sm">Setuju</button>
-                <button type="button" @click="selected = 'tidak'" :class="selected === 'tidak' ? 'bg-slate-300 text-slate-700' : 'bg-slate-100 text-slate-400'" class="px-5 py-2 rounded-lg text-xs font-bold transition-all shadow-sm">Tidak</button>
+                <button type="button" @click="selected = 'setuju'" :class="selected === 'setuju' ? 'bg-[#005b31] text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'" class="px-5 py-2 rounded-lg text-xs font-bold transition-all shadow-sm">Setuju</button>
+                <button type="button" @click="selected = 'tidak'" :class="selected === 'tidak' ? 'bg-[#005b31] text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'" class="px-5 py-2 rounded-lg text-xs font-bold transition-all shadow-sm">Tidak</button>
               </div>
             </div>
           </div>

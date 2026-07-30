@@ -204,9 +204,14 @@
           <div style="font-weight: bold; font-family: 'PlusJakartaSans-Bold', sans-serif; font-size: 16px; color: #064e3b; display: flex; align-items: center; gap: 8px;">
             <span>📞</span> Kelola Kontak &amp; Media Sosial Sekolah
           </div>
-          <button type="button" class="btn-submit" onclick="openCreateContactModal()" style="height: 36px; padding: 0 16px; font-size: 12px;">
-            + Tambah Kontak Baru
-          </button>
+          <div style="display: flex; gap: 10px;">
+            <button type="button" class="btn-submit" onclick="openIconHelperModal()" style="height: 36px; padding: 0 16px; font-size: 12px; background-color: #4b5563;">
+              ℹ️ Daftar Ikon Bootstrap
+            </button>
+            <button type="button" class="btn-submit" onclick="openCreateContactModal()" style="height: 36px; padding: 0 16px; font-size: 12px;">
+              + Tambah Kontak Baru
+            </button>
+          </div>
         </div>
 
         <div class="program-table-container">
@@ -381,6 +386,49 @@
       </form>
     </div>
   </div>
+
+  <!-- Icon Helper Modal -->
+  <div class="modal" id="iconHelperModal">
+    <div class="modal-content" style="max-width: 600px; max-height: 80vh; overflow-y: auto;">
+      <h3>Daftar Ikon Bootstrap</h3>
+      <p style="font-size: 12px; color: rgba(255, 255, 255, 0.8); margin-bottom: 15px; text-align: center;">Klik pada ikon untuk menyalin nama class-nya.</p>
+      
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;">
+        @php
+          $icons = [
+            ['name' => 'whatsapp', 'desc' => 'WhatsApp'],
+            ['name' => 'instagram', 'desc' => 'Instagram'],
+            ['name' => 'facebook', 'desc' => 'Facebook'],
+            ['name' => 'youtube', 'desc' => 'YouTube'],
+            ['name' => 'tiktok', 'desc' => 'TikTok'],
+            ['name' => 'twitter-x', 'desc' => 'Twitter / X'],
+            ['name' => 'telegram', 'desc' => 'Telegram'],
+            ['name' => 'globe', 'desc' => 'Website Resmi'],
+            ['name' => 'phone', 'desc' => 'Telepon / HP'],
+            ['name' => 'envelope', 'desc' => 'Email'],
+            ['name' => 'geo-alt', 'desc' => 'Alamat / Maps'],
+            ['name' => 'link-45deg', 'desc' => 'Link Tautan'],
+          ];
+        @endphp
+        @foreach($icons as $icon)
+          <div onclick="copyIconName('{{ $icon['name'] }}')" class="icon-item" 
+               style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 12px; text-align: center; cursor: pointer; transition: all 0.2s; box-sizing: border-box;"
+               onmouseover="this.style.background='rgba(255,255,255,0.2)'"
+               onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+            <div style="font-size: 24px; margin-bottom: 5px;">
+              <span class="text-[18px]">Ikon:</span> <strong style="color: #93f4b0;">{{ $icon['name'] }}</strong>
+            </div>
+            <div style="font-size: 13px; font-weight: bold; word-break: break-all;">bi-{{ $icon['name'] }}</div>
+            <div style="font-size: 10px; color: rgba(255,255,255,0.7); margin-top: 2px;">{{ $icon['desc'] }}</div>
+          </div>
+        @endforeach
+      </div>
+
+      <div style="display: flex; justify-content: center; margin-top: 25px;">
+        <button type="button" class="btn-cancel" onclick="closeIconHelperModal()">Tutup</button>
+      </div>
+    </div>
+  </div>
 @endsection
 
 @section('scripts')
@@ -405,6 +453,26 @@
     }
     function closeEditContactModal() {
       document.getElementById('editContactModal').style.display = 'none';
+    }
+    function openIconHelperModal() {
+      document.getElementById('iconHelperModal').style.display = 'flex';
+    }
+    function closeIconHelperModal() {
+      document.getElementById('iconHelperModal').style.display = 'none';
+    }
+    function copyIconName(name) {
+      navigator.clipboard.writeText(name).then(() => {
+        alert('Nama ikon "' + name + '" berhasil disalin ke clipboard!');
+      }).catch(err => {
+        // Fallback
+        const el = document.createElement('textarea');
+        el.value = name;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        alert('Nama ikon "' + name + '" berhasil disalin!');
+      });
     }
   </script>
 @endsection

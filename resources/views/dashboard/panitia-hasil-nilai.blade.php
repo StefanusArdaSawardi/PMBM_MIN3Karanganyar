@@ -134,7 +134,7 @@
                     @endif
                   </td>
                   <td class="py-4 px-4 text-center flex items-center justify-center gap-2">
-                    <a href="{{ $role === 'pengawas_ujian' ? route('panitia.detail.ujian', $student->id_pendaftaran) : route('panitia.detail.wawancara', $student->id_pendaftaran) }}" class="bg-emerald-50 border border-emerald-300 text-emerald-700 px-3 py-1 rounded font-bold text-[10px] hover:bg-emerald-100 no-underline shadow-sm transition-colors">Detail</a>
+                    <a href="{{ route('panitia.detail.applicant', $student->id_pendaftaran) }}" class="bg-emerald-50 border border-emerald-300 text-emerald-700 px-3 py-1 rounded font-bold text-[10px] hover:bg-emerald-100 no-underline shadow-sm transition-colors">Detail</a>
                     <a href="{{ $role === 'pengawas_ujian' ? route('panitia.detail.ujian', $student->id_pendaftaran) : route('panitia.detail.wawancara', $student->id_pendaftaran) }}" class="bg-white border border-slate-200 text-slate-600 px-3 py-1 rounded font-semibold text-[10px] hover:bg-slate-50 no-underline shadow-sm transition-colors">Edit</a>
                     <button type="button" @click="if(confirm('Apakah Anda yakin ingin menghapus data wawancara ini?')) deleted = true" class="bg-white border border-rose-200 text-rose-600 px-2 py-1 rounded font-semibold text-[10px] hover:bg-rose-50 shadow-sm transition-colors cursor-pointer">Hapus</button>
                   </td>

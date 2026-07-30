@@ -63,10 +63,10 @@
         <div style="flex: 1; min-width: 150px; display: flex; flex-direction: column; gap: 8px;">
           <label class="text-[#3f4941] text-[12px] font-bold">Urutkan</label>
           <select name="sort" onchange="this.form.submit()" class="bg-[#f1f4f3] border border-[#bec9be] rounded px-3 py-2.5 text-[14px] text-[#181c1c] outline-none cursor-pointer" style="height: 40px;">
-            <option value="date_desc" {{ request('sort') == 'date_desc' ? 'selected' : '' }}>Tanggal Daftar (Terbaru)</option>
-            <option value="date_asc" {{ request('sort') == 'date_asc' ? 'selected' : '' }}>Tanggal Daftar (Terlama)</option>
-            <option value="name_asc" {{ request('sort') == 'name_asc' ? 'selected' : '' }}>Nama Murid (A-Z)</option>
-            <option value="name_desc" {{ request('sort') == 'name_desc' ? 'selected' : '' }}>Nama Murid (Z-A)</option>
+            <option value="date_desc" {{ request('sort') == 'date_desc' ? 'selected' : '' }}>Pendaftaran Baru</option>
+            <option value="date_asc" {{ request('sort') == 'date_asc' ? 'selected' : '' }}>Pendaftaran Lama</option>
+            <option value="name_asc" {{ request('sort') == 'name_asc' ? 'selected' : '' }}>Nama (A-Z)</option>
+            <option value="name_desc" {{ request('sort') == 'name_desc' ? 'selected' : '' }}>Nama (Z-A)</option>
           </select>
         </div>
 
@@ -140,9 +140,9 @@
         @endif
       </div>
 
-      <!-- Applicants Table -->
-      <div class="bg-white border border-[#bec9be] rounded-xl overflow-hidden mb-10">
-        <div class="bg-[#eff4ff] grid grid-cols-6 gap-4 px-6 py-4 max-[900px]:hidden" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px;">
+      <!-- Applicants Table (Scrollable Container) -->
+      <div class="bg-white border border-[#bec9be] rounded-xl overflow-x-auto w-full mb-10">
+        <div class="bg-[#eff4ff] px-6 py-4" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; min-width: 900px;">
           <div class="text-black text-[12px] font-medium tracking-[1.2px] uppercase">Tanggal Daftar</div>
           <div class="text-black text-[12px] font-medium tracking-[1.2px] uppercase">Nama Lengkap</div>
           <div class="text-black text-[12px] font-medium tracking-[1.2px] uppercase">NISN</div>
@@ -151,9 +151,9 @@
           <div class="text-black text-[12px] font-medium tracking-[1.2px] uppercase">Program</div>
         </div>
 
-        <div class="flex flex-col gap-4 p-6">
+        <div class="flex flex-col gap-4 p-6" style="min-width: 900px;">
           @forelse($pendaftarans as $item)
-            <div class="border border-[#bec9be] rounded-lg p-6 grid grid-cols-6 gap-4 items-center max-[900px]:grid-cols-1 max-[900px]:gap-2" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px;">
+            <div class="border border-[#bec9be] rounded-lg p-6 items-center" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px;">
               <div class="text-[#181c1c] text-[14px] font-bold">
                 {{ \Carbon\Carbon::parse($item->tanggal_pendaftaran)->translatedFormat('d F Y') }}
               </div>

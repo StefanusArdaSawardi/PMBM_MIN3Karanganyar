@@ -52,14 +52,25 @@
           </div>
 
           <div class="flex flex-col gap-2">
-            <label class="text-[#3f4940] text-[14px] font-semibold tracking-wide">FOTO PROGRAM</label>
-            <input type="file" name="image" accept="image/jpeg,image/png,image/jpg"
+            <label class="text-[#3f4940] text-[14px] font-semibold tracking-wide">FOTO PROGRAM (BISA LEBIH DARI 1)</label>
+            <input type="file" name="images[]" multiple accept="image/jpeg,image/png,image/jpg"
                    class="border border-black/25 rounded px-4 py-2.5 text-[14px] text-[#3f4940] outline-none">
-            <div class="text-[#3f4940] text-[12px]">Choose File JPG, PNG</div>
-            @if(($program->image ?? null))
-              <img src="{{ asset($program->image) }}" alt="Foto program saat ini" class="h-20 w-20 object-cover rounded border border-gray-200 mt-1">
+            <div class="text-[#3f4940] text-[12px]">Choose File JPG, PNG (Pilih satu atau lebih)</div>
+            
+            @if($program && count($program->images) > 0)
+              <div class="text-[#3f4940] text-[12px] font-bold mt-2">FOTO AKTIF:</div>
+              <div class="flex flex-wrap gap-3 mt-1" style="display: flex; gap: 12px; flex-wrap: wrap;">
+                @foreach($program->images as $imgUrl)
+                  <div class="relative group w-20 h-20 border border-gray-200 rounded overflow-hidden" style="position: relative; width: 80px; height: 80px;">
+                    <img src="{{ asset($imgUrl) }}" class="w-full h-full object-cover" style="width: 100%; height: 100%; object-fit: cover;">
+                    <input type="hidden" name="existing_images[]" value="{{ $imgUrl }}">
+                    <button type="button" onclick="this.parentElement.remove()" class="absolute top-0 right-0 bg-red-600 text-white rounded-bl p-1 text-[10px] cursor-pointer hover:bg-red-800 border-none" style="position: absolute; top: 0; right: 0; background: #dc2626; color: white; border: none; padding: 2px 6px; cursor: pointer;" title="Hapus foto ini">&times;</button>
+                  </div>
+                @endforeach
+              </div>
             @endif
-            @error('image') <span class="text-red-600 text-[12px]">{{ $message }}</span> @enderror
+            @error('images') <span class="text-red-600 text-[12px]">{{ $message }}</span> @enderror
+            @error('images.*') <span class="text-red-600 text-[12px]">{{ $message }}</span> @enderror
           </div>
 
           <div class="flex flex-col gap-3">

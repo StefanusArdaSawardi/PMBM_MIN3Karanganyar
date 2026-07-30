@@ -40,18 +40,6 @@
                    class="bg-[#f1f4f3] border border-[#bec9be] rounded px-3 py-2 text-[14px] text-[#181c1c] outline-none w-full">
           </div>
 
-          <div class="flex flex-col gap-2">
-            <label class="text-[#3f4941] text-[12px] font-bold uppercase">Atau Unggah File Video (.mp4 / .webm - Max 50MB)</label>
-            <input type="file" name="guide_parent_video_file" accept="video/mp4,video/webm"
-                   class="bg-[#f1f4f3] border border-[#bec9be] rounded px-3 py-2 text-[14px] text-[#181c1c] outline-none w-full">
-            
-            @if(!empty($content['guide_parent_video_file']))
-              <div class="mt-2 text-[13px] text-emerald-700 flex items-center gap-2">
-                <span>✅ File video aktif:</span>
-                <a href="{{ asset($content['guide_parent_video_file']) }}" target="_blank" class="underline font-bold">Buka / Putar Video</a>
-              </div>
-            @endif
-          </div>
         </div>
 
         <!-- 2. Video Tutorial Staf (Admin) -->
@@ -64,18 +52,6 @@
                    class="bg-[#f1f4f3] border border-[#bec9be] rounded px-3 py-2 text-[14px] text-[#181c1c] outline-none w-full">
           </div>
 
-          <div class="flex flex-col gap-2">
-            <label class="text-[#3f4941] text-[12px] font-bold uppercase">Atau Unggah File Video (.mp4 / .webm - Max 50MB)</label>
-            <input type="file" name="guide_admin_video_file" accept="video/mp4,video/webm"
-                   class="bg-[#f1f4f3] border border-[#bec9be] rounded px-3 py-2 text-[14px] text-[#181c1c] outline-none w-full">
-            
-            @if(!empty($content['guide_admin_video_file']))
-              <div class="mt-2 text-[13px] text-emerald-700 flex items-center gap-2">
-                <span>✅ File video aktif:</span>
-                <a href="{{ asset($content['guide_admin_video_file']) }}" target="_blank" class="underline font-bold">Buka / Putar Video</a>
-              </div>
-            @endif
-          </div>
         </div>
 
         <!-- 3. Video Tutorial Staf (Panitia) -->
@@ -88,18 +64,6 @@
                    class="bg-[#f1f4f3] border border-[#bec9be] rounded px-3 py-2 text-[14px] text-[#181c1c] outline-none w-full">
           </div>
 
-          <div class="flex flex-col gap-2">
-            <label class="text-[#3f4941] text-[12px] font-bold uppercase">Atau Unggah File Video (.mp4 / .webm - Max 50MB)</label>
-            <input type="file" name="guide_panitia_video_file" accept="video/mp4,video/webm"
-                   class="bg-[#f1f4f3] border border-[#bec9be] rounded px-3 py-2 text-[14px] text-[#181c1c] outline-none w-full">
-            
-            @if(!empty($content['guide_panitia_video_file']))
-              <div class="mt-2 text-[13px] text-emerald-700 flex items-center gap-2">
-                <span>✅ File video aktif:</span>
-                <a href="{{ asset($content['guide_panitia_video_file']) }}" target="_blank" class="underline font-bold">Buka / Putar Video</a>
-              </div>
-            @endif
-          </div>
         </div>
 
         <!-- Action Button -->
