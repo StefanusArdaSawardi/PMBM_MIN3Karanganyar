@@ -1532,53 +1532,14 @@ class AdminDashboardController extends Controller
     {
         $request->validate([
             'guide_parent_video_url' => 'nullable|url',
-            'guide_parent_video_file' => 'nullable|file|mimes:mp4,webm|max:51200', // max 50MB
             'guide_admin_video_url' => 'nullable|url',
-            'guide_admin_video_file' => 'nullable|file|mimes:mp4,webm|max:51200', // max 50MB
             'guide_panitia_video_url' => 'nullable|url',
-            'guide_panitia_video_file' => 'nullable|file|mimes:mp4,webm|max:51200', // max 50MB
         ]);
 
         $contentPath = storage_path('app/landing_content.json');
         $content = [];
         if (file_exists($contentPath)) {
             $content = json_decode(file_get_contents($contentPath), true) ?? [];
-        }
-
-        // Handle Parent Video File
-        if ($request->hasFile('guide_parent_video_file')) {
-            $file = $request->file('guide_parent_video_file');
-            $filename = 'guide_parent_' . time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/videos'), $filename);
-            
-            if (!empty($content['guide_parent_video_file']) && file_exists(public_path($content['guide_parent_video_file']))) {
-                @unlink(public_path($content['guide_parent_video_file']));
-            }
-            $content['guide_parent_video_file'] = '/uploads/videos/' . $filename;
-        }
-
-        // Handle Admin Video File
-        if ($request->hasFile('guide_admin_video_file')) {
-            $file = $request->file('guide_admin_video_file');
-            $filename = 'guide_admin_' . time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/videos'), $filename);
-            
-            if (!empty($content['guide_admin_video_file']) && file_exists(public_path($content['guide_admin_video_file']))) {
-                @unlink(public_path($content['guide_admin_video_file']));
-            }
-            $content['guide_admin_video_file'] = '/uploads/videos/' . $filename;
-        }
-
-        // Handle Panitia Video File
-        if ($request->hasFile('guide_panitia_video_file')) {
-            $file = $request->file('guide_panitia_video_file');
-            $filename = 'guide_panitia_' . time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/videos'), $filename);
-            
-            if (!empty($content['guide_panitia_video_file']) && file_exists(public_path($content['guide_panitia_video_file']))) {
-                @unlink(public_path($content['guide_panitia_video_file']));
-            }
-            $content['guide_panitia_video_file'] = '/uploads/videos/' . $filename;
         }
 
         $content['guide_parent_video_url'] = $request->guide_parent_video_url;
@@ -1588,5 +1549,125 @@ class AdminDashboardController extends Controller
         file_put_contents($contentPath, json_encode($content, JSON_PRETTY_PRINT));
 
         return back()->with('success', 'Video panduan pendaftaran dan tutorial penggunaan sistem berhasil diperbarui.');
+    }
+
+    /**
+     * Show edit form for an applicant (Tata Usaha).
+     */
+    public function editApplicant($id)
+    {
+        $pendaftaran = Pendaftaran::with(['calonMurid.ayah', 'calonMurid.ibu', 'program'])->findOrFail($id);
+        $student = $pendaftaran->calonMurid;
+        $ayah = $student->ayah;
+        $ibu = $student->ibu;
+        $programs = Program::all();
+
+        return view('pendaftaran.edit-admin', compact('pendaftaran', 'student', 'ayah', 'ibu', 'programs'));
+    }
+
+    /**
+     * Update an applicant details (Tata Usaha).
+     */
+    public function updateApplicant(Request $request, $id)
+    {
+        $pendaftaran = Pendaftaran::findOrFail($id);
+        $student = $pendaftaran->calonMurid;
+        $ayah = $student->ayah;
+        $ibu = $student->ibu;
+
+        $request->validate([
+            // Student Data
+            'nama_murid' => ['required', 'string', 'min:3', 'max:255'],
+            'nik' => ['required', 'string', 'size:16', 'regex:/^[0-9]{16}$/'],
+            'jenis_kelamin' => ['required', 'in:L,P'],
+            'nisn' => ['required', 'string', 'size:10', 'regex:/^[0-9]{10}$/'],
+            'id_program' => ['required', 'exists:programs,id_program'],
+            'tempat_lahir' => ['required', 'string', 'min:3', 'max:100'],
+            'tanggal_lahir' => 'required|date',
+            'alamat' => 'required|string|min:10',
+            'email' => 'required|email|max:100',
+
+            // Father Data
+            'nama_ayah' => ['required', 'string', 'min:3', 'max:255'],
+            'pekerjaan_ayah' => 'nullable|string|min:3|max:100',
+            'nomor_telpon_ayah' => ['nullable', 'string'],
+
+            // Mother Data
+            'nama_ibu' => ['required', 'string', 'min:3', 'max:255'],
+            'pekerjaan_ibu' => 'nullable|string|min:3|max:100',
+            'nomor_telpon_ibu' => ['nullable', 'string'],
+
+            // Files (nullable)
+            'pas_foto' => 'nullable|file|image|max:5120',
+            'kartu_keluarga' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'akta_kelahiran' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'kartu_identitas_anak' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'piagram_kejuaraan' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+        ]);
+
+        // Update Father
+        $ayah->update([
+            'nama_ayah' => $request->nama_ayah,
+            'pekerjaan' => $request->pekerjaan_ayah,
+            'nomor_telpon' => $request->nomor_telpon_ayah,
+            'alamat' => $request->alamat,
+        ]);
+
+        // Update Mother
+        $ibu->update([
+            'nama_ibu' => $request->nama_ibu,
+            'pekerjaan' => $request->pekerjaan_ibu,
+            'nomor_telpon' => $request->nomor_telpon_ibu,
+            'alamat' => $request->alamat,
+        ]);
+
+        // Handle file uploads
+        $files = [];
+        $documentFields = ['pas_foto', 'kartu_keluarga', 'akta_kelahiran', 'kartu_identitas_anak', 'piagram_kejuaraan'];
+        
+        foreach ($documentFields as $field) {
+            if ($request->hasFile($field)) {
+                // Delete old file if exists
+                if ($student->$field && file_exists(public_path($student->$field))) {
+                    @unlink(public_path($student->$field));
+                }
+                $file = $request->file($field);
+                $filename = time() . '_' . $field . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('uploads/documents'), $filename);
+                $files[$field] = '/uploads/documents/' . $filename;
+            } else {
+                $files[$field] = $student->$field;
+            }
+        }
+
+        // Update Student
+        $student->update([
+            'nama_murid' => $request->nama_murid,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'nik' => $request->nik,
+            'nisn' => $request->nisn,
+            'tempat_lahir' => $request->tempat_lahir,
+            'tanggal_lahir' => $request->tanggal_lahir,
+            'alamat' => $request->alamat,
+            'email' => $request->email,
+            'pas_foto' => $files['pas_foto'],
+            'kartu_keluarga' => $files['kartu_keluarga'],
+            'akta_kelahiran' => $files['akta_kelahiran'],
+            'kartu_identitas_anak' => $files['kartu_identitas_anak'],
+            'piagram_kejuaraan' => $files['piagram_kejuaraan'],
+        ]);
+
+        // Update Pendaftaran program
+        $pendaftaran->update([
+            'id_program' => $request->id_program,
+        ]);
+
+        // Recalculate DSS rankings
+        try {
+            \App\Services\DssService::recalculateAll();
+        } catch (\Exception $e) {}
+
+        return redirect()->route('tata_usaha.detail', $pendaftaran->id_pendaftaran)
+            ->with('success', 'Data pendaftaran calon murid berhasil diperbarui.');
     }
 }

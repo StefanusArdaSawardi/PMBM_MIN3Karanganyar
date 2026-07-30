@@ -46,6 +46,8 @@ Route::middleware('auth:tata_usaha')->prefix('tata-usaha')->group(function () {
     // Applicant List (Matches the frontend route names)
     Route::get('/applicants', [AdminDashboardController::class, 'applicants'])->name('scores.index');
     Route::get('/applicants/{id}', [AdminDashboardController::class, 'detail'])->name('tata_usaha.detail');
+    Route::get('/applicants/{id}/edit', [AdminDashboardController::class, 'editApplicant'])->name('tata_usaha.applicants.edit');
+    Route::post('/applicants/{id}/edit', [AdminDashboardController::class, 'updateApplicant'])->name('tata_usaha.applicants.update');
     Route::post('/applicants/{id}/status', [AdminDashboardController::class, 'updateStatus'])->name('tata_usaha.status');
     Route::post('/applicants/{id}/change-program', [AdminDashboardController::class, 'changeProgram'])->name('tata_usaha.change_program');
 
@@ -126,6 +128,8 @@ Route::middleware('auth:tata_usaha')->prefix('tata-usaha')->group(function () {
 Route::middleware('auth:panitia')->prefix('panitia')->group(function () {
     Route::get('/dashboard', [PanitiaDashboardController::class, 'index'])->name('panitia.dashboard');
     Route::get('/hasil-nilai', [PanitiaDashboardController::class, 'hasilNilai'])->name('panitia.hasil-nilai');
+    Route::get('/tutorial', [PanitiaDashboardController::class, 'showTutorial'])->name('panitia.tutorial.view');
+    Route::get('/applicants/{id}/detail', [PanitiaDashboardController::class, 'detailApplicant'])->name('panitia.detail.applicant');
     
     // Rute Ujian & Wawancara (Dapat diakses oleh seluruh role panitia untuk detail & penilaian)
     Route::get('/grading/ujian/{id}', [PanitiaDashboardController::class, 'detailUjian'])->name('panitia.detail.ujian');

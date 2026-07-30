@@ -1,5 +1,5 @@
 <!-- Admin Sidebar Component -->
-<nav class="fixed top-0 left-0 right-0 h-[116px] bg-white flex items-center px-8 z-20 max-[1024px]:h-24 max-[1024px]:px-4">
+<nav class="fixed top-0 left-0 right-0 h-[116px] bg-white flex items-center px-8 z-20 max-[1024px]:h-24 max-[1024px]:px-4 print:hidden">
   <!-- Mobile Hamburger Toggle -->
   <button id="adminSidebarToggle" onclick="document.body.classList.toggle('admin-sidebar-open')" class="hidden max-[1024px]:block mr-3 bg-none border-none cursor-pointer text-[#005b31] p-2" aria-label="Toggle menu">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
@@ -25,9 +25,9 @@
 </nav>
 
 <!-- Mobile Sidebar Backdrop -->
-<div id="adminSidebarBackdrop" onclick="document.body.classList.remove('admin-sidebar-open')" class="hidden fixed inset-0 bg-black/40 z-[150] admin-sidebar-backdrop"></div>
+<div id="adminSidebarBackdrop" onclick="document.body.classList.remove('admin-sidebar-open')" class="hidden fixed inset-0 bg-black/40 z-[150] admin-sidebar-backdrop print:hidden"></div>
 
-<aside class="fixed top-[116px] left-0 w-[355px] bottom-0 bg-[#f8f9ff] flex flex-col z-10 overflow-y-auto max-[1024px]:top-0 max-[1024px]:h-screen max-[1024px]:-translate-x-full max-[1024px]:transition-transform max-[1024px]:duration-300 max-[1024px]:z-[160] admin-sidebar-panel">
+<aside class="fixed top-[116px] left-0 w-[355px] bottom-0 bg-[#f8f9ff] flex flex-col z-10 overflow-y-auto max-[1024px]:top-0 max-[1024px]:h-screen max-[1024px]:-translate-x-full max-[1024px]:transition-transform max-[1024px]:duration-300 max-[1024px]:z-[160] admin-sidebar-panel print:hidden">
   @php($activeFolder = $activeFolder ?? '')
   <a href="{{ route('tata_usaha.dashboard') }}" class="{{ $activeFolder === 'dashboard' ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[93px] flex items-center px-9 no-underline">
     <span class="{{ $activeFolder === 'dashboard' ? 'text-white' : 'text-[#005b31]' }} text-[20px] font-bold tracking-[-0.4px]" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">Dashboard</span>
@@ -43,7 +43,7 @@
   </button>
   <div id="pengaturanSubmenu" class="{{ $pengaturanOpen ? '' : 'hidden' }} flex flex-col">
     <a href="{{ route('tata_usaha.periode.index') }}" class="{{ $activeFolder === 'periode' ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[70px] flex items-center pl-14 pr-9 no-underline">
-      <span class="{{ $activeFolder === 'periode' ? 'text-white' : 'text-[#005b31]' }} text-[16px] font-bold">Data Periode</span>
+      <span class="{{ $activeFolder === 'periode' ? 'text-white' : 'text-[#005b31]' }} text-[16px] font-bold">Kelola Periode PMBM Tahunan</span>
     </a>
     <a href="{{ route('tata_usaha.program.index') }}" class="{{ $activeFolder === 'program' ? 'bg-[#005b31]' : 'bg-white hover:bg-gray-50' }} h-[70px] flex items-center pl-14 pr-9 no-underline">
       <span class="{{ $activeFolder === 'program' ? 'text-white' : 'text-[#005b31]' }} text-[16px] font-bold">Kelola Program</span>

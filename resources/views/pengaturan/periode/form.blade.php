@@ -33,8 +33,8 @@
           </div>
 
           <div class="flex flex-col gap-2">
-            <label class="text-[#3f4941] text-[12px] font-bold">Judul Utama Main Heading</label>
-            <input type="text" name="judul" value="{{ old('judul', $periode->judul ?? '') }}" required placeholder="Contoh: Penerimaan Peserta Didik baru 2026/2027"
+            <label class="text-[#3f4941] text-[12px] font-bold">Judul Periode PMBM</label>
+            <input type="text" name="judul" value="{{ old('judul', $periode->judul ?? '') }}" required placeholder="Contoh: Penerimaan Peserta Didik Baru 2026/2027"
                    class="bg-[#f1f4f3] border border-[#bec9be] rounded px-4 py-4 text-[14px] text-[#181c1c] outline-none">
             @error('judul') <span class="text-red-600 text-[12px]">{{ $message }}</span> @enderror
           </div>
@@ -78,29 +78,7 @@
             </div>
           </div>
 
-          <div class="flex flex-col gap-2 relative">
-            <label class="text-[#3f4941] text-[12px] font-bold">Koordinasi TIM</label>
-            @php($selectedPanitias = isset($periode) ? $periode->koordinators->pluck('id_panitia')->toArray() : old('id_panitias', []))
-            <div class="flex gap-0">
-              <button type="button" id="koordinatorTrigger" onclick="document.getElementById('koordinatorDropdown').classList.toggle('hidden')"
-                      class="flex-1 bg-[#f1f4f3] border border-[#bec9be] rounded-l px-4 py-4 text-[14px] text-[#181c1c] outline-none cursor-pointer text-left">
-                <span id="koordinatorLabel">{{ count($selectedPanitias) ? count($selectedPanitias) . ' panitia dipilih' : 'Cari nama panitia / koordinator' }}</span>
-              </button>
-              <button type="button" onclick="document.getElementById('koordinatorDropdown').classList.toggle('hidden')" class="bg-[#005b31] text-white text-[14px] px-6 rounded-r shrink-0">Cari</button>
-            </div>
-            <div id="koordinatorDropdown" class="hidden bg-white border border-[#bec9be] rounded shadow-lg overflow-hidden max-h-60 overflow-y-auto">
-              @forelse($panitias as $panitia)
-                @php($isChecked = in_array($panitia->id_panitia, $selectedPanitias))
-                <label class="flex items-center px-4 py-3 text-[14px] cursor-pointer border-b border-gray-100 last:border-b-0 bg-[#f1f4f3] text-[#181c1c] hover:bg-gray-100 has-[:checked]:bg-[#005b31] has-[:checked]:text-white">
-                  <input type="checkbox" name="id_panitias[]" value="{{ $panitia->id_panitia }}" onchange="updateKoordinatorLabel()"
-                         {{ $isChecked ? 'checked' : '' }} class="hidden">
-                  {{ $panitia->nama_panitia }}
-                </label>
-              @empty
-                <div class="px-4 py-3 text-[14px] text-gray-500">Belum ada data panitia.</div>
-              @endforelse
-            </div>
-          </div>
+          <!-- Koordinasi TIM dropdown removed -->
 
           <div class="flex justify-center pt-4">
             <button type="submit" class="bg-[#006a3c] text-white text-[16px] px-6 py-2 rounded cursor-pointer hover:bg-[#064e3b]">Simpan</button>
@@ -115,14 +93,9 @@
       const count = document.querySelectorAll('input[name="id_programs[]"]:checked').length;
       document.getElementById('jalurLabel').textContent = count ? count + ' program dipilih' : 'Pilih Jalur';
     }
-    function updateKoordinatorLabel() {
-      const count = document.querySelectorAll('input[name="id_panitias[]"]:checked').length;
-      document.getElementById('koordinatorLabel').textContent = count ? count + ' panitia dipilih' : 'Cari nama panitia / koordinator';
-    }
     document.addEventListener('click', function (e) {
       const dropdowns = [
-        ['jalurDropdown', 'jalurTrigger'],
-        ['koordinatorDropdown', 'koordinatorTrigger'],
+        ['jalurDropdown', 'jalurTrigger']
       ];
       dropdowns.forEach(([dropdownId, triggerId]) => {
         const dropdown = document.getElementById(dropdownId);

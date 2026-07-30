@@ -35,6 +35,19 @@ class Program extends Model
         return 'PRG';
     }
 
+    public function getImagesAttribute()
+    {
+        $val = $this->attributes['image'] ?? null;
+        if (empty($val)) {
+            return [];
+        }
+        $decoded = json_decode($val, true);
+        if (is_array($decoded)) {
+            return $decoded;
+        }
+        return [$val];
+    }
+
     public function criteria()
     {
         return $this->hasMany(ProgramCriterion::class, 'id_program', 'id_program');

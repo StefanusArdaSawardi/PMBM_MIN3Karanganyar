@@ -48,8 +48,6 @@ class PeriodePendaftaranController extends Controller
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
             'id_programs' => 'nullable|array',
             'id_programs.*' => 'exists:programs,id_program',
-            'id_panitias' => 'nullable|array',
-            'id_panitias.*' => 'exists:panitia_pmbms,id_panitia',
         ]);
 
         $validated['jumlah_program'] = count($request->input('id_programs', []));
@@ -62,7 +60,6 @@ class PeriodePendaftaranController extends Controller
 
         $periode = PeriodePendaftaran::create($validated);
         $periode->programs()->sync($request->input('id_programs', []));
-        $periode->koordinators()->sync($request->input('id_panitias', []));
 
         return redirect()->route('tata_usaha.periode.index')->with('success', 'Periode pendaftaran berhasil ditambahkan.');
     }
@@ -88,8 +85,6 @@ class PeriodePendaftaranController extends Controller
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
             'id_programs' => 'nullable|array',
             'id_programs.*' => 'exists:programs,id_program',
-            'id_panitias' => 'nullable|array',
-            'id_panitias.*' => 'exists:panitia_pmbms,id_panitia',
         ]);
 
         $validated['jumlah_program'] = count($request->input('id_programs', []));
@@ -101,7 +96,6 @@ class PeriodePendaftaranController extends Controller
 
         $periode->update($validated);
         $periode->programs()->sync($request->input('id_programs', []));
-        $periode->koordinators()->sync($request->input('id_panitias', []));
 
         return redirect()->route('tata_usaha.periode.index')->with('success', 'Periode pendaftaran berhasil diperbarui.');
     }

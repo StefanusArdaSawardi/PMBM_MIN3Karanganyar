@@ -17,16 +17,20 @@ class LandingController extends Controller
      */
     public function index()
     {
-        $programs = Program::all();
+        // Ambil periode aktif untuk ditampilkan di hero section
+        $activePeriod = PeriodePendaftaran::where('status', 'aktif')->first();
+
+        if ($activePeriod) {
+            $programs = $activePeriod->programs;
+        } else {
+            $programs = Program::all();
+        }
 
         $contentPath = storage_path('app/landing_content.json');
         $landingContent = [];
         if (file_exists($contentPath)) {
             $landingContent = json_decode(file_get_contents($contentPath), true) ?? [];
         }
-
-        // Ambil periode aktif untuk ditampilkan di hero section
-        $activePeriod = PeriodePendaftaran::where('status', 'aktif')->first();
 
         return view('landing.home', compact('programs', 'landingContent', 'activePeriod'));
     }
@@ -121,21 +125,23 @@ class LandingController extends Controller
     public function checkStatus(Request $request)
     {
         $request->validate([
-            'nisn' => 'required|string',
+            'nisn_or_nik' => 'required|string',
             'nama_murid' => 'required|string',
         ]);
 
-        $nisn = trim($request->input('nisn'));
+        $searchKey = trim($request->input('nisn_or_nik'));
         $namaMurid = trim($request->input('nama_murid'));
 
-        $pendaftaran = Pendaftaran::whereHas('calonMurid', function ($query) use ($nisn, $namaMurid) {
-                $query->where('nisn', $nisn)
-                    ->where('nama_murid', 'like', '%' . $namaMurid . '%');
+        $pendaftaran = Pendaftaran::whereHas('calonMurid', function ($query) use ($searchKey, $namaMurid) {
+                $query->where(function($q) use ($searchKey) {
+                    $q->where('nisn', $searchKey)
+                      ->orWhere('nik', $searchKey);
+                })->where('nama_murid', 'like', '%' . $namaMurid . '%');
             })
             ->first();
 
         if (!$pendaftaran) {
-            return back()->with('error', 'NISN atau Nama Calon Murid tidak ditemukan.');
+            return back()->with('error', 'NISN, NIK, atau Nama Calon Murid tidak ditemukan.');
         }
 
         // Store verification in session so they can edit their registration details securely

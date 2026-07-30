@@ -16,6 +16,9 @@ class WawancaraOrtu extends Model
         'id_pendaftaran',
         'id_panitia',
         'komitmen_ortu',
+        'komitmen_ortu_status',
+        'dukungan_fasilitas_status',
+        'visi_misi_status',
     ];
 
     public function getPrefix()

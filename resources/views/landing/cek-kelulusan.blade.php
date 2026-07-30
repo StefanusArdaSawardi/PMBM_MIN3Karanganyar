@@ -33,7 +33,7 @@
           <form action="{{ route('student.status.check') }}" method="POST" class="w-full flex flex-col items-center gap-4">
             @csrf
             <div class="w-full max-w-[280px]">
-              <input type="text" name="nisn" placeholder="NISN" required
+              <input type="text" name="nisn_or_nik" placeholder="NISN atau NIK" required
                      class="w-full h-[50px] px-[18px] border border-black/30 rounded-[10px] bg-white/80 text-[15px] text-[#1c1b1b] outline-none transition-colors duration-200 placeholder:text-[#3f4940]/60 focus:border-[#0f7643]"
                      style="font-family: 'PlusJakartaSans-Regular', sans-serif;">
             </div>

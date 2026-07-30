@@ -146,9 +146,9 @@
         </div>
       @endif
 
-      <!-- Applicants Table -->
-      <div class="bg-white border border-[#bec9be] rounded-xl overflow-hidden mb-10">
-        <div class="bg-[#eff4ff] grid grid-cols-5 gap-4 px-6 py-4 max-[900px]:hidden">
+      <!-- Applicants Table (Scrollable Container) -->
+      <div class="bg-white border border-[#bec9be] rounded-xl overflow-x-auto w-full mb-10">
+        <div class="bg-[#eff4ff] px-6 py-4" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; min-width: 900px;">
           <div class="text-black text-[12px] font-medium tracking-[1.2px] uppercase">Status Grup WA</div>
           <div class="text-black text-[12px] font-medium tracking-[1.2px] uppercase">Nama Lengkap</div>
           <div class="text-black text-[12px] font-medium tracking-[1.2px] uppercase">NISN</div>
@@ -156,9 +156,9 @@
           <div class="text-black text-[12px] font-medium tracking-[1.2px] uppercase">Program / Aksi</div>
         </div>
 
-        <div class="flex flex-col gap-4 p-6">
+        <div class="flex flex-col gap-4 p-6" style="min-width: 900px;">
           @forelse($pendaftarans as $item)
-            <div class="border border-[#bec9be] rounded-lg p-6 grid grid-cols-5 gap-4 items-center max-[900px]:grid-cols-1 max-[900px]:gap-2">
+            <div class="border border-[#bec9be] rounded-lg p-6 items-center" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;">
               
               <!-- Status Grup WA Toggle Button -->
               <div>

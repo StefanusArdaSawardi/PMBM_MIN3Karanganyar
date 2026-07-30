@@ -158,9 +158,9 @@
         </div>
       @endif
 
-      <!-- Applicants Table -->
-      <div class="bg-white border border-[#bec9be] rounded-xl overflow-hidden mb-10">
-        <div class="bg-[#eff4ff] p-6 max-[900px]:hidden">
+      <!-- Applicants Table (Scrollable Container) -->
+      <div class="bg-white border border-[#bec9be] rounded-xl overflow-x-auto w-full mb-10">
+        <div class="bg-[#eff4ff] p-6" style="min-width: 1000px;">
           <div style="display: grid; grid-template-columns: 2fr 3fr 1.5fr 1.5fr 2fr; gap: 20px; font-weight: bold; font-size: 12px; color: #3f4941; text-transform: uppercase; letter-spacing: 0.5px;">
             <div>Calon Siswa</div>
             <div>Nilai Asesmen (Hafalan, AISM, Iqro, Calistung, Dikte, Mandiri)</div>
@@ -170,7 +170,7 @@
           </div>
         </div>
 
-        <div class="flex flex-col gap-4 p-6">
+        <div class="flex flex-col gap-4 p-6" style="min-width: 1000px;">
           @forelse($pendaftarans as $item)
             <div class="border border-[#bec9be] rounded-lg p-6" style="display: grid; grid-template-columns: 2fr 3fr 1.5fr 1.5fr 2fr; gap: 20px; align-items: center; background-color: #fff;">
               

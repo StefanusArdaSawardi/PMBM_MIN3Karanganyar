@@ -41,7 +41,45 @@
 
 <section class="max-w-[1100px] mx-auto px-6 py-12 pb-16">
   <div class="grid grid-cols-[280px_1fr] gap-10 items-center bg-[#d9d9d9] border border-[#bdcab8] rounded-xl shadow-[0px_4px_4px_0px_rgba(255,255,255,0.8)] p-8 max-[800px]:grid-cols-1">
-    <img src="{{ $image }}" alt="{{ $title }} Ilustrasi" class="w-full h-[327px] object-cover rounded-lg bg-[#3f4940] max-[800px]:h-[240px]" />
+    @php
+      $programModel = \App\Models\Program::find($activeProgramId ?? null);
+      $programImages = $programModel ? $programModel->images : [];
+      if (empty($programImages)) {
+          $programImages = [$image];
+      }
+    @endphp
+
+    @if(count($programImages) > 1)
+      <!-- Slider/Carousel Container -->
+      <div class="relative overflow-hidden w-full h-[327px] rounded-lg bg-[#3f4940] max-[800px]:h-[240px]" id="program-carousel" style="position: relative; overflow: hidden; width: 100%;">
+        <div class="flex transition-transform duration-500 ease-in-out h-full w-full" id="carousel-track" style="display: flex; height: 100%; transition: transform 0.5s ease-in-out;">
+          @foreach($programImages as $img)
+            <div style="width: 100%; height: 100%; flex-shrink: 0;">
+              <img src="{{ asset($img) }}" alt="{{ $title }} Ilustrasi" class="w-full h-full object-cover" style="width: 100%; height: 100%; object-fit: cover;" />
+            </div>
+          @endforeach
+        </div>
+      </div>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const track = document.getElementById('carousel-track');
+          if (!track) return;
+          const slides = Array.from(track.children);
+          let currentIndex = 0;
+          const slideCount = slides.length;
+
+          function nextSlide() {
+            currentIndex = (currentIndex + 1) % slideCount;
+            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+          }
+
+          // Auto scroll every 3 seconds
+          setInterval(nextSlide, 3000);
+        });
+      </script>
+    @else
+      <img src="{{ asset($programImages[0]) }}" alt="{{ $title }} Ilustrasi" class="w-full h-[327px] object-cover rounded-lg bg-[#3f4940] max-[800px]:h-[240px]" />
+    @endif
 
     <div class="flex flex-col gap-4">
       <h2 class="text-black font-bold tracking-[-0.4px] text-[25px] m-0" style="font-family: 'PlusJakartaSans-Bold', sans-serif;">{{ $title }}</h2>
